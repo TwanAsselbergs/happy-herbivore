@@ -1,6 +1,6 @@
 ## Analyse
 
-Beantwoord de volgende vragen en voeg deze informatie toe aan je onderzoek:
+Beantwoord de volgende vragen en voeg ze toe aan je GitHub-repository:
 
 ### 1. Voor het bestellen
 - Wat is zichtbaar voordat je begint met bestellen?
