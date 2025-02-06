@@ -1,8 +1,9 @@
 import { ArrowLeft } from "lucide-react";
+import PageWrapper from "../reusable/PageWrapper";
 
 const Order = () => {
   return (
-    <main className="flex flex-col justify-between text-xl w-full h-screen overflow-x-hidden">
+    <PageWrapper>
       <div className="bg-white-primary px-4">
         <img
           src="/img/logo_big_happy_herbivore_transparent.webp"
@@ -58,7 +59,7 @@ const Order = () => {
           </button>
         </div>
       </div>
-    </main>
+    </PageWrapper>
   );
 };
 

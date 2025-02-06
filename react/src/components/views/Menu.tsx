@@ -1,12 +1,18 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { products, categories } from "./Products";
-import { formatCurrency } from "../../lib/utils";
 import ProductDetails from "../ProductDetails";
-import { ShoppingBag } from "lucide-react";
+import MenuSidebar from "../MenuSidebar";
+import Product from "../menu/Product";
+import { View } from "../../App";
+import PageWrapper from "../reusable/PageWrapper";
 
 import { AnimatePresence } from "framer-motion";
 
-export default function Menu() {
+export default function Menu({
+  setCurrentView,
+}: {
+  setCurrentView: React.Dispatch<React.SetStateAction<View>>;
+}) {
   const [selected, _] = useState<number[]>([]);
   const [showingDetailsId, setShowingDetailsId] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(
@@ -26,88 +32,47 @@ export default function Menu() {
   }, [cart]);
 
   return (
-    <div className="bg-white-primary w-full h-screen flex">
-      <div className="basis-[230px] shrink-0 flex flex-col justify-between h-full">
-        <div>
-          {categories.map((category) => (
-            <button
-              key={category.name}
-              className={`flex flex-col items-center transition-colors p-8 min-h-[300px] justify-center ${
-                selectedCategory == category.id ? "bg-orange-300" : ""
-              }`}
-              onClick={() => setSelectedCategory(category.id)}
-            >
-              <img
-                src={category.image.filename}
-                alt={category.image.description}
-                className="w-[80%]"
-              />
-              <h2 className="font-bold text-center uppercase">
-                {category.name}
-              </h2>
-            </button>
-          ))}
-        </div>
-        <button className="flex flex-col bg-lime text-white aspect-square justify-center items-center gap-6 font-bold">
-          <ShoppingBag size={65} strokeWidth={1.5} />
-          {formatCurrency(total)}
-        </button>
-      </div>
-      <div className="bg-white-secondary">
-        <h2 className="font-black text-center mb-4 mt-16 text-xl uppercase">
-          {
-            categories.find((category) => category.id === selectedCategory)
-              ?.name
-          }
-        </h2>
-        <div className="grid grid-cols-3 gap-8 p-8">
-          {products.map((product) => {
-            return (
-              <div
-                className={`relative rounded-2xl bg-white-primary ${
-                  selected.includes(product.id) ? "outline-lime outline-4" : ""
-                }`}
-                onClick={() => {
-                  setShowingDetailsId(product.id);
-                }}
-                role="button"
-              >
-                <div className={`overflow-hidden rounded-2xl shadow-md`}>
-                  <img
-                    src={product.image.filename}
-                    alt={product.image.description}
-                  />
-                  <div className="p-4">
-                    <h3 className="font-bold truncate text-start">
-                      {product.title}
-                    </h3>
-                    <div className="flex justify-between">
-                      <p>
-                        {new Intl.NumberFormat("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                        }).format(product.price)}
-                      </p>
-                      <p className="text-black/40">{product.kcal}kcal</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <AnimatePresence>
-        {showingDetailsId !== null && (
-          <ProductDetails
-            product={
-              products.find((product) => product.id === showingDetailsId)!
+    <PageWrapper>
+      <div className="flex h-full">
+        <MenuSidebar
+          categories={categories}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          total={total}
+          setCurrentView={setCurrentView}
+        />
+        <div className="bg-white-secondary">
+          <h2 className="font-black text-center mb-4 mt-16 text-xl uppercase">
+            {
+              categories.find((category) => category.id === selectedCategory)
+                ?.name
             }
-            setCart={setCart}
-            setShowingDetailsId={setShowingDetailsId}
-          />
-        )}
-      </AnimatePresence>
-    </div>
+          </h2>
+          <div className="grid grid-cols-3 gap-8 p-8">
+            {products.map((product) => {
+              return (
+                <Product
+                  product={product}
+                  selected={selected}
+                  setShowingDetailsId={setShowingDetailsId}
+                  key={product.title}
+                />
+              );
+            })}
+          </div>
+        </div>
+        <AnimatePresence>
+          {showingDetailsId !== null && (
+            <ProductDetails
+              product={
+                products.find((product) => product.id === showingDetailsId)!
+              }
+              setCart={setCart}
+              setShowingDetailsId={setShowingDetailsId}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+    </PageWrapper>
   );
 }

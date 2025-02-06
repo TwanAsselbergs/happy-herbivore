@@ -2,8 +2,9 @@ import { useState } from "react";
 import IdleScreen from "./components/views/IdleScreen";
 import Menu from "./components/views/Menu";
 import Order from "./components/views/Order";
+import { AnimatePresence } from "framer-motion";
 
-enum View {
+export enum View {
   Idle,
   Menu,
   Order,
@@ -12,13 +13,19 @@ enum View {
 }
 
 const App = () => {
-  const [currentView, _] = useState<View>(View.Menu);
+  const [currentView, setCurrentView] = useState<View>(View.Idle);
 
   return (
     <main className="flex flex-col justify-between text-md items-center w-full h-screen overflow-x-hidden">
-      {currentView === View.Idle && <IdleScreen />}
-      {currentView === View.Menu && <Menu />}
-      {currentView === View.Order && <Order />}
+      <AnimatePresence mode="sync">
+        {currentView === View.Idle && (
+          <IdleScreen setCurrentView={setCurrentView} key="IdleScreen" />
+        )}
+        {currentView === View.Menu && (
+          <Menu setCurrentView={setCurrentView} key="Menu" />
+        )}
+        {currentView === View.Order && <Order key="Order" />}
+      </AnimatePresence>
     </main>
   );
 };

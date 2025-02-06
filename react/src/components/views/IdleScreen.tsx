@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { wrap } from "@popmotion/popcorn";
 import { ShoppingBag } from "lucide-react";
+import { View } from "../../App";
 
 import { IMAGES } from "./Images";
 
@@ -24,7 +25,11 @@ const sliderTransition = {
   ease: [0.56, 0.03, 0.12, 1.04],
 };
 
-const IdleScreen = () => {
+const IdleScreen = ({
+  setCurrentView,
+}: {
+  setCurrentView: React.Dispatch<React.SetStateAction<View>>;
+}) => {
   const [[imageCount, direction], setImageCount] = useState([0, 0]);
   const scrollInterval = useRef<number | null>(null);
   const activeImageIndex = wrap(0, IMAGES.length, imageCount);
@@ -44,7 +49,11 @@ const IdleScreen = () => {
   }, []);
 
   return (
-    <main className="flex flex-col justify-between text-xl items-center w-full h-screen overflow-x-hidden">
+    <motion.div
+      className="flex flex-col justify-between text-xl items-center w-full h-screen"
+      exit={{ x: "-100%" }}
+      transition={{ duration: 0.5, ease: [0.56, 0.03, 0.12, 1.04] }}
+    >
       <img
         src="/img/logo_big_happy_herbivore_transparent.webp"
         alt=""
@@ -61,7 +70,8 @@ const IdleScreen = () => {
               animate="active"
               exit="exit"
               transition={sliderTransition}
-              className="w-full h-full absolute will-change-[transform,opacity] flex items-center justify-center">
+              className="w-full h-full absolute will-change-[transform,opacity] flex items-center justify-center"
+            >
               <img
                 src={IMAGES[activeImageIndex].imageSrc}
                 alt=""
@@ -87,11 +97,14 @@ const IdleScreen = () => {
           Happy Herbivore - Healthy in a Hurry
         </h3>
       </div>
-      <button className="font-bold bg-white w-[80%] h-[370px] rounded-t-3xl uppercase flex items-center justify-center gap-4">
+      <button
+        className="font-bold bg-white w-[80%] h-[370px] rounded-t-3xl uppercase flex items-center justify-center gap-4"
+        onClick={() => setCurrentView(View.Menu)}
+      >
         <ShoppingBag height={40} width={40} />
         Start ordering
       </button>
-    </main>
+    </motion.div>
   );
 };
 
