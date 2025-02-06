@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { wrap } from "@popmotion/popcorn";
 import { ShoppingBag } from "lucide-react";
 
-import { IMAGES } from "./Images"
+import { IMAGES } from "./Images";
 
 const sliderVariants = {
   incoming: (direction: number) => ({
@@ -61,8 +61,7 @@ const IdleScreen = () => {
               animate="active"
               exit="exit"
               transition={sliderTransition}
-              className="w-full h-full absolute will-change-[transform,opactiy] flex items-center justify-center"
-            >
+              className="w-full h-full absolute will-change-[transform,opacity] flex items-center justify-center">
               <img
                 src={IMAGES[activeImageIndex].imageSrc}
                 alt=""
