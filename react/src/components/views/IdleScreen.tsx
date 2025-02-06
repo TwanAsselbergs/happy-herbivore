@@ -44,7 +44,7 @@ const IdleScreen = () => {
   }, []);
 
   return (
-    <main className="flex flex-col justify-between text-3xl items-center w-full h-screen overflow-x-hidden">
+    <main className="flex flex-col justify-between text-xl items-center w-full h-screen overflow-x-hidden">
       <img
         src="/img/logo_big_happy_herbivore_transparent.webp"
         alt=""
@@ -83,11 +83,11 @@ const IdleScreen = () => {
             way
           </span>
         </h2>
-        <h3 className="text-3xl text-white mt-4">
+        <h3 className=" text-white mt-4">
           Happy Herbivore - Healthy in a Hurry
         </h3>
       </div>
-      <button className="font-bold bg-white w-[80%] h-[370px] rounded-t-3xl uppercase text-4xl flex items-center justify-center gap-4">
+      <button className="font-bold bg-white w-[80%] h-[370px] rounded-t-3xl uppercase flex items-center justify-center gap-4">
         <ShoppingBag height={40} width={40} />
         Start ordering
       </button>

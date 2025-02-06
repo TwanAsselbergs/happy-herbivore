@@ -1,10 +1,41 @@
 import { Product } from "../lib/types";
 import { formatCurrency } from "../lib/utils";
 import { Pie } from "react-chartjs-2";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArcElement, Chart } from "chart.js";
 import { useState } from "react";
 
 Chart.register(ArcElement);
+
+const sliderVariants = {
+  incoming: () => ({
+    y: "100%",
+  }),
+  active: { y: 0, opacity: 1 },
+  exit: () => ({
+    y: "100%",
+  }),
+};
+
+const overlayVariants = {
+  incoming: () => ({
+    opacity: 0,
+  }),
+  active: { opacity: 1 },
+  exit: () => ({
+    opacity: 0,
+  }),
+};
+
+const sliderTransition = {
+  duration: 0.3,
+  ease: "easeInOut",
+};
+
+const overlayTransition = {
+  duration: 0.3,
+  ease: "easeInOut",
+};
 
 export default function ProductDetails({
   product,
@@ -37,12 +68,26 @@ export default function ProductDetails({
   }
 
   return (
-    <div className="fixed bg-black/50 top-0 left-0 w-full h-full flex items-end justify-center">
-      <div className="bg-white w-full rounded-t-4xl p-14">
+    <div className="fixed top-0 left-0 w-full h-full flex items-end justify-center">
+      <motion.div
+        className="bg-black/50 absolute w-full h-full z-0"
+        onClick={() => setShowingDetailsId(null)}
+        variants={overlayVariants}
+        initial="incoming"
+        animate="active"
+        exit="exit"
+        transition={overlayTransition}
+      ></motion.div>
+      <motion.div
+        variants={sliderVariants}
+        initial="incoming"
+        animate="active"
+        exit="exit"
+        transition={sliderTransition}
+        className="bg-white w-full rounded-t-4xl p-14 relative z-10"
+      >
         <div className="row-span-full flex justify-end mb-12">
-            <button onClick={() => setShowingDetailsId(null)}>
-                X
-            </button>
+          <button onClick={() => setShowingDetailsId(null)}>X</button>
         </div>
         <div className="grid grid-cols-[3fr_5fr] gap-12 ">
           <img
@@ -52,8 +97,8 @@ export default function ProductDetails({
           />
           <div className="flex gap-2 flex-col justify-between">
             <div>
-              <h2 className="text-4xl font-bold">{product.title}</h2>
-              <p className="text-xl">{product.description}</p>
+              <h2 className="text-xl font-bold">{product.title}</h2>
+              <p>{product.description}</p>
             </div>
             <div className="flex items-end">
               <div className="w-[200px] relative">
@@ -72,9 +117,7 @@ export default function ProductDetails({
                 </div>
               </div>
 
-              <p className="text-xl">
-                *({(product.kcal / 2000) * 100}% of daily intake)
-              </p>
+              <p>*({(product.kcal / 2000) * 100}% of daily intake)</p>
             </div>
           </div>
           <div className="flex justify-between items-center">
@@ -106,7 +149,7 @@ export default function ProductDetails({
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

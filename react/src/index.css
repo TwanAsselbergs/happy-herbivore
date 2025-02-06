@@ -39,6 +39,16 @@
   --color-dark-blue-800: #021a18;
   --color-dark-blue-900: #02110f;
   --color-dark-blue-950: #010c0b;
+
+  --color-white-primary: #F9F9F9;
+  --color-white-secondary: #EFEFE9;
+
+  --text-md: 1.5rem;
+  --text-xl: 2rem;
+  --text-2xl: 2.5rem;
+  --text-3xl: 3rem;
+  --text-4xl: 4rem;
+
 }
 
 body {

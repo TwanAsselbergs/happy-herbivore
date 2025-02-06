@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { products, categories } from "./Products";
 import { formatCurrency } from "../../lib/utils";
 import ProductDetails from "../ProductDetails";
 import { ShoppingBag } from "lucide-react";
 
+import { AnimatePresence } from "framer-motion";
+
 export default function Menu() {
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, _] = useState<number[]>([]);
   const [showingDetailsId, setShowingDetailsId] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(
     categories[0].id
   );
   const [cart, setCart] = useState<{ id: number; quantity: number }[]>([]);
-  const [totalProducts, setTotalProducts] = useState(0);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
@@ -22,20 +23,16 @@ export default function Menu() {
         0
       )
     );
-
-    setTotalProducts(
-      cart.reduce((acc, { quantity }) => acc + quantity, 0)
-    );
   }, [cart]);
 
   return (
-    <div className="bg-white w-full h-screen flex">
+    <div className="bg-white-primary w-full h-screen flex">
       <div className="basis-[230px] shrink-0 flex flex-col justify-between h-full">
         <div>
           {categories.map((category) => (
             <button
               key={category.name}
-              className={`flex flex-col items-center p-8 min-h-[300px] justify-center ${
+              className={`flex flex-col items-center transition-colors p-8 min-h-[300px] justify-center ${
                 selectedCategory == category.id ? "bg-orange-300" : ""
               }`}
               onClick={() => setSelectedCategory(category.id)}
@@ -45,7 +42,9 @@ export default function Menu() {
                 alt={category.image.description}
                 className="w-[80%]"
               />
-              <h2 className="font-bold text-center">{category.name}</h2>
+              <h2 className="font-bold text-center uppercase">
+                {category.name}
+              </h2>
             </button>
           ))}
         </div>
@@ -54,8 +53,8 @@ export default function Menu() {
           {formatCurrency(total)}
         </button>
       </div>
-      <div>
-        <h2 className="font-bold text-4xl text-center mb-4 mt-16">
+      <div className="bg-white-secondary">
+        <h2 className="font-black text-center mb-4 mt-16 text-xl uppercase">
           {
             categories.find((category) => category.id === selectedCategory)
               ?.name
@@ -64,11 +63,14 @@ export default function Menu() {
         <div className="grid grid-cols-3 gap-8 p-8">
           {products.map((product) => {
             return (
-              <button
-                className={`relative rounded-2xl ${
+              <div
+                className={`relative rounded-2xl bg-white-primary ${
                   selected.includes(product.id) ? "outline-lime outline-4" : ""
                 }`}
-                onClick={() => setShowingDetailsId(product.id)}
+                onClick={() => {
+                  setShowingDetailsId(product.id);
+                }}
+                role="button"
               >
                 <div className={`overflow-hidden rounded-2xl shadow-md`}>
                   <img
@@ -76,7 +78,9 @@ export default function Menu() {
                     alt={product.image.description}
                   />
                   <div className="p-4">
-                    <h3 className="font-bold truncate">{product.title}</h3>
+                    <h3 className="font-bold truncate text-start">
+                      {product.title}
+                    </h3>
                     <div className="flex justify-between">
                       <p>
                         {new Intl.NumberFormat("en-US", {
@@ -88,18 +92,22 @@ export default function Menu() {
                     </div>
                   </div>
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>
       </div>
-      {showingDetailsId !== null && (
-        <ProductDetails
-          product={products.find((product) => product.id === showingDetailsId)!}
-          setCart={setCart}
-          setShowingDetailsId={setShowingDetailsId}
-        />
-      )}
+      <AnimatePresence>
+        {showingDetailsId !== null && (
+          <ProductDetails
+            product={
+              products.find((product) => product.id === showingDetailsId)!
+            }
+            setCart={setCart}
+            setShowingDetailsId={setShowingDetailsId}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
