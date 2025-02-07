@@ -12,10 +12,6 @@ export default function PageWrapper({
     return (
         <motion.div
             className="bg-white-primary w-full absolute h-full flex flex-col pt-[225px]"
-            // exit={{ x: "-100%" }}
-            // transition={{ duration: 0.5, ease: [0.56, 0.03, 0.12, 1.04] }}
-            // initial={{ x: "100%" }}
-            // animate={{ x: 0 }}
             {...props}
         >
             {children}
