@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: NotoSans;
+  src: url("/fonts/notosans.ttf")
+}
+
 @theme {
   --color-orange: #ff7520;
   --color-orange-50: #ffe7d8;
@@ -49,6 +54,7 @@
   --text-3xl: 3rem;
   --text-4xl: 4rem;
 
+  --font-sans: NotoSans;
 }
 
 body {

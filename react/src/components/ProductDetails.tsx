@@ -1,7 +1,7 @@
 import { Product } from "../lib/types";
 import { formatCurrency } from "../lib/utils";
 import { Pie } from "react-chartjs-2";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArcElement, Chart } from "chart.js";
 import { useState } from "react";
 
@@ -41,13 +41,13 @@ export default function ProductDetails({
   product,
   setCart,
   setShowingDetailsId,
-}: {
+}: Readonly<{
   product: Product;
   setCart: React.Dispatch<
     React.SetStateAction<{ id: number; quantity: number }[]>
   >;
   setShowingDetailsId: React.Dispatch<React.SetStateAction<number | null>>;
-}) {
+}>) {
   const [productQuantity, setProductQuantity] = useState(1);
 
   function handleAddToCart() {

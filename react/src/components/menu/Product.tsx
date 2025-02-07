@@ -3,36 +3,52 @@ import { Product as ProductType } from "../../lib/types";
 import { formatCurrency } from "../../lib/utils";
 
 export default function Product({
-  selected,
+  cart,
   setShowingDetailsId,
   product,
-}: {
-  selected: number[];
+}: Readonly<{
+  cart?: { id: number; quantity: number };
   setShowingDetailsId: React.Dispatch<React.SetStateAction<number | null>>;
   product: ProductType;
-}) {
+}>) {
   return (
-    <div
-      className={`relative rounded-2xl bg-white-primary ${
-        selected.includes(product.id) ? "outline-lime outline-4" : ""
+    <article
+      className={`relative rounded-2xl bg-white-primary p-4 shadow-md ${
+        cart ? "outline-lime outline-4" : ""
       }`}
-      onClick={() => {
-        setShowingDetailsId(product.id);
-      }}
-      role="button"
     >
-      <div className={`overflow-hidden rounded-2xl shadow-md`}>
-        <img src={product.image.filename} alt={product.image.description} />
-        <div className="p-4">
-          <h3 className="font-bold truncate text-start">{product.title}</h3>
-          <div className="flex justify-between">
-            <p>
-              {formatCurrency(product.price)}
-            </p>
-            <p className="text-black/40">{product.kcal}kcal</p>
-          </div>
-        </div>
-      </div>
-    </div>
+      <button
+        className="absolute inset-0 w-full h-full opacity-0"
+        onClick={() => setShowingDetailsId(product.id)}
+        aria-label={`View details of ${product.title}`}
+      />
+
+      <figure className="overflow-hidden rounded-2xl">
+        <img
+          src={product.image.filename}
+          alt={product.image.description}
+          className="w-full"
+        />
+        <figcaption className="sr-only">{product.image.description}</figcaption>
+      </figure>
+
+      <header className="mt-4">
+        <h3 className="font-bold truncate text-start">{product.title}</h3>
+        <p>{formatCurrency(product.price)}</p>
+      </header>
+
+      <dl className="text-black/40">
+        <dt className="sr-only">Calories</dt>
+        <dd>{product.kcal} kcal</dd>
+      </dl>
+
+      {
+        cart && (
+          <span className="absolute top-0 right-0 bg-lime text-white rounded-full h-10 aspect-square p-2 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+            {cart.quantity}
+          </span>
+        )
+      }
+    </article>
   );
 }

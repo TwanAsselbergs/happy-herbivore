@@ -27,6 +27,10 @@ const images: Image[] = [
     id: 6,
     filename: "/img/sides.png",
   },
+  {
+    id: 7,
+    filename: "/img/products/protein-packed-bowl.png",
+  },
 ];
 
 export const categories: Category[] = [
@@ -80,5 +84,16 @@ export const products: Product[] = [
     description:
       "Whole-grain toast with natural peanut butter and banana slices.",
     title: "Peanut Butter Toast",
+  },
+  {
+    id: 4,
+    category: categories[1],
+    available: true,
+    kcal: 450,
+    price: 6.00,
+    image: images[6],
+    description:
+      "Quinoa, grilled tofu, roasted vegetables, and a tahini dressing.",
+    title: "Protein-Packed Bowl",
   },
 ];
