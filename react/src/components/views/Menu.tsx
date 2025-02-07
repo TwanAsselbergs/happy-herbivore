@@ -4,9 +4,8 @@ import ProductDetails from "../ProductDetails";
 import MenuSidebar from "../MenuSidebar";
 import Product from "../menu/Product";
 import { View } from "../../App";
-import PageWrapper from "../reusable/PageWrapper";
-
-import { AnimatePresence } from "framer-motion";
+import Order from "./Order";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Menu({
     setCurrentView,
@@ -22,6 +21,7 @@ export default function Menu({
     const [cart, setCart] = useState<{ id: number; quantity: number }[]>([]);
     const [total, setTotal] = useState(0);
     const [showingProducts, setShowingProducts] = useState(products);
+    const [isShowingOrderSummary, setIsShowingOrderSummary] = useState(false);
 
     useEffect(() => {
         setShowingProducts(
@@ -46,57 +46,72 @@ export default function Menu({
     }, [cart]);
 
     return (
-        <PageWrapper>
-            <div className="h-full">
-                <div className="flex h-full">
-                    <MenuSidebar
-                        categories={categories}
-                        setSelectedCategory={setSelectedCategory}
-                        total={total}
-                        setCurrentView={setCurrentView}
-                    />
-                    <div className="bg-white-secondary w-full">
-                        <h2 className="font-black text-center mb-4 mt-16 text-xl uppercase">
-                            {
-                                categories.find(
-                                    (category) =>
-                                        category.id === selectedCategory
-                                )?.name
-                            }
-                        </h2>
-                        <div className="grid grid-cols-3 gap-8 p-8">
-                            {showingProducts.map((product) => {
-                                return (
-                                    <Product
-                                        product={product}
-                                        cart={cart.find(
-                                            (item) => item.id === product.id
-                                        )}
-                                        setShowingDetailsId={
-                                            setShowingDetailsId
-                                        }
-                                        key={product.title}
-                                    />
-                                );
-                            })}
-                        </div>
-                    </div>
-                    <AnimatePresence>
-                        {showingDetailsId !== null && (
-                            <ProductDetails
-                                product={
-                                    products.find(
-                                        (product) =>
-                                            product.id === showingDetailsId
-                                    )!
+        <div className="h-full w-full">
+            <AnimatePresence mode="sync">
+                {isShowingOrderSummary ? (
+                    <motion.div
+                        initial={{ x: "100%" }}
+                        animate={{ x: 0 }}
+                        transition={{ duration: 0.5, type: "spring" }}
+                        exit={{ x: "100%" }}
+                    >
+                        <Order
+                            setIsShowingOrderSummary={setIsShowingOrderSummary}
+                        />
+                    </motion.div>
+                ) : (
+                    <div className="flex h-full">
+                        <MenuSidebar
+                            categories={categories}
+                            setSelectedCategory={setSelectedCategory}
+                            total={total}
+                            setCurrentView={setCurrentView}
+                            setIsShowingOrderSummary={setIsShowingOrderSummary}
+                            selectedCategory={selectedCategory}
+                        />
+                        <div className="bg-white-secondary w-full">
+                            <h2 className="font-black text-center mb-4 mt-16 text-xl uppercase">
+                                {
+                                    categories.find(
+                                        (category) =>
+                                            category.id === selectedCategory
+                                    )?.name
                                 }
-                                setCart={setCart}
-                                setShowingDetailsId={setShowingDetailsId}
-                            />
-                        )}
-                    </AnimatePresence>
-                </div>
-            </div>
-        </PageWrapper>
+                            </h2>
+                            <div className="grid grid-cols-3 gap-8 p-8">
+                                {showingProducts.map((product) => {
+                                    return (
+                                        <Product
+                                            product={product}
+                                            cart={cart.find(
+                                                (item) => item.id === product.id
+                                            )}
+                                            setShowingDetailsId={
+                                                setShowingDetailsId
+                                            }
+                                            key={product.title}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        <AnimatePresence>
+                            {showingDetailsId !== null && (
+                                <ProductDetails
+                                    product={
+                                        products.find(
+                                            (product) =>
+                                                product.id === showingDetailsId
+                                        )!
+                                    }
+                                    setCart={setCart}
+                                    setShowingDetailsId={setShowingDetailsId}
+                                />
+                            )}
+                        </AnimatePresence>
+                    </div>
+                )}
+            </AnimatePresence>
+        </div>
     );
 }

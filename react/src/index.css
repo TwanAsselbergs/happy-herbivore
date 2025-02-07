@@ -1,62 +1,62 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: NotoSans;
-  src: url("/fonts/notosans.ttf")
+    font-family: NotoSans;
+    src: url("/fonts/notosans.ttf");
 }
 
 @theme {
-  --color-orange: #ff7520;
-  --color-orange-50: #ffe7d8;
-  --color-orange-100: #ffdac3;
-  --color-orange-200: #ffc19a;
-  --color-orange-300: #ffa772;
-  --color-orange-400: #ff8e49;
-  --color-orange-500: #ff7520;
-  --color-orange-600: #e75800;
-  --color-orange-700: #af4300;
-  --color-orange-800: #772d00;
-  --color-orange-900: #3f1800;
-  --color-orange-950: #230d00;
+    --color-orange: #ff7520;
+    --color-orange-50: #ffe7d8;
+    --color-orange-100: #ffdac3;
+    --color-orange-200: #ffc19a;
+    --color-orange-300: #ffa772;
+    --color-orange-400: #ff8e49;
+    --color-orange-500: #ff7520;
+    --color-orange-600: #e75800;
+    --color-orange-700: #af4300;
+    --color-orange-800: #772d00;
+    --color-orange-900: #3f1800;
+    --color-orange-950: #230d00;
 
-  --color-lime: #8cd003;
-  --color-lime-50: #d8fd8d;
-  --color-lime-100: #d1fd79;
-  --color-lime-200: #c4fc51;
-  --color-lime-300: #b6fc29;
-  --color-lime-400: #a7f804;
-  --color-lime-500: #8cd003;
-  --color-lime-600: #679902;
-  --color-lime-700: #426101;
-  --color-lime-800: #1c2a01;
-  --color-lime-900: #000000;
-  --color-lime-950: #000000;
+    --color-lime: #8cd003;
+    --color-lime-50: #d8fd8d;
+    --color-lime-100: #d1fd79;
+    --color-lime-200: #c4fc51;
+    --color-lime-300: #b6fc29;
+    --color-lime-400: #a7f804;
+    --color-lime-500: #8cd003;
+    --color-lime-600: #679902;
+    --color-lime-700: #426101;
+    --color-lime-800: #1c2a01;
+    --color-lime-900: #000000;
+    --color-lime-950: #000000;
 
-  --color-dark-blue: #053631;
-  --color-dark-blue-50: #0d8a7d;
-  --color-dark-blue-100: #0c8175;
-  --color-dark-blue-200: #0a6e64;
-  --color-dark-blue-300: #085b53;
-  --color-dark-blue-400: #074942;
-  --color-dark-blue-500: #053631;
-  --color-dark-blue-600: #042d29;
-  --color-dark-blue-700: #032320;
-  --color-dark-blue-800: #021a18;
-  --color-dark-blue-900: #02110f;
-  --color-dark-blue-950: #010c0b;
+    --color-dark-blue: #053631;
+    --color-dark-blue-50: #0d8a7d;
+    --color-dark-blue-100: #0c8175;
+    --color-dark-blue-200: #0a6e64;
+    --color-dark-blue-300: #085b53;
+    --color-dark-blue-400: #074942;
+    --color-dark-blue-500: #053631;
+    --color-dark-blue-600: #042d29;
+    --color-dark-blue-700: #032320;
+    --color-dark-blue-800: #021a18;
+    --color-dark-blue-900: #02110f;
+    --color-dark-blue-950: #010c0b;
 
-  --color-white-primary: #F9F9F9;
-  --color-white-secondary: #EFEFE9;
+    --color-white-primary: #f9f9f9;
+    --color-white-secondary: #efefe9;
 
-  --text-md: 1.5rem;
-  --text-xl: 2rem;
-  --text-2xl: 2.5rem;
-  --text-3xl: 3rem;
-  --text-4xl: 4rem;
+    --text-md: 1.5rem;
+    --text-xl: 2rem;
+    --text-2xl: 2.5rem;
+    --text-3xl: 3rem;
+    --text-4xl: 4rem;
 
-  --font-sans: NotoSans;
+    --font-sans: NotoSans;
 }
 
 body {
-  background-color: var(--color-dark-blue);
+    background-color: var(--color-white-secondary);
 }
