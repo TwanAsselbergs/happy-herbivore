@@ -1,63 +1,132 @@
 import { ArrowLeft } from "lucide-react";
+import { Product } from "../../lib/types";
+import { formatCurrency } from "../../lib/utils";
 
 const Order = ({
-    setIsShowingOrderSummary,
+  setIsShowingOrderSummary,
+  cart,
+  setCart,
+  products,
 }: {
-    setIsShowingOrderSummary: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsShowingOrderSummary: React.Dispatch<React.SetStateAction<boolean>>;
+  cart: { id: number; quantity: number }[];
+  setCart: React.Dispatch<
+    React.SetStateAction<{ id: number; quantity: number }[]>
+  >;
+  products: Product[];
 }) => {
-    return (
-        <div className="bg-white-secondary w-full h-full flex justify-center">
-            <div className="flex flex-col justify-between items-center bg-white-primary rounded-3xl w-11/12 h-[1400px] mx-auto mt-28 px-16">
-                <h2 className="text-2xl font-bold tracking-wide flex items-center my-20">
-                    <ArrowLeft
-                        height={50}
-                        width={50}
-                        strokeWidth={2.5}
-                        className="absolute left-35"
-                        onClick={() => setIsShowingOrderSummary(false)}
-                    />
-                    Review your Order
-                </h2>
-                <div className="flex justify-between items-center w-full">
-                    <div className="flex items-center">
-                        <img
-                            src="/img/eggcelent-wrap.png"
-                            alt=""
-                            className="w-40 h-40 object-cover rounded-2xl"
-                        />
-                        <div className="ml-10 tracking-wide">
-                            <h3 className="text-[28px] font-semibold">
-                                Eggcelent Wrap
-                            </h3>
-                            <p className="text-[28px] font-semibold mt-4">
-                                €7.00{" "}
-                                <span className="text-gray-400 font-normal">
-                                    (€3.50 per piece)
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                        <button className="text-xl font-bold bg-gray-100 rounded-full p-8 h-20 flex items-center">
-                            -
-                        </button>
-                        <input
-                            type="number"
-                            className="w-12 text-center font-bold"
-                            value="1"
-                            min="1"
-                        />
-                        <button className="text-xl font-bold bg-gray-100 rounded-full p-8 h-20 flex items-center">
-                            +
-                        </button>
-                    </div>
-                </div>
-                <button className="text-white bg-lime-500 px-54 py-8 rounded-full my-20 font-semibold tracking-wide">
-                    Proceed to checkout
-                </button>
-            </div>
-        </div>
+  const cartItems = cart
+    .map((cartItem) => {
+      const product = products.find((product) => product.id === cartItem.id);
+      return product ? { ...product, quantity: cartItem.quantity } : null;
+    })
+    .filter(Boolean) as (Product & { quantity: number })[];
+
+  const handleIncrement = (id: number) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      )
     );
+  };
+
+  const handleDecrement = (id: number) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
+
+  const totalPrice = cartItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
+  return (
+    <div className="bg-white-secondary w-full h-full flex justify-center">
+      <div className="flex flex-col items-center bg-white-primary rounded-3xl w-11/12 h-[1400px] mx-auto mt-28 px-16">
+        <h2 className="text-2xl font-bold flex items-center my-20">
+          <ArrowLeft
+            height={50}
+            width={50}
+            strokeWidth={2.5}
+            className="absolute left-35"
+            onClick={() => setIsShowingOrderSummary(false)}
+          />
+          Review your Order
+        </h2>
+        {cartItems.length === 0 ? (
+          <div className="flex flex-col items-center justify-center pb-96 h-full">
+            <h3 className="text-center text-2xl text-gray-200 font-bold">
+              Your basket is empty
+            </h3>
+          </div>
+        ) : (
+          <div className="flex flex-col w-full flex-grow space-y-14 mt-12 overflow-y-auto hide-scrollbar">
+            {cartItems.map((item) => (
+              <div
+                key={item.id}
+                className="flex justify-between items-center w-full">
+                <div className="flex items-center">
+                  <img
+                    src={item.image.filename}
+                    alt={item.image.description}
+                    className="w-40 h-40 object-cover rounded-2xl"
+                  />
+                  <div className="ml-10">
+                    <h3 className="text-[28px] font-bold truncate max-w-[375px]">
+                      {item.title}
+                    </h3>
+                    <p className="text-[28px] font-bold mt-4">
+                      {formatCurrency(item.price * item.quantity)}{" "}
+                      <span className="text-gray-400 font-normal">
+                        ({formatCurrency(item.price)} per piece)
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <button
+                    className="bg-[#EDEFE9] aspect-square rounded-full h-20 text-xl font-bold"
+                    onClick={() => handleDecrement(item.id)}>
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    readOnly
+                    className="w-12 text-center font-bold"
+                  />
+                  <button
+                    className="bg-[#EDEFE9] aspect-square rounded-full h-20 text-xl font-semibold"
+                    onClick={() => handleIncrement(item.id)}>
+                    +
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {cartItems.length > 0 && (
+          <>
+            <div className="w-full text-right mt-16">
+              <h3 className="text-2xl font-bold">
+                Total: {formatCurrency(totalPrice)}
+              </h3>
+            </div>
+            <div className="mt-auto">
+              <button className="text-white bg-lime px-54 py-8 rounded-full my-20 font-bold">
+                Proceed to checkout
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Order;
