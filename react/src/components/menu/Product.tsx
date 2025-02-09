@@ -15,8 +15,7 @@ export default function Product({
     <article
       className={`relative rounded-2xl bg-white-primary p-4 shadow-md ${
         cart ? "outline-lime outline-4" : ""
-      }`}
-    >
+      }`}>
       <button
         className="absolute inset-0 w-full h-full opacity-0"
         onClick={() => setShowingDetailsId(product.id)}
@@ -42,13 +41,11 @@ export default function Product({
         <dd>{product.kcal} kcal</dd>
       </dl>
 
-      {
-        cart && (
-          <span className="absolute top-0 right-0 bg-lime text-white rounded-full h-10 aspect-square p-2 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
-            {cart.quantity}
-          </span>
-        )
-      }
+      {cart && (
+        <span className="absolute top-0 right-0 bg-lime text-white rounded-full h-10 aspect-square p-2 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+          {cart.quantity}
+        </span>
+      )}
     </article>
   );
 }
