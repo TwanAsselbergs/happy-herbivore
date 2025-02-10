@@ -1,8 +1,8 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { Product } from "../../lib/types";
 import { View } from "../../App";
 import { formatCurrency } from "../../lib/utils";
-import { SetStateAction } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useContext } from "react";
 import { CartContext } from "../../App";
 
@@ -14,6 +14,8 @@ const Order = ({
 	products: Product[];
 }) => {
 	const { cart, setCart } = useContext(CartContext);
+	const [isPaying, setIsPaying] = useState(false);
+	const payingTimeout = useRef<number | null>(null);
 
 	const cartItems = cart
 		.map((cartItem) => {
@@ -45,87 +47,125 @@ const Order = ({
 		0
 	);
 
+	useEffect(() => {
+		if (isPaying) {
+			payingTimeout.current = setTimeout(() => {
+				setCurrentView(View.Confirmation);
+			}, 5000);
+		} else {
+			if (payingTimeout.current) {
+				clearTimeout(payingTimeout.current);
+			}
+		}
+	}, [isPaying]);
+
 	return (
-		<div className="bg-white-secondary w-full h-full flex justify-center">
-			<div className="flex flex-col items-center bg-white-primary rounded-3xl w-11/12 h-[1400px] mx-auto mt-28 px-16">
-				<h2 className="text-2xl font-bold flex items-center my-20">
-					<ArrowLeft
-						height={50}
-						width={50}
-						strokeWidth={2.5}
-						className="absolute left-35"
-						onClick={() => setCurrentView(View.Menu)}
-					/>
-					Review your Order
-				</h2>
-				{cartItems.length === 0 ? (
-					<div className="flex flex-col items-center justify-center pb-96 h-full">
-						<h3 className="text-center text-2xl text-gray-200 font-bold">
-							Your basket is empty
-						</h3>
-					</div>
-				) : (
-					<div className="flex flex-col w-full flex-grow space-y-14 mt-12 overflow-y-auto hide-scrollbar">
-						{cartItems.map((item) => (
-							<div key={item.id} className="flex justify-between items-center w-full">
-								<div className="flex items-center">
-									<img
-										src={item.image.filename}
-										alt={item.image.description}
-										className="w-40 h-40 object-cover rounded-2xl"
-									/>
-									<div className="ml-10">
-										<h3 className="text-[28px] font-bold truncate max-w-[375px]">
-											{item.title}
-										</h3>
-										<p className="text-[28px] font-bold mt-4">
-											{formatCurrency(item.price * item.quantity)}{" "}
-											<span className="text-gray-400 font-normal">
-												({formatCurrency(item.price)} per piece)
-											</span>
-										</p>
-									</div>
-								</div>
-								<div className="flex items-center space-x-4">
-									<button
-										className="bg-[#EDEFE9] aspect-square rounded-full h-20 text-xl font-bold"
-										onClick={() => handleDecrement(item.id)}
-									>
-										-
-									</button>
-									<input
-										type="number"
-										value={item.quantity}
-										readOnly
-										className="w-12 text-center font-bold"
-									/>
-									<button
-										className="bg-[#EDEFE9] aspect-square rounded-full h-20 text-xl font-semibold"
-										onClick={() => handleIncrement(item.id)}
-									>
-										+
-									</button>
-								</div>
-							</div>
-						))}
-					</div>
-				)}
-				{cartItems.length > 0 && (
-					<>
-						<div className="w-full text-right mt-16">
-							<h3 className="text-2xl font-bold">
-								Total: {formatCurrency(totalPrice)}
+		<>
+			<div className="bg-white-secondary w-full h-full flex justify-center">
+				<div className="flex flex-col items-center bg-white-primary rounded-3xl w-11/12 h-[1400px] mx-auto mt-28 px-16">
+					<h2 className="text-2xl font-bold flex items-center my-20">
+						<ArrowLeft
+							height={50}
+							width={50}
+							strokeWidth={2.5}
+							className="absolute left-35"
+							onClick={() => setCurrentView(View.Menu)}
+						/>
+						Review your Order
+					</h2>
+					{cartItems.length === 0 ? (
+						<div className="flex flex-col items-center justify-center pb-96 h-full">
+							<h3 className="text-center text-2xl text-gray-200 font-bold">
+								Your basket is empty
 							</h3>
 						</div>
-						<div className="mt-auto">
-							<button className="text-white bg-lime px-54 py-8 rounded-full my-20 font-bold">
-								Proceed to checkout
+					) : (
+						<div className="flex flex-col w-full flex-grow space-y-14 mt-12 overflow-y-auto hide-scrollbar">
+							{cartItems.map((item) => (
+								<div key={item.id} className="flex justify-between items-center w-full">
+									<div className="flex items-center">
+										<img
+											src={item.image.filename}
+											alt={item.image.description}
+											className="w-40 h-40 object-cover rounded-2xl"
+										/>
+										<div className="ml-10">
+											<h3 className="text-[28px] font-bold truncate max-w-[375px]">
+												{item.title}
+											</h3>
+											<p className="text-[28px] font-bold mt-4">
+												{formatCurrency(item.price * item.quantity)}{" "}
+												<span className="text-gray-400 font-normal">
+													({formatCurrency(item.price)} per piece)
+												</span>
+											</p>
+										</div>
+									</div>
+									<div className="flex items-center space-x-4">
+										<button
+											className="bg-[#EDEFE9] aspect-square rounded-full h-20 text-xl font-bold"
+											onClick={() => handleDecrement(item.id)}
+										>
+											-
+										</button>
+										<input
+											type="number"
+											value={item.quantity}
+											readOnly
+											className="w-12 text-center font-bold"
+										/>
+										<button
+											className="bg-[#EDEFE9] aspect-square rounded-full h-20 text-xl font-semibold"
+											onClick={() => handleIncrement(item.id)}
+										>
+											+
+										</button>
+									</div>
+								</div>
+							))}
+						</div>
+					)}
+					{cartItems.length > 0 && (
+						<>
+							<div className="w-full text-right mt-16">
+								<h3 className="text-2xl font-bold">
+									Total: {formatCurrency(totalPrice)}
+								</h3>
+							</div>
+							<div className="mt-auto">
+								<button
+									className="text-white bg-lime px-54 py-8 rounded-full my-20 font-bold"
+									onClick={() => setIsPaying(true)}
+								>
+									Proceed to checkout
+								</button>
+							</div>
+						</>
+					)}
+				</div>
+			</div>
+			{isPaying && (
+				<div className="fixed top-0 left-0 w-full h-full flex items-center justify-center  z-20">
+					<div
+						className="bg-black/50 absolute w-full h-full"
+						onClick={() => setIsPaying(false)}
+					></div>
+					<div className="bg-white-primary z-10 rounded-4xl p-10 w-11/12 flex flex-col items-center justify-center">
+						<div className="flex w-full justify-end">
+							<button onClick={() => setIsPaying(true)}>
+								<X width={40} height={40} />
 							</button>
 						</div>
-					</>
-				)}
-			</div>
-		</div>
+						<div className="min-h-[400px] flex flex-col items-center justify-center">
+							<h3 className="font-bold">
+								Payable Amount: {formatCurrency(totalPrice)}
+							</h3>
+							<p>Please follow the instructions on the terminal</p>
+						</div>
+					</div>
+				</div>
+			)}
+		</>
 	);
 };
 
