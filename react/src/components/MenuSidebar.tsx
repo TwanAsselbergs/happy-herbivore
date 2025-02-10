@@ -10,14 +10,12 @@ export default function MenuSidebar({
 	setSelectedCategory,
 	total,
 	setCurrentView,
-	setIsShowingOrderSummary,
 	selectedCategory,
 }: Readonly<{
 	categories: Category[];
 	setSelectedCategory: React.Dispatch<React.SetStateAction<number | null>>;
 	total: number;
 	setCurrentView: React.Dispatch<React.SetStateAction<View>>;
-	setIsShowingOrderSummary: React.Dispatch<React.SetStateAction<boolean>>;
 	selectedCategory: number | null;
 }>) {
 	const [highlightPos, setHighlightPos] = useState({ top: 0, height: 0 });
@@ -71,7 +69,7 @@ export default function MenuSidebar({
 			</div>
 			<motion.button
 				className="flex flex-col bg-lime text-white aspect-square justify-center items-center gap-6 font-bold"
-				onClick={() => setIsShowingOrderSummary(true)}
+				onClick={() => setCurrentView(View.Order)}
 				whileTap={{ scale: 0.95 }}
 			>
 				<ShoppingBag size={65} strokeWidth={1.5} />

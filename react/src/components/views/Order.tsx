@@ -1,20 +1,20 @@
 import { ArrowLeft } from "lucide-react";
 import { Product } from "../../lib/types";
+import { View } from "../../App";
 import { formatCurrency } from "../../lib/utils";
+import { SetStateAction } from "react";
+import { useContext } from "react";
+import { CartContext } from "../../App";
 
 const Order = ({
-	setIsShowingOrderSummary,
-	cart,
-	setCart,
+	setCurrentView,
 	products,
 }: {
-	setIsShowingOrderSummary: React.Dispatch<React.SetStateAction<boolean>>;
-	cart: { id: number; quantity: number }[];
-	setCart: React.Dispatch<
-		React.SetStateAction<{ id: number; quantity: number }[]>
-	>;
+	setCurrentView: React.Dispatch<SetStateAction<View>>;
 	products: Product[];
 }) => {
+	const { cart, setCart } = useContext(CartContext);
+
 	const cartItems = cart
 		.map((cartItem) => {
 			const product = products.find((product) => product.id === cartItem.id);
@@ -54,13 +54,13 @@ const Order = ({
 						width={50}
 						strokeWidth={2.5}
 						className="absolute left-35"
-						onClick={() => setIsShowingOrderSummary(false)}
+						onClick={() => setCurrentView(View.Menu)}
 					/>
 					Review your Order
 				</h2>
 				{cartItems.length === 0 ? (
 					<div className="flex flex-col items-center justify-center pb-96 h-full">
-						<h3 className="text-center text-2xl text-gray-300/75 font-bold">
+						<h3 className="text-center text-2xl text-gray-200 font-bold">
 							Your basket is empty
 						</h3>
 					</div>
