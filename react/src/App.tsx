@@ -42,7 +42,7 @@ const App = () => {
 		<CartContext.Provider value={{ cart, setCart }}>
 			<main className="flex flex-col justify-between text-md items-center w-full h-screen overflow-x-hidden">
 				{currentView !== View.Idle && (
-					<TopBar key="TopBar" cancelOrder={cancelOrder} />
+					<TopBar key="TopBar" cancelOrder={cancelOrder} currentView={currentView} />
 				)}
 
 				{currentView === View.Idle && (
