@@ -55,7 +55,9 @@ const App = () => {
 					<Order setCurrentView={setCurrentView} products={products} />
 				)}
 
-				{currentView === View.Confirmation && <Confirmation />}
+				{currentView === View.Confirmation && (
+					<Confirmation setCurrentView={setCurrentView} />
+				)}
 			</main>
 		</CartContext.Provider>
 	);
