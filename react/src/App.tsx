@@ -33,10 +33,17 @@ const App = () => {
 	const [currentView, setCurrentView] = useState<View>(View.Idle);
 	const [cart, setCart] = useState<CartType[]>([]);
 
+	function cancelOrder() {
+		setCart([]);
+		setCurrentView(View.Idle);
+	}
+
 	return (
 		<CartContext.Provider value={{ cart, setCart }}>
 			<main className="flex flex-col justify-between text-md items-center w-full h-screen overflow-x-hidden">
-				{currentView !== View.Idle && <TopBar key="TopBar" />}
+				{currentView !== View.Idle && (
+					<TopBar key="TopBar" cancelOrder={cancelOrder} />
+				)}
 
 				{currentView === View.Idle && (
 					<IdleScreen setCurrentView={setCurrentView} />
