@@ -2,6 +2,7 @@ import React, { createContext, SetStateAction, useState } from "react";
 import IdleScreen from "./components/views/IdleScreen";
 import Menu from "./components/views/Menu";
 import Order from "./components/views/Order";
+import Confirmation from "./components/views/Confirmation";
 import TopBar from "./components/global/TopBar";
 import { products } from "./components/views/Products";
 
@@ -46,6 +47,8 @@ const App = () => {
 				{currentView === View.Order && (
 					<Order setCurrentView={setCurrentView} products={products} />
 				)}
+
+				{currentView === View.Confirmation && <Confirmation />}
 			</main>
 		</CartContext.Provider>
 	);
