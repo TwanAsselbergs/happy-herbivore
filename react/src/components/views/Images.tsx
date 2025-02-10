@@ -11,8 +11,4 @@ export const IMAGES = [
     id: 2,
     imageSrc: "/img/sides.png",
   },
-  {
-    id: 3,
-    imageSrc: "/img/eggcelent-wrap.png",
-  },
 ];
