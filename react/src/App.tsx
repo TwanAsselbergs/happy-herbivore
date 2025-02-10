@@ -23,7 +23,6 @@ type CartContextType = {
 	setCart: React.Dispatch<SetStateAction<CartType[]>>;
 };
 
-// Fix: Provide a correct default value for context
 export const CartContext = createContext<CartContextType>({
 	cart: [],
 	setCart: () => {},
@@ -31,7 +30,7 @@ export const CartContext = createContext<CartContextType>({
 
 const App = () => {
 	const [currentView, setCurrentView] = useState<View>(View.Idle);
-	const [cart, setCart] = useState<CartType[]>([]); // Fix: Ensure type consistency
+	const [cart, setCart] = useState<CartType[]>([]);
 
 	return (
 		<CartContext.Provider value={{ cart, setCart }}>
