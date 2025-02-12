@@ -1,11 +1,12 @@
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Product } from "../../lib/types";
 import { View } from "../../App";
 import { formatCurrency } from "../../lib/utils";
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useContext } from "react";
-import { CartContext } from "../../App";
 import { motion } from "framer-motion";
+import { CartContext } from "../../App";
+import Popup from "../reusable/Popup";
 
 const Order = ({
 	setCurrentView,
@@ -156,28 +157,17 @@ const Order = ({
 						)}
 					</div>
 				</div>
-				{isPaying && (
-					<div className="fixed top-0 left-0 w-full h-full flex items-center justify-center  z-20">
-						<div
-							className="bg-black/50 absolute w-full h-full"
-							onClick={() => setIsPaying(false)}
-						></div>
-						<div className="bg-white-primary z-10 rounded-4xl p-10 w-11/12 flex flex-col items-center justify-center">
-							<div className="flex w-full justify-end">
-								<button onClick={() => setIsPaying(true)}>
-									<X width={40} height={40} />
-								</button>
-							</div>
-							<div className="min-h-[400px] flex flex-col items-center justify-center">
-								<h3 className="font-bold">
-									Payable Amount: {formatCurrency(totalPrice)}
-								</h3>
-								<p>Please follow the instructions on the terminal</p>
-							</div>
-						</div>
-					</div>
-				)}
 			</motion.div>
+			{isPaying && (
+				<Popup setIsVisible={setIsPaying}>
+					<div className="min-h-[400px] flex flex-col items-center justify-center">
+						<h3 className="font-bold">
+							Payable Amount: {formatCurrency(totalPrice)}
+						</h3>
+						<p>Please follow the instructions on the terminal</p>
+					</div>
+				</Popup>
+			)}
 		</>
 	);
 };
