@@ -34,8 +34,8 @@ export default function TopBar({
 			<AnimatePresence>
 				{isShowingPopup && (
 					<Popup setIsVisible={setIsShowingPopup}>
-						<div className="flex flex-col gap-8 w-full">
-							<h2>Are you sure you want to cancel this order?</h2>
+						<div className="flex flex-col gap-16 w-full items-center">
+							<h2 className="text-xl">Are you sure you want to cancel this order?</h2>
 							<div className="w-full grid grid-cols-2 gap-8 font-semibold">
 								<button
 									className="flex items-center justify-center gap-4 border-2 py-5 rounded-full"
