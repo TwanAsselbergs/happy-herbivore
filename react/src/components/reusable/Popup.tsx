@@ -12,7 +12,7 @@ export default function Popup({
 	return (
 		<div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-20">
 			<motion.div
-				className="bg-black/50 absolute w-full h-full"
+				className="bg-black/30 absolute w-full h-full"
 				onClick={() => setIsVisible(false)}
 				initial={{ opacity: 0 }}
 				exit={{ opacity: 0 }}
