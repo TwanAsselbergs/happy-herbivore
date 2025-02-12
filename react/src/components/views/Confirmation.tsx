@@ -20,7 +20,7 @@ const Confirmation = ({
 	}, []);
 
 	return (
-		<div className="w-full h-full flex flex-col justify-center items-center text-center gap-16 pb-64 col-span-full">
+		<div className="w-full h-full flex flex-col justify-center items-center text-center gap-16 pb-64">
 			<img
 				src="img/logo_big_complete_transparent.webp"
 				alt="Logo"

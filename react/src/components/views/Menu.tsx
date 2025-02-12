@@ -43,7 +43,7 @@ export default function Menu({
 	}, [cart]);
 
 	return (
-		<>
+		<div className="flex min-h-0 h-full">
 			<MenuSidebar
 				categories={categories}
 				setSelectedCategory={setSelectedCategory}
@@ -55,7 +55,7 @@ export default function Menu({
 				<h2 className="font-black text-center mb-4 mt-16 text-xl uppercase">
 					{categories.find((category) => category.id === selectedCategory)?.name}
 				</h2>
-				<div className="grid grid-cols-3 gap-8 p-8 overflow-y-auto">
+				<div className="grid grid-cols-3 gap-8 p-8">
 					{showingProducts.map((product) => {
 						return (
 							<Product
@@ -77,6 +77,6 @@ export default function Menu({
 					/>
 				)}
 			</AnimatePresence>
-		</>
+		</div>
 	);
 }

@@ -63,7 +63,7 @@ const Order = ({
 	}, [isPaying]);
 
 	return (
-		<div className="col-span-full">
+		<>
 			<motion.div
 				initial={{ x: 100, opacity: 0 }}
 				animate={{ x: 0, opacity: 1 }}
@@ -165,7 +165,7 @@ const Order = ({
 					</div>
 				</Popup>
 			)}
-		</div>
+		</>
 	);
 };
 

@@ -126,7 +126,7 @@ export default function ProductDetails({
 					<div className="flex justify-between items-center">
 						<div className="flex gap-8 items-center">
 							<button
-								className="bg-[#EDEFE9] aspect-square h-14 rounded-full font-bold"
+								className="bg-[#EDEFE9] aspect-square h-14 rounded-full font-bold active:scale-95 active:bg-black/5 transition-all"
 								onClick={() =>
 									setProductQuantity((prev) => (prev > 1 ? prev - 1 : prev))
 								}
@@ -135,7 +135,7 @@ export default function ProductDetails({
 							</button>
 							<p>{productQuantity}</p>
 							<button
-								className="bg-[#EDEFE9] aspect-square h-14 rounded-full font-semibold"
+								className="bg-[#EDEFE9] aspect-square h-14 rounded-full font-semibold active:scale-95 active:bg-black/5 transition-all"
 								onClick={() => setProductQuantity((prev) => prev + 1)}
 							>
 								+

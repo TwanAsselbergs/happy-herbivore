@@ -79,7 +79,7 @@ const App = () => {
 
 	return (
 		<CartContext.Provider value={{ cart, setCart }}>
-			<main className="grid grid-cols-[min-content_auto] grid-rows-[min-content_auto] justify-between text-md items-start w-full h-screen overflow-x-hidden">
+			<main className="grid grid-cols-1 grid-rows-[min-content_auto] justify-between text-md items-start w-full h-screen overflow-x-hidden">
 				{currentView !== View.Idle && (
 					<TopBar key="TopBar" cancelOrder={cancelOrder} currentView={currentView} />
 				)}
