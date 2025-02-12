@@ -80,7 +80,7 @@ const IdleScreen = ({
 				</div>
 			</div>
 			<div className="flex flex-col items-center pb-[12rem]">
-				<h2 className="text-white uppercase text-[4rem] font-bold text-center leading-[100%]">
+				<h2 className="text-white-primary uppercase text-[4rem] font-bold text-center leading-[100%]">
 					<span className="rotate-[-4deg] block">Brighten up your day,</span>
 					<br />
 					<span className="flex items-center gap-6 -mt-10">
@@ -89,10 +89,12 @@ const IdleScreen = ({
 						way
 					</span>
 				</h2>
-				<h3 className=" text-white mt-4">Happy Herbivore - Healthy in a Hurry</h3>
+				<h3 className=" text-white-primary mt-4">
+					Happy Herbivore - Healthy in a Hurry
+				</h3>
 			</div>
 			<button
-				className="font-bold bg-white w-[80%] h-[370px] rounded-t-3xl uppercase flex items-center justify-center gap-4"
+				className="font-bold bg-white-primary w-[80%] h-[370px] rounded-t-3xl uppercase flex items-center justify-center gap-4"
 				onClick={() => setCurrentView(View.Menu)}
 			>
 				<ShoppingBag height={40} width={40} />
