@@ -94,13 +94,13 @@ export default function ProductDetails({
 				</div>
 				<div className="grid grid-cols-[3fr_5fr] gap-12 ">
 					<img
-						src={product.image.filename}
-						alt={product.image.description}
+						src={product.image?.filename}
+						alt={product.image?.description}
 						className="rounded-2xl"
 					/>
 					<div className="flex gap-2 flex-col justify-between">
 						<div>
-							<h2 className="text-xl font-bold">{product.title}</h2>
+							<h2 className="text-xl font-bold">{product.name}</h2>
 							<p>{product.description}</p>
 						</div>
 						<div className="flex items-end">

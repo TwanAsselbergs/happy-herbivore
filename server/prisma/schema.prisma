@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  products    Product[]
+  image       Image?    @relation(fields: [imageId], references: [id])
+  imageId     Int?
+
+  @@map("categories")
+}
+
+model Image {
+  id          Int        @id @default(autoincrement())
+  filename    String     @db.VarChar(255)
+  description String?    @db.VarChar(255)
+  products    Product[]
+  Category    Category[]
+
+  @@map("images")
+}
+
+model Order {
+  id            Int            @id @default(autoincrement())
+  orderStatus   OrderStatus    @relation(fields: [orderStatusId], references: [id], onDelete: Cascade)
+  orderStatusId Int            @map("order_status_id")
+  pickupNumber  Int            @map("pickup_number")
+  price         Decimal        @db.Decimal(10, 2)
+  datetime      DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  orderProducts OrderProduct[]
+
+  @@index([orderStatusId])
+  @@map("orders")
+}
+
+model OrderProduct {
+  orderId   Int     @map("order_id")
+  productId Int     @map("product_id")
+  price     Decimal @db.Decimal(10, 2)
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([orderId, productId])
+  @@map("order_products")
+}
+
+model OrderStatus {
+  id          Int     @id @default(autoincrement())
+  description String  @db.VarChar(255)
+  orders      Order[]
+
+  @@map("order_status")
+}
+
+model Product {
+  id            Int            @id @default(autoincrement())
+  category      Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId    Int
+  image         Image?         @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  imageId       Int?
+  name          String         @db.VarChar(255)
+  description   String?        @db.VarChar(255)
+  price         Decimal        @db.Decimal(10, 2)
+  kcal          Int
+  available     Boolean        @default(true)
+  updatedAt     DateTime       @updatedAt
+  orderProducts OrderProduct[]
+
+  @@index([categoryId])
+  @@index([imageId])
+  @@map("products")
+}

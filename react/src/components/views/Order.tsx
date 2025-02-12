@@ -63,7 +63,7 @@ const Order = ({
 	}, [isPaying]);
 
 	return (
-		<>
+		<div className="col-span-full">
 			<motion.div
 				initial={{ x: 100, opacity: 0 }}
 				animate={{ x: 0, opacity: 1 }}
@@ -100,13 +100,13 @@ const Order = ({
 									>
 										<div className="flex items-center">
 											<img
-												src={item.image.filename}
-												alt={item.image.description}
+												src={item.image?.filename}
+												alt={item.image?.description}
 												className="w-40 h-40 object-cover rounded-2xl"
 											/>
 											<div className="ml-10">
 												<h3 className="text-[28px] font-bold truncate max-w-[375px]">
-													{item.title}
+													{item.name}
 												</h3>
 												<p className="text-[28px] font-bold mt-4">
 													{formatCurrency(item.price * item.quantity)}{" "}
@@ -165,7 +165,7 @@ const Order = ({
 					</div>
 				</Popup>
 			)}
-		</>
+		</div>
 	);
 };
 

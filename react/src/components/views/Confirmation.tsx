@@ -1,7 +1,7 @@
 import { View } from "../../App";
 import { SetStateAction, useContext, useEffect } from "react";
 import { CartContext } from "../../App";
-import { useTime, animate, useAnimate, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const Confirmation = ({
 	setCurrentView,
@@ -20,7 +20,7 @@ const Confirmation = ({
 	}, []);
 
 	return (
-		<div className="w-full h-full flex flex-col justify-center items-center text-center gap-16 pb-64">
+		<div className="w-full h-full flex flex-col justify-center items-center text-center gap-16 pb-64 col-span-full">
 			<img
 				src="img/logo_big_complete_transparent.webp"
 				alt="Logo"

@@ -20,20 +20,20 @@ export default function Product({
 			<button
 				className="absolute inset-0 w-full h-full opacity-0"
 				onClick={() => setShowingDetailsId(product.id)}
-				aria-label={`View details of ${product.title}`}
+				aria-label={`View details of ${product.name}`}
 			/>
 
 			<figure className="overflow-hidden rounded-2xl">
 				<img
-					src={product.image.filename}
-					alt={product.image.description}
+					src={product.image?.filename}
+					alt={product.image?.description}
 					className="w-full"
 				/>
-				<figcaption className="sr-only">{product.image.description}</figcaption>
+				<figcaption className="sr-only">{product.image?.description}</figcaption>
 			</figure>
 
 			<header className="mt-4">
-				<h3 className="font-bold truncate text-start">{product.title}</h3>
+				<h3 className="font-bold truncate text-start">{product.name}</h3>
 				<p>{formatCurrency(product.price)}</p>
 			</header>
 

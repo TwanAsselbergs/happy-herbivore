@@ -34,8 +34,8 @@ export default function MenuSidebar({
 	}, [selectedCategory]);
 
 	return (
-		<div className="basis-[230px] shrink-0 flex flex-col justify-between h-full bg-white-primary">
-			<div className="relative" ref={categoryContainerRef}>
+		<div className="basis-[230px] shrink-0 flex flex-col justify-between h-full bg-white-primary overflow-y-hidden">
+			<div className="relative overflow-y-auto" ref={categoryContainerRef}>
 				<motion.div
 					layoutId="category-highlight"
 					className="absolute inset-0 bg-orange-300 z-0"

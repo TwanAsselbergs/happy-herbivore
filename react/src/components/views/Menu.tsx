@@ -1,15 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
-import { products, categories } from "./Products";
 import ProductDetails from "../ProductDetails";
 import MenuSidebar from "../MenuSidebar";
 import Product from "../menu/Product";
 import { View, CartContext } from "../../App";
+import { Category, Product as ProductType } from "../../lib/types";
 import { AnimatePresence } from "framer-motion";
 
 export default function Menu({
 	setCurrentView,
+	categories,
+	products,
 }: Readonly<{
 	setCurrentView: React.Dispatch<React.SetStateAction<View>>;
+	categories: Category[];
+	products: ProductType[];
 }>) {
 	const [showingDetailsId, setShowingDetailsId] = useState<number | null>(null);
 	const [selectedCategory, setSelectedCategory] = useState<number | null>(
@@ -39,44 +43,40 @@ export default function Menu({
 	}, [cart]);
 
 	return (
-		<div className="h-full w-full">
-			<AnimatePresence mode="sync">
-				<div className="flex h-full">
-					<MenuSidebar
-						categories={categories}
-						setSelectedCategory={setSelectedCategory}
-						total={total}
-						setCurrentView={setCurrentView}
-						selectedCategory={selectedCategory}
-					/>
-					<div className="bg-white-secondary w-full">
-						<h2 className="font-black text-center mb-4 mt-16 text-xl uppercase">
-							{categories.find((category) => category.id === selectedCategory)?.name}
-						</h2>
-						<div className="grid grid-cols-3 gap-8 p-8">
-							{showingProducts.map((product) => {
-								return (
-									<Product
-										product={product}
-										cart={cart.find((item) => item.id === product.id)}
-										setShowingDetailsId={setShowingDetailsId}
-										key={product.title}
-									/>
-								);
-							})}
-						</div>
-					</div>
-					<AnimatePresence>
-						{showingDetailsId !== null && (
-							<ProductDetails
-								product={products.find((product) => product.id === showingDetailsId)!}
-								setCart={setCart}
+		<>
+			<MenuSidebar
+				categories={categories}
+				setSelectedCategory={setSelectedCategory}
+				total={total}
+				setCurrentView={setCurrentView}
+				selectedCategory={selectedCategory}
+			/>
+			<div className="bg-white-secondary w-full overflow-y-auto h-full">
+				<h2 className="font-black text-center mb-4 mt-16 text-xl uppercase">
+					{categories.find((category) => category.id === selectedCategory)?.name}
+				</h2>
+				<div className="grid grid-cols-3 gap-8 p-8 overflow-y-auto">
+					{showingProducts.map((product) => {
+						return (
+							<Product
+								product={product}
+								cart={cart.find((item) => item.id === product.id)}
 								setShowingDetailsId={setShowingDetailsId}
+								key={product.name}
 							/>
-						)}
-					</AnimatePresence>
+						);
+					})}
 				</div>
+			</div>
+			<AnimatePresence>
+				{showingDetailsId !== null && (
+					<ProductDetails
+						product={products.find((product) => product.id === showingDetailsId)!}
+						setCart={setCart}
+						setShowingDetailsId={setShowingDetailsId}
+					/>
+				)}
 			</AnimatePresence>
-		</div>
+		</>
 	);
 }
