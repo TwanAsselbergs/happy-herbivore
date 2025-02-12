@@ -85,7 +85,7 @@ export default function ProductDetails({
 				animate="active"
 				exit="exit"
 				transition={sliderTransition}
-				className="bg-white w-full rounded-t-4xl p-14 relative z-10"
+				className="bg-white-primary w-full rounded-t-4xl p-14 relative z-10"
 			>
 				<div className="row-span-full flex justify-end mb-8 font-bold">
 					<button onClick={() => setShowingDetailsId(null)}>
@@ -145,7 +145,7 @@ export default function ProductDetails({
 					</div>
 					<div>
 						<button
-							className="text-white font-bold bg-lime w-full py-6 rounded-full"
+							className="text-white-primary font-bold bg-lime w-full py-6 rounded-full"
 							onClick={handleAddToCart}
 						>
 							Add to basket

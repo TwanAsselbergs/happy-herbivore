@@ -73,19 +73,21 @@ const Order = ({
 			>
 				<div className="bg-white-secondary w-full h-full flex justify-center">
 					<div className="flex flex-col items-center bg-white-primary rounded-3xl w-11/12 h-[1400px] mx-auto mt-28 px-16">
-						<h2 className="text-2xl font-bold flex items-center my-20">
+						<div className="flex relative w-full justify-center">
 							<ArrowLeft
 								height={50}
 								width={50}
-								strokeWidth={2.5}
-								className="absolute left-35"
+								strokeWidth={2}
+								className="absolute left-0 top-[50%] -translate-y-1/2"
 								onClick={() => setCurrentView(View.Menu)}
 							/>
-							Review your Order
-						</h2>
+							<h2 className="text-2xl font-bold flex items-center my-20">
+								Review your Order
+							</h2>
+						</div>
 						{cartItems.length === 0 ? (
 							<div className="flex flex-col items-center justify-center pb-96 h-full">
-								<h3 className="text-center text-2xl text-gray-200 font-bold">
+								<h3 className="text-center text-2xl text-gray-400 font-semibold">
 									Your basket is empty
 								</h3>
 							</div>
@@ -121,12 +123,7 @@ const Order = ({
 											>
 												-
 											</button>
-											<input
-												type="number"
-												value={item.quantity}
-												readOnly
-												className="w-12 text-center font-bold"
-											/>
+											<p className="w-12 text-center font-bold">{item.quantity}</p>
 											<button
 												className="bg-[#EDEFE9] aspect-square rounded-full h-20 text-xl font-semibold"
 												onClick={() => handleIncrement(item.id)}
@@ -141,13 +138,13 @@ const Order = ({
 						{cartItems.length > 0 && (
 							<>
 								<div className="w-full text-right mt-16">
-									<h3 className="text-2xl font-bold">
+									<h3 className="text-xl font-bold">
 										Total: {formatCurrency(totalPrice)}
 									</h3>
 								</div>
 								<div className="mt-auto">
 									<button
-										className="text-white bg-lime px-54 py-8 rounded-full my-20 font-bold"
+										className="text-white-primary bg-lime px-54 py-8 rounded-full my-20 font-bold"
 										onClick={() => setIsPaying(true)}
 									>
 										Proceed to checkout

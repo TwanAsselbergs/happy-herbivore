@@ -12,6 +12,11 @@ export default function TopBar({
 	currentView: View;
 }) {
 	const [isShowingPopup, setIsShowingPopup] = useState(false);
+	const iconProps = {
+		width: 30,
+		height: 30,
+		strokeWidth: 2,
+	};
 
 	return (
 		<>
@@ -23,10 +28,10 @@ export default function TopBar({
 				/>
 				{currentView !== View.Confirmation && (
 					<button
-						className=" h-fit px-10 py-4 rounded-full bg-red-500 text-white font-bold flex items-center gap-4 mr-4"
+						className=" h-fit px-10 py-4 rounded-full bg-red-500 text-white-primary font-bold flex items-center gap-4 mr-4"
 						onClick={() => setIsShowingPopup(true)}
 					>
-						<Trash2 width={30} height={30} strokeWidth={2} />
+						<Trash2 {...iconProps} />
 						Cancel Order
 					</button>
 				)}
@@ -41,14 +46,14 @@ export default function TopBar({
 									className="flex items-center justify-center gap-4 border-2 py-5 rounded-full"
 									onClick={() => setIsShowingPopup(false)}
 								>
-									<Undo2 />
+									<Undo2 {...iconProps} />
 									No, keep ordering
 								</button>
 								<button
-									className="bg-red-500 py-5 gap-4 flex justify-center items-center rounded-full text-white"
+									className="bg-red-500 py-5 gap-4 flex justify-center items-center rounded-full text-white-primary"
 									onClick={cancelOrder}
 								>
-									<Trash2 />
+									<Trash2 {...iconProps} />
 									Yes, cancel order
 								</button>
 							</div>

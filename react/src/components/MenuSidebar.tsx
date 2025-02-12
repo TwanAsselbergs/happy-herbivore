@@ -19,11 +19,10 @@ export default function MenuSidebar({
 	selectedCategory: number | null;
 }>) {
 	const [highlightPos, setHighlightPos] = useState({ top: 0, height: 0 });
-	const initialCategoryRef = useRef<HTMLButtonElement>(null);
 	const categoryContainerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
-		if (selectedCategory !== null && initialCategoryRef.current) {
+		if (selectedCategory !== null && categoryContainerRef.current) {
 			const selectedButton = categoryContainerRef.current?.querySelector(
 				`[data-category-id="${selectedCategory}"]`
 			) as HTMLButtonElement | null;
@@ -46,14 +45,13 @@ export default function MenuSidebar({
 					}}
 					transition={{ type: "spring", stiffness: 200, damping: 20 }}
 				/>
-				{categories.map((category, index) => (
+				{categories.map((category) => (
 					<button
 						key={category.name}
 						className="relative flex flex-col items-center p-8 min-h-[300px] justify-center overflow-hidden"
 						onClick={() => {
 							setSelectedCategory(category.id);
 						}}
-						ref={index === 0 ? initialCategoryRef : undefined}
 						data-category-id={category.id}
 					>
 						<img
@@ -68,7 +66,7 @@ export default function MenuSidebar({
 				))}
 			</div>
 			<motion.button
-				className="flex flex-col bg-lime text-white aspect-square justify-center items-center gap-6 font-bold"
+				className="flex flex-col bg-lime text-white-primary aspect-square justify-center items-center gap-6 font-bold"
 				onClick={() => setCurrentView(View.Order)}
 				whileTap={{ scale: 0.95 }}
 			>
