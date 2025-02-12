@@ -1,11 +1,11 @@
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Product } from "../../lib/types";
 import { View } from "../../App";
 import { formatCurrency } from "../../lib/utils";
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useContext } from "react";
 import { CartContext } from "../../App";
-import { motion } from "framer-motion";
+import Popup from "../reusable/Popup";
 
 const Order = ({
 	setCurrentView,
@@ -168,16 +168,20 @@ const Order = ({
 									<X width={40} height={40} />
 								</button>
 							</div>
-							<div className="min-h-[400px] flex flex-col items-center justify-center">
-								<h3 className="font-bold">
-									Payable Amount: {formatCurrency(totalPrice)}
-								</h3>
-								<p>Please follow the instructions on the terminal</p>
-							</div>
-						</div>
+						</>
+					)}
+				</div>
+			</div>
+			{isPaying && (
+				<Popup setIsVisible={setIsPaying}>
+					<div className="min-h-[400px] flex flex-col items-center justify-center">
+						<h3 className="font-bold">
+							Payable Amount: {formatCurrency(totalPrice)}
+						</h3>
+						<p>Please follow the instructions on the terminal</p>
 					</div>
-				)}
-			</motion.div>
+				</Popup>
+			)}
 		</>
 	);
 };
