@@ -3,7 +3,7 @@ import { Category } from "../lib/types";
 import { ShoppingBag } from "lucide-react";
 import { View } from "../App";
 import { formatCurrency } from "../lib/utils";
-import { motion } from "framer-motion";
+import { motion, useScroll } from "framer-motion";
 
 export default function MenuSidebar({
 	categories,
@@ -21,6 +21,25 @@ export default function MenuSidebar({
 	const [highlightPos, setHighlightPos] = useState({ top: 0, height: 300 });
 	const categoryContainerRef = useRef<HTMLDivElement>(null);
 
+	const { scrollYProgress } = useScroll({ container: categoryContainerRef });
+	const [shadowStyle, setShadowStyle] = useState("");
+
+	useEffect(() => {
+		return scrollYProgress.on("change", (value) => {
+			if (value === 0) {
+				setShadowStyle("inset 0 -10px 15px -10px rgba(0,0,10px,0.3)");
+			} else if (value === 1) {
+				setShadowStyle("inset 0 10px 15px -10px rgba(0,0,10px,0.3)");
+			} else {
+				setShadowStyle(
+					"inset 0 10px 15px -10px rgba(0,0,10px,0.3), inset 0 -10px 15px -10px rgba(0,0,10px,0.3)"
+				);
+			}
+		});
+	}, [scrollYProgress]);
+
+	console.log(shadowStyle);
+
 	useEffect(() => {
 		if (selectedCategory !== null && categoryContainerRef.current) {
 			const selectedButton = categoryContainerRef.current?.querySelector(
@@ -34,10 +53,11 @@ export default function MenuSidebar({
 	}, [selectedCategory]);
 
 	return (
-		<div className="basis-[230px] shrink-0 flex flex-col justify-between h-full bg-white-primary">
+		<div className="basis-[230px] shrink-0 flex flex-col justify-between h-full bg-white-primary overflow-x-hidden">
 			<div
 				className="relative overflow-y-auto hide-scrollbar"
 				ref={categoryContainerRef}
+				style={{ boxShadow: shadowStyle, transition: "box-shadow 1s ease" }}
 			>
 				<motion.div
 					layoutId="category-highlight"
@@ -70,7 +90,7 @@ export default function MenuSidebar({
 				))}
 			</div>
 			<motion.button
-				className="flex flex-col bg-lime text-white-primary aspect-square justify-center items-center gap-6 font-bold"
+				className={`flex flex-col bg-lime text-white-primary aspect-square z-10  justify-center items-center gap-6 font-bold`}
 				onClick={() => setCurrentView(View.Order)}
 				whileTap={{ scale: 0.95 }}
 			>
