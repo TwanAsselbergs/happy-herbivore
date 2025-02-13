@@ -1,10 +1,12 @@
 import fastify from "fastify";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, OrderStatus } from "@prisma/client";
 import websocket from "@fastify/websocket";
 import cors from "@fastify/cors";
+import { orderSchema } from "./src/schema";
+import type { Decimal } from "@prisma/client/runtime/library";
 
 const db = new PrismaClient();
-const app = fastify();
+const app = fastify({ logger: true });
 
 const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:5173";
 
@@ -14,6 +16,12 @@ app.register(cors, {
 	allowedHeaders: ["Content-Type", "Authorization"],
 	credentials: true,
 });
+
+interface OrderItem {
+	id: number;
+	quantity: number;
+	price?: Decimal;
+}
 
 await app.register(websocket);
 
@@ -73,6 +81,92 @@ app.register(
 				},
 			});
 			return categories;
+		});
+
+		api.post("/orders", async (req, res) => {
+			const body = req.body as { order: OrderItem[] };
+
+			const order = body?.order;
+
+			try {
+				if (!order) {
+					throw new Error("Order is required.");
+				}
+
+				const parseRes = orderSchema.safeParse(order);
+
+				if (!parseRes.success) {
+					res.status(400).send(parseRes.error.flatten());
+					return;
+				}
+
+				const startOfDay = new Date();
+				startOfDay.setHours(0, 0, 0, 0);
+
+				const ordersThisDay = await db.order.count({
+					where: {
+						createdAt: {
+							gte: startOfDay,
+						},
+					},
+				});
+
+				console.log(`${ordersThisDay} orders placed today.`);
+
+				const productIds = order.map((item) => item.id);
+
+				const products = await db.product.findMany({
+					where: {
+						id: {
+							in: productIds,
+						},
+					},
+					select: {
+						id: true,
+						price: true,
+					},
+				});
+
+				const productPriceMap = new Map(
+					products.map((product) => [product.id, product.price])
+				);
+
+				order.forEach((item) => {
+					item.price = productPriceMap.get(item.id) ?? undefined;
+				});
+
+				const totalPrice = order.reduce(
+					(acc, item) => acc + (item.price ? Number(item.price) : 0) * item.quantity,
+					0
+				);
+
+				console.log(`Total price: ${totalPrice}`);
+
+				const placedOrder = await db.order.create({
+					data: {
+						pickupNumber: ordersThisDay + 1,
+						price: totalPrice,
+						orderProducts: {
+							createMany: {
+								data: order.map((item) => ({
+									price: item.price ?? 0,
+									quantity: item.quantity,
+									productId: item.id,
+								})),
+							},
+						},
+						orderStatus: OrderStatus.PLACED_AND_PAID,
+					},
+				});
+
+				res.status(200).send({
+					order: placedOrder,
+				});
+			} catch (e) {
+				res
+					.status(400)
+					.send({ error: e instanceof Error ? e.message : "Invalid request." });
+			}
 		});
 
 		done();

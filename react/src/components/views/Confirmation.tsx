@@ -5,8 +5,10 @@ import { motion } from "framer-motion";
 
 const Confirmation = ({
 	setCurrentView,
+	orderNumber,
 }: {
 	setCurrentView: React.Dispatch<SetStateAction<View>>;
+	orderNumber: number | null;
 }) => {
 	const { setCart } = useContext(CartContext);
 
@@ -27,7 +29,9 @@ const Confirmation = ({
 				className="w-full max-w-[500px]"
 			/>
 			<h1 className="font-bold text-4xl max-w-lg">Thank you for your order!</h1>
-			<p className="text-2xl text-gray-400 mb-4">Your order number is #12345</p>
+			<p className="text-2xl text-gray-400 mb-4">
+				Your order number is #{orderNumber}
+			</p>
 			<button
 				className="text-white-primary text-xl block bg-lime px-20 py-10 relative rounded-full overflow-hidden font-bold"
 				onClick={resetOrder}

@@ -2,18 +2,19 @@ import { ArrowLeft } from "lucide-react";
 import { Product } from "../../lib/types";
 import { View } from "../../App";
 import { formatCurrency } from "../../lib/utils";
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import React, { SetStateAction, useEffect, useRef, useState } from "react";
 import { useContext } from "react";
 import { motion } from "framer-motion";
 import { CartContext } from "../../App";
 import Popup from "../reusable/Popup";
 import { Pie } from "react-chartjs-2";
-import { div } from "framer-motion/client";
 
 const Order = ({
 	setCurrentView,
+	setOrderNumber,
 	products,
 }: {
+	setOrderNumber: React.Dispatch<SetStateAction<number | null>>;
 	setCurrentView: React.Dispatch<SetStateAction<View>>;
 	products: Product[];
 }) => {
@@ -59,15 +60,36 @@ const Order = ({
 
 	useEffect(() => {
 		if (isPaying) {
-			payingTimeout.current = setTimeout(() => {
-				setCurrentView(View.Confirmation);
-			}, 5000);
-		} else {
-			if (payingTimeout.current) {
-				clearTimeout(payingTimeout.current);
-			}
+			payingTimeout.current = setTimeout(placeOrder, 5000);
+		} else if (payingTimeout.current) {
+			clearTimeout(payingTimeout.current);
 		}
 	}, [isPaying]);
+
+	async function placeOrder() {
+		const res = await fetch("http://localhost:3000/api/v1/orders", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				order: cartItems.map((item) => ({
+					id: item.id,
+					quantity: item.quantity,
+				})),
+			}),
+		});
+
+		const data = await res.json();
+
+		if (!res.ok) {
+			console.error(data);
+			return;
+		}
+
+		setOrderNumber(data.order.pickupNumber);
+		setCurrentView(View.Confirmation);
+	}
 
 	return (
 		<>
