@@ -1,9 +1,19 @@
 import fastify from "fastify";
 import { PrismaClient } from "@prisma/client";
 import websocket from "@fastify/websocket";
+import cors from "@fastify/cors";
 
 const db = new PrismaClient();
 const app = fastify();
+
+const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:5173";
+
+app.register(cors, {
+	origin: FRONTEND_URL,
+	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+	allowedHeaders: ["Content-Type", "Authorization"],
+	credentials: true,
+});
 
 await app.register(websocket);
 
@@ -67,7 +77,7 @@ app.register(
 
 		done();
 	},
-	{ prefix: "/api/v1" },
+	{ prefix: "/api/v1" }
 );
 
 try {
