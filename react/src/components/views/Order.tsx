@@ -72,7 +72,7 @@ const Order = ({
 				className="bg-white-secondary w-full h-full flex justify-center"
 			>
 				<div className="bg-white-secondary w-full h-full flex justify-center">
-					<div className="flex flex-col items-center bg-white-primary rounded-3xl w-11/12 h-[1400px] mx-auto mt-28 px-16">
+					<div className="flex flex-col items-center bg-white-primary rounded-2xl w-11/12 h-[1400px] mx-auto mt-28 px-16">
 						<div className="flex relative w-full justify-center">
 							<ArrowLeft
 								height={50}
@@ -100,13 +100,13 @@ const Order = ({
 									>
 										<div className="flex items-center">
 											<img
-												src={item.image.filename}
-												alt={item.image.description}
+												src={item.image?.filename}
+												alt={item.image?.description}
 												className="w-40 h-40 object-cover rounded-2xl"
 											/>
 											<div className="ml-10">
 												<h3 className="text-[28px] font-bold truncate max-w-[375px]">
-													{item.title}
+													{item.name}
 												</h3>
 												<p className="text-[28px] font-bold mt-4">
 													{formatCurrency(item.price * item.quantity)}{" "}

@@ -49,7 +49,7 @@ const IdleScreen = ({
 	}, []);
 
 	return (
-		<div className="flex flex-col justify-between text-xl items-center w-full h-screen bg-dark-blue">
+		<div className="row-span-full flex flex-col justify-between text-xl items-center w-full h-screen bg-dark-blue">
 			<div className="pt-24">
 				<img
 					src="/img/logo_big_happy_herbivore_transparent.webp"

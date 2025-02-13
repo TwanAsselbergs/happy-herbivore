@@ -4,6 +4,7 @@ import { Pie } from "react-chartjs-2";
 import { motion } from "framer-motion";
 import { ArcElement, Chart } from "chart.js";
 import { X } from "lucide-react";
+import toast from "react-hot-toast";
 import { useState } from "react";
 
 Chart.register(ArcElement);
@@ -65,6 +66,8 @@ export default function ProductDetails({
 			}
 		});
 
+		toast.success("Product added to basket!");
+
 		setShowingDetailsId(null);
 	}
 
@@ -94,13 +97,13 @@ export default function ProductDetails({
 				</div>
 				<div className="grid grid-cols-[3fr_5fr] gap-12 ">
 					<img
-						src={product.image.filename}
-						alt={product.image.description}
+						src={product.image?.filename}
+						alt={product.image?.description}
 						className="rounded-2xl"
 					/>
 					<div className="flex gap-2 flex-col justify-between">
 						<div>
-							<h2 className="text-xl font-bold">{product.title}</h2>
+							<h2 className="text-xl font-bold">{product.name}</h2>
 							<p>{product.description}</p>
 						</div>
 						<div className="flex items-end">
@@ -120,13 +123,13 @@ export default function ProductDetails({
 								</div>
 							</div>
 
-							<p>*({(product.kcal / 2000) * 100}% of daily intake)</p>
+							<p>*({+((product.kcal / 2000) * 100).toFixed(2)}% of daily intake)</p>
 						</div>
 					</div>
 					<div className="flex justify-between items-center">
 						<div className="flex gap-8 items-center">
 							<button
-								className="bg-[#EDEFE9] aspect-square h-14 rounded-full font-bold"
+								className="bg-[#EDEFE9] aspect-square h-14 rounded-full font-bold active:scale-95 active:bg-black/5 transition-all"
 								onClick={() =>
 									setProductQuantity((prev) => (prev > 1 ? prev - 1 : prev))
 								}
@@ -135,7 +138,7 @@ export default function ProductDetails({
 							</button>
 							<p>{productQuantity}</p>
 							<button
-								className="bg-[#EDEFE9] aspect-square h-14 rounded-full font-semibold"
+								className="bg-[#EDEFE9] aspect-square h-14 rounded-full font-semibold active:scale-95 active:bg-black/5 transition-all"
 								onClick={() => setProductQuantity((prev) => prev + 1)}
 							>
 								+

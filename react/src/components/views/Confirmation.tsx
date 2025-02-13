@@ -1,7 +1,7 @@
 import { View } from "../../App";
 import { SetStateAction, useContext, useEffect } from "react";
 import { CartContext } from "../../App";
-import { useTime, animate, useAnimate, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const Confirmation = ({
 	setCurrentView,
