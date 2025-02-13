@@ -8,6 +8,8 @@ import { motion } from "framer-motion";
 import { CartContext } from "../../App";
 import Popup from "../reusable/Popup";
 import { Pie } from "react-chartjs-2";
+import LanguageSwitcher from "../LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const Order = ({
 	setCurrentView,
@@ -16,6 +18,7 @@ const Order = ({
 	setCurrentView: React.Dispatch<SetStateAction<View>>;
 	products: Product[];
 }) => {
+	const { t } = useTranslation();
 	const { cart, setCart } = useContext(CartContext);
 	const [isPaying, setIsPaying] = useState(false);
 	const payingTimeout = useRef<number | null>(null);
@@ -88,13 +91,13 @@ const Order = ({
 								onClick={() => setCurrentView(View.Menu)}
 							/>
 							<h2 className="text-2xl font-bold flex items-center my-20">
-								Review your Order
+								{t("review_order")}
 							</h2>
 						</div>
 						{cartItems.length === 0 ? (
 							<div className="flex flex-col items-center justify-center pb-96 h-full">
 								<h3 className="text-center text-2xl text-gray-400 font-semibold">
-									Your basket is empty
+									{t("basket_empty")}
 								</h3>
 							</div>
 						) : (
@@ -117,7 +120,7 @@ const Order = ({
 												<p className="text-[28px] font-bold mt-4">
 													{formatCurrency(item.price * item.quantity)}{" "}
 													<span className="text-gray-400 font-normal">
-														({formatCurrency(item.price)} per piece)
+														({formatCurrency(item.price)} {t("per_piece")})
 													</span>
 												</p>
 											</div>
