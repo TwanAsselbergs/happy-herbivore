@@ -7,6 +7,7 @@ import { useContext } from "react";
 import { motion } from "framer-motion";
 import { CartContext } from "../../App";
 import Popup from "../reusable/Popup";
+import { Pie } from "react-chartjs-2";
 
 const Order = ({
 	setCurrentView,
@@ -47,6 +48,11 @@ const Order = ({
 
 	const totalPrice = cartItems.reduce(
 		(total, item) => total + item.price * item.quantity,
+		0
+	);
+
+	const totalKcal = cartItems.reduce(
+		(total, item) => total + item.kcal * item.quantity,
 		0
 	);
 
@@ -137,10 +143,32 @@ const Order = ({
 						)}
 						{cartItems.length > 0 && (
 							<>
-								<div className="w-full text-right mt-16">
-									<h3 className="text-xl font-bold">
-										Total: {formatCurrency(totalPrice)}
-									</h3>
+								<div className="flex justify-between items-center w-full">
+									<div className="flex items-end">
+										<div className="w-[140px] relative">
+											<Pie
+												data={{
+													datasets: [
+														{
+															data: [totalKcal, 2250 - totalKcal],
+															backgroundColor: ["#8CD003", "#D9D9D9"],
+														},
+													],
+												}}
+											/>
+											<div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+												<p>{totalKcal}kcal*</p>
+											</div>
+										</div>
+
+										<p>*({+((totalKcal / 2250) * 100).toFixed(2)}% of daily intake)</p>
+									</div>
+
+									<div className="text-right mt-16">
+										<h3 className="text-xl font-bold">
+											Total: {formatCurrency(totalPrice)}
+										</h3>
+									</div>
 								</div>
 								<div className="mt-auto">
 									<button

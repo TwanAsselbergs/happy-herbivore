@@ -18,7 +18,7 @@ export default function MenuSidebar({
 	setCurrentView: React.Dispatch<React.SetStateAction<View>>;
 	selectedCategory: number | null;
 }>) {
-	const [highlightPos, setHighlightPos] = useState({ top: 0, height: 0 });
+	const [highlightPos, setHighlightPos] = useState({ top: 0, height: 300 });
 	const categoryContainerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -39,6 +39,7 @@ export default function MenuSidebar({
 				<motion.div
 					layoutId="category-highlight"
 					className="absolute inset-0 bg-orange-300 z-0"
+					initial={false}
 					animate={{
 						top: highlightPos.top,
 						height: highlightPos.height,
