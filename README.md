@@ -98,8 +98,8 @@ Now the system should be up and running! 🚀
 
 ## Authors
 
-- **Twan Asselbergs** - _Front-/back-end development, documentation, design_ - [TwanAsselbergs](https://github.com/TwanAsselbergs)
 - **Noah Kamphuisen** - _Front-/back-end development, documentation, design_ - [NoahMelle](https://github.com/NoahMelle)
+- **Twan Asselbergs** - _Front-/back-end development, documentation, design_ - [TwanAsselbergs](https://github.com/TwanAsselbergs)
 
 ## License
 
