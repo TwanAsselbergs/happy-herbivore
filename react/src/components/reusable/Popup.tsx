@@ -28,8 +28,11 @@ export default function Popup({
 			>
 				<div className="bg-white-primary rounded-4xl relative z-10 p-10 w-11/12 flex flex-col items-center justify-center">
 					<div className="flex w-full justify-end">
-						<button onClick={() => setIsVisible(false)}>
-							<X width={40} height={40} />
+						<button
+							onClick={() => setIsVisible(false)}
+							className="bg-[#EDEFE9] rounded-full p-2"
+						>
+							<X height={30} width={30} />
 						</button>
 					</div>
 					{children}
