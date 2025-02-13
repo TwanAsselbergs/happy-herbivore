@@ -10,6 +10,7 @@ import Order from "./components/views/Order";
 import Confirmation from "./components/views/Confirmation";
 import TopBar from "./components/global/TopBar";
 import { Product, Category } from "./lib/types";
+import { Toaster } from "react-hot-toast";
 
 export enum View {
 	Idle,
@@ -79,6 +80,11 @@ const App = () => {
 
 	return (
 		<CartContext.Provider value={{ cart, setCart }}>
+			<Toaster
+				position="bottom-center"
+				containerStyle={{ bottom: "30px" }}
+				toastOptions={{ className: "toast" }}
+			/>
 			<main className="grid grid-cols-1 grid-rows-[min-content_auto] justify-between text-md items-start w-full h-screen overflow-x-hidden">
 				{currentView !== View.Idle && (
 					<TopBar key="TopBar" cancelOrder={cancelOrder} currentView={currentView} />

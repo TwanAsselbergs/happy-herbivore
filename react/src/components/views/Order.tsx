@@ -72,7 +72,7 @@ const Order = ({
 				className="bg-white-secondary w-full h-full flex justify-center"
 			>
 				<div className="bg-white-secondary w-full h-full flex justify-center">
-					<div className="flex flex-col items-center bg-white-primary rounded-3xl w-11/12 h-[1400px] mx-auto mt-28 px-16">
+					<div className="flex flex-col items-center bg-white-primary rounded-2xl w-11/12 h-[1400px] mx-auto mt-28 px-16">
 						<div className="flex relative w-full justify-center">
 							<ArrowLeft
 								height={50}

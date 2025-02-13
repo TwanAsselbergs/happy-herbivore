@@ -4,6 +4,7 @@ import { Pie } from "react-chartjs-2";
 import { motion } from "framer-motion";
 import { ArcElement, Chart } from "chart.js";
 import { X } from "lucide-react";
+import toast from "react-hot-toast";
 import { useState } from "react";
 
 Chart.register(ArcElement);
@@ -65,6 +66,8 @@ export default function ProductDetails({
 			}
 		});
 
+		toast.success("Product added to basket!");
+
 		setShowingDetailsId(null);
 	}
 
@@ -120,7 +123,7 @@ export default function ProductDetails({
 								</div>
 							</div>
 
-							<p>*({(product.kcal / 2000) * 100}% of daily intake)</p>
+							<p>*({+((product.kcal / 2000) * 100).toFixed(2)}% of daily intake)</p>
 						</div>
 					</div>
 					<div className="flex justify-between items-center">

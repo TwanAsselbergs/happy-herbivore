@@ -67,7 +67,7 @@ app.register(
 
 		done();
 	},
-	{ prefix: "/api/v1" }
+	{ prefix: "/api/v1" },
 );
 
 try {

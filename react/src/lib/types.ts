@@ -16,7 +16,6 @@ export interface Category {
 }
 
 export interface Image {
-	id: number;
 	filename: string;
 	description?: string;
 }
