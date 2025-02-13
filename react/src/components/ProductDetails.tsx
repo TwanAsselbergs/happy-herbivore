@@ -66,7 +66,7 @@ export default function ProductDetails({
 			}
 		});
 
-		toast.success("Product added to basket!");
+		toast.success("Product(s) added to basket!");
 
 		setShowingDetailsId(null);
 	}
