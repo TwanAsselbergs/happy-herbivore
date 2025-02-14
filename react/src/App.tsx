@@ -40,6 +40,7 @@ const App = () => {
 	const [cart, setCart] = useState<CartType[]>([]);
 	const [products, setProducts] = useState<Product[]>([]);
 	const [categories, setCategories] = useState<Category[]>([]);
+	const [orderNumber, setOrderNumber] = useState<number | null>(null);
 
 	function cancelOrder() {
 		setCart([]);
@@ -103,11 +104,15 @@ const App = () => {
 				)}
 
 				{currentView === View.Order && (
-					<Order setCurrentView={setCurrentView} products={products} />
+					<Order
+						setCurrentView={setCurrentView}
+						products={products}
+						setOrderNumber={setOrderNumber}
+					/>
 				)}
 
 				{currentView === View.Confirmation && (
-					<Confirmation setCurrentView={setCurrentView} />
+					<Confirmation setCurrentView={setCurrentView} orderNumber={orderNumber} />
 				)}
 			</main>
 		</CartContext.Provider>

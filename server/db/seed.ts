@@ -18,7 +18,6 @@ async function main() {
 	await prisma.product.deleteMany({});
 	await prisma.category.deleteMany({});
 	await prisma.image.deleteMany({});
-	await prisma.orderStatus.deleteMany({});
 
 	await prisma.image.createMany({
 		data: [
@@ -88,17 +87,6 @@ async function main() {
 
 	const categoryIds = await prisma.category.findMany({
 		select: { id: true, name: true },
-	});
-
-	await prisma.orderStatus.createMany({
-		data: [
-			{ description: "Started" },
-			{ description: "Placed and paid" },
-			{ description: "Preparing" },
-			{ description: "Ready for pickup" },
-			{ description: "Picked up" },
-		],
-		skipDuplicates: true,
 	});
 
 	const filenames = [

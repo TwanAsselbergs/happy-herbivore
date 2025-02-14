@@ -3,7 +3,7 @@ import { Category } from "../lib/types";
 import { ShoppingBag } from "lucide-react";
 import { View } from "../App";
 import { formatCurrency } from "../lib/utils";
-import { motion, useScroll } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function MenuSidebar({
 	categories,
@@ -21,24 +21,34 @@ export default function MenuSidebar({
 	const [highlightPos, setHighlightPos] = useState({ top: 0, height: 300 });
 	const categoryContainerRef = useRef<HTMLDivElement>(null);
 
-	const { scrollYProgress } = useScroll({ container: categoryContainerRef });
-	const [shadowStyle, setShadowStyle] = useState("");
+	const [topMaskSize, setTopMaskSize] = useState(0);
+	const [bottomMaskSize, setBottomMaskSize] = useState(0);
 
 	useEffect(() => {
-		return scrollYProgress.on("change", (value) => {
-			if (value === 0) {
-				setShadowStyle("inset 0 -10px 15px -10px rgba(0,0,10px,0.3)");
-			} else if (value === 1) {
-				setShadowStyle("inset 0 10px 15px -10px rgba(0,0,10px,0.3)");
-			} else {
-				setShadowStyle(
-					"inset 0 10px 15px -10px rgba(0,0,10px,0.3), inset 0 -10px 15px -10px rgba(0,0,10px,0.3)"
-				);
-			}
-		});
-	}, [scrollYProgress]);
+		const el = categoryContainerRef.current;
+		if (!el) return;
 
-	console.log(shadowStyle);
+		const setClasses = () => {
+			const isScrollable = el.scrollHeight > el.clientHeight;
+			if (!isScrollable) {
+				setTopMaskSize(0);
+				setBottomMaskSize(0);
+				return;
+			}
+
+			const isScrolledToBottom =
+				el.scrollHeight <= el.clientHeight + el.scrollTop + 1;
+			const isScrolledToTop = isScrolledToBottom ? false : el.scrollTop === 0;
+
+			setTopMaskSize(isScrolledToTop ? 0 : 100);
+			setBottomMaskSize(isScrolledToBottom ? 0 : 300);
+		};
+
+		el.addEventListener("scroll", setClasses);
+		setClasses();
+
+		return () => el.removeEventListener("scroll", setClasses);
+	}, []);
 
 	useEffect(() => {
 		if (selectedCategory !== null && categoryContainerRef.current) {
@@ -54,10 +64,14 @@ export default function MenuSidebar({
 
 	return (
 		<div className="basis-[230px] shrink-0 flex flex-col justify-between h-full bg-white-primary overflow-x-hidden">
+			<div className="w-full shadow-4xl h-0"></div>
 			<div
-				className="relative overflow-y-auto hide-scrollbar"
+				className="relative overflow-y-auto hide-scrollbar transition-all duration-100"
 				ref={categoryContainerRef}
-				style={{ boxShadow: shadowStyle, transition: "box-shadow 1s ease" }}
+				style={{
+					WebkitMaskImage: `linear-gradient(to bottom, transparent 0, black ${topMaskSize}px, black calc(100% - ${bottomMaskSize}px), transparent 100%)`,
+					maskImage: `linear-gradient(to bottom, transparent 0, black ${topMaskSize}px, black calc(100% - ${bottomMaskSize}px), transparent 100%)`,
+				}}
 			>
 				<motion.div
 					layoutId="category-highlight"
@@ -90,7 +104,7 @@ export default function MenuSidebar({
 				))}
 			</div>
 			<motion.button
-				className={`flex flex-col bg-lime text-white-primary aspect-square z-10  justify-center items-center gap-6 font-bold`}
+				className="flex flex-col bg-lime text-white-primary aspect-square z-10 justify-center items-center gap-6 font-bold transition-shadow duration-600"
 				onClick={() => setCurrentView(View.Order)}
 				whileTap={{ scale: 0.95 }}
 			>
