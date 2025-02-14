@@ -76,7 +76,7 @@ Follow these steps to set up and run the _Happy Herbivore_ self-service system.
 
    ```bash
    bunx migrate dev
-   bun ./db/seed.ts
+   bun ./src/db/seed.ts
    ```
 
 6. Start the API

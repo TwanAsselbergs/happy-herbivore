@@ -18,34 +18,9 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
+import { Status, Order, OrderProduct } from "@/types/common";
 
 const WEBSOCKET_URL = "ws://localhost:3000?token=your-secret-token";
-
-enum Status {
-	PENDING = "pending",
-	PREPARING = "in-progress",
-	COMPLETED = "completed",
-}
-
-type Product = {
-	id: number;
-	name: string;
-};
-
-type Order = {
-	id: number;
-	createdAt: Date;
-	price: number;
-	status: Status;
-	orderProducts: OrderProduct[];
-};
-
-type OrderProduct = {
-	price: number;
-	quantity: number;
-	product: Product;
-	status: Status;
-};
 
 export function OrderList() {
 	const [orders, setOrders] = useState<Order[]>([]);
@@ -62,11 +37,8 @@ export function OrderList() {
 				setOrders((prev) => [
 					{
 						...data.message.data,
-						orderProducts: newOrder.orderProducts.map((product: OrderProduct) => ({
-							...product,
-							status: Status.PENDING,
-						})),
 						status: Status.PENDING,
+						createdAt: new Date(newOrder.createdAt),
 					},
 					...prev,
 				]);
@@ -96,7 +68,7 @@ export function OrderList() {
 					);
 					return {
 						...order,
-						products: updatedProducts,
+						orderProducts: updatedProducts,
 						status: allCompleted ? Status.COMPLETED : Status.PREPARING,
 					};
 				}
@@ -105,6 +77,27 @@ export function OrderList() {
 		);
 	};
 
+	useEffect(() => {
+		fetchInitialOrders();
+	}, []);
+
+	async function fetchInitialOrders() {
+		const res = await fetch("http://localhost:3000/api/v1/orders/today");
+
+		const { orders } = await res.json();
+
+		if (orders) {
+			setOrders(
+				orders.map((order: any) => ({
+					...order,
+					createdAt: new Date(order.createdAt),
+				}))
+			);
+		}
+	}
+
+	// console.log(orders[0].createdAt.toLocaleTimeString());
+
 	const completeOrder = (orderId: number) => {
 		setOrders((prevOrders) =>
 			prevOrders.map((order) =>
@@ -112,7 +105,7 @@ export function OrderList() {
 					? {
 							...order,
 							status: Status.COMPLETED,
-							products: order.orderProducts.map((product) => ({
+							orderProducts: order.orderProducts.map((product) => ({
 								...product,
 								status: Status.COMPLETED,
 							})),
@@ -131,7 +124,7 @@ export function OrderList() {
 							<span>
 								Order #{order.id}{" "}
 								<span className="text-gray-400 font-medium" suppressHydrationWarning>
-									- Placed at: {order.createdAt.toLocaleString()}
+									- Placed at: {order.createdAt.toLocaleTimeString()}
 								</span>
 							</span>
 							<Badge
@@ -161,7 +154,8 @@ export function OrderList() {
 										<TableRow>
 											<TableHead>Product</TableHead>
 											<TableHead>Status</TableHead>
-											<TableHead>Actions</TableHead>
+											<TableHead>Quantity</TableHead>
+											<TableHead className="w-fit">Actions</TableHead>
 										</TableRow>
 									</TableHeader>
 									<TableBody>
@@ -177,9 +171,10 @@ export function OrderList() {
 														{orderProduct.status}
 													</Badge>
 												</TableCell>
-												<TableCell>
+												<TableCell>{orderProduct.quantity}</TableCell>
+												<TableCell className="w-fit">
 													{orderProduct.status !== "completed" && (
-														<>
+														<span className="flex">
 															<Button
 																variant="orange"
 																size="sm"
@@ -208,7 +203,7 @@ export function OrderList() {
 															>
 																Complete
 															</Button>
-														</>
+														</span>
 													)}
 												</TableCell>
 											</TableRow>
