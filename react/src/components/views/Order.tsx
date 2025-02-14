@@ -174,7 +174,7 @@ const Order = ({
 						</div>
 						{cartItems.length > 0 && (
 							<div className="w-full">
-								<hr className="w-full h-[2px] bg-gray-300 mt-16" />
+								<hr className="w-5/6 mx-auto border-gray-400 mt-16" />
 								<div className="px-16 pt-16 w-full">
 									<div className="flex justify-between items-end w-full">
 										<div className="flex flex-col gap-6 items-center">
