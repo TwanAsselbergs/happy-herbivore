@@ -8,8 +8,6 @@ import { motion } from "framer-motion";
 import { CartContext } from "../../App";
 import Popup from "../reusable/Popup";
 import { Pie } from "react-chartjs-2";
-import { div } from "framer-motion/client";
-import LanguageSwitcher from "../LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 
 const Order = ({
@@ -112,8 +110,8 @@ const Order = ({
 									<ArrowLeft
 										height={50}
 										width={50}
-										strokeWidth={2}
-										className="absolute left-0 top-[50%] -translate-y-1/2"
+										strokeWidth={3}
+										className="bg-[#EDEFE9] p-2 text-gray-600 rounded-full absolute left-0 top-[50%] -translate-y-1/2"
 										onClick={() => setCurrentView(View.Menu)}
 									/>
 									<h2 className="text-2xl font-bold flex items-center my-8">

@@ -32,7 +32,7 @@ export default function Popup({
 							onClick={() => setIsVisible(false)}
 							className="bg-[#EDEFE9] rounded-full p-2"
 						>
-							<X height={30} width={30} />
+							<X height={30} width={30} strokeWidth={4} className="text-gray-500" />
 						</button>
 					</div>
 					{children}
