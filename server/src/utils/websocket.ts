@@ -5,6 +5,7 @@ const clients: Set<WebSocket> = new Set();
 
 export async function websocketHandler(socket: WebSocket, req: FastifyRequest) {
 	clients.add(socket);
+	console.log("Client connected");
 
 	socket.on("message", (message) => {
 		socket.send("hi from server");

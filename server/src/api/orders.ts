@@ -10,7 +10,8 @@ import { broadcastMessage } from "@/utils/websocket";
 import { OrderStatus } from "@prisma/client";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
-export async function createOrder(req: FastifyRequest, res: FastifyReply) {
+// POST request for placing an order
+export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 	const body = req.body as { order: OrderItem[] };
 
 	const order = body?.order;
@@ -27,6 +28,7 @@ export async function createOrder(req: FastifyRequest, res: FastifyReply) {
 			return;
 		}
 
+		// Get start of the day, to retrieve orders placed today
 		const startOfDay = new Date();
 		startOfDay.setHours(0, 0, 0, 0);
 
@@ -40,6 +42,7 @@ export async function createOrder(req: FastifyRequest, res: FastifyReply) {
 
 		const productIds = order.map((item) => item.id);
 
+		// Fetch associated products
 		const products = await db.product.findMany({
 			where: {
 				id: {
@@ -52,13 +55,27 @@ export async function createOrder(req: FastifyRequest, res: FastifyReply) {
 			},
 		});
 
+		// Map product ID's to a price
 		const productPriceMap = new Map(
 			products.map((product) => [product.id, product.price])
 		);
 
-		order.forEach((item) => {
-			item.price = productPriceMap.get(item.id) ?? undefined;
-		});
+		try {
+			order.forEach((item) => {
+				const price = productPriceMap.get(item.id);
+
+				if (!price) {
+					throw new Error("Product does not exist.");
+				}
+
+				item.price = productPriceMap.get(item.id);
+			});
+		} catch (e) {
+			res.status(400).send({
+				error:
+					e instanceof Error ? e.message : "Something went wrong, please try again.",
+			});
+		}
 
 		const totalPrice = order.reduce(
 			(acc, item) => acc + (item.price ? Number(item.price) : 0) * item.quantity,
@@ -126,7 +143,7 @@ export async function createOrder(req: FastifyRequest, res: FastifyReply) {
 	}
 }
 
-export async function getTodaysOrders() {
+export async function fetchTodaysOrders() {
 	const startOfDay = new Date();
 	startOfDay.setHours(0, 0, 0, 0);
 
