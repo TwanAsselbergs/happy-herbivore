@@ -1,6 +1,6 @@
 import fastify from "fastify";
 import { PrismaClient, OrderStatus } from "@prisma/client";
-import websocket from "@fastify/websocket";
+import websocket, { type WebSocket } from "@fastify/websocket";
 import cors from "@fastify/cors";
 import { orderSchema } from "./src/schema";
 import type { Decimal } from "@prisma/client/runtime/library";
@@ -25,7 +25,7 @@ interface OrderItem {
 
 await app.register(websocket);
 
-const clients = new Set();
+const clients: Set<WebSocket> = new Set();
 
 app.get("/", { websocket: true }, function handler(socket, req) {
 	clients.add(socket);
@@ -157,6 +157,28 @@ app.register(
 						},
 						orderStatus: OrderStatus.PLACED_AND_PAID,
 					},
+					select: {
+						id: true,
+						createdAt: true,
+						price: true,
+						orderProducts: {
+							select: {
+								price: true,
+								quantity: true,
+								product: {
+									select: {
+										id: true,
+										name: true,
+										image: true,
+									},
+								},
+							},
+						},
+					},
+				});
+
+				broadcastMessage("order", {
+					data: placedOrder,
 				});
 
 				res.status(200).send({
@@ -180,4 +202,12 @@ try {
 } catch (err) {
 	app.log.error(err);
 	process.exit(1);
+}
+
+function broadcastMessage(type: string, message: object) {
+	clients.forEach((client) => {
+		if (client.readyState === 1) {
+			client.send(JSON.stringify({ type, message }));
+		}
+	});
 }
