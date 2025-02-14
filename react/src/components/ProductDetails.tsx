@@ -7,7 +7,6 @@ import { X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import LanguageSwitcher from "../LanguageSwitcher";
 
 Chart.register(ArcElement);
 
@@ -93,12 +92,12 @@ export default function ProductDetails({
 				className="h-full w-full flex justify-center items-center"
 			>
 				<div className="bg-white-primary rounded-4xl relative z-10 p-10 w-11/12 flex flex-col items-center justify-center">
-					<div className="flex justify-end mb-8 font-bold w-full">
+					<div className="flex justify-end mb-6 font-bold w-full">
 						<button
 							onClick={() => setShowingDetailsId(null)}
 							className="bg-[#EDEFE9] rounded-full p-2"
 						>
-							<X height={30} width={30} />
+							<X height={30} width={30} strokeWidth={4} className="text-gray-500" />
 						</button>
 					</div>
 					<div className="grid grid-cols-[3fr_5fr] gap-12 py-12">
@@ -134,10 +133,10 @@ export default function ProductDetails({
 								</p>
 							</div>
 						</div>
-						<div className="flex justify-between items-center">
+						<div className="flex justify-between items-center ml-2">
 							<div className="flex gap-8 items-center">
 								<button
-									className="bg-[#EDEFE9] aspect-square h-14 rounded-full font-bold active:scale-95 active:bg-black/5 transition-all"
+									className="bg-[#EDEFE9] aspect-square h-18 rounded-full font-bold active:scale-95 active:bg-black/5 transition-all"
 									onClick={() =>
 										setProductQuantity((prev) => (prev > 1 ? prev - 1 : prev))
 									}
@@ -146,13 +145,13 @@ export default function ProductDetails({
 								</button>
 								<p>{productQuantity}</p>
 								<button
-									className="bg-[#EDEFE9] aspect-square h-14 rounded-full font-semibold active:scale-95 active:bg-black/5 transition-all"
+									className="bg-[#EDEFE9] aspect-square h-18 rounded-full font-semibold active:scale-95 active:bg-black/5 transition-all"
 									onClick={() => setProductQuantity((prev) => prev + 1)}
 								>
 									+
 								</button>
 							</div>
-							<p>{formatCurrency(product.price * productQuantity)}</p>
+							<p className="">{formatCurrency(product.price * productQuantity)}</p>
 						</div>
 						<div>
 							<button
