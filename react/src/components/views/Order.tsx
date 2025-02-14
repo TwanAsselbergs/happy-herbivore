@@ -8,6 +8,9 @@ import { motion } from "framer-motion";
 import { CartContext } from "../../App";
 import Popup from "../reusable/Popup";
 import { Pie } from "react-chartjs-2";
+import { div } from "framer-motion/client";
+import LanguageSwitcher from "../LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const Order = ({
 	setCurrentView,
@@ -18,6 +21,7 @@ const Order = ({
 	setCurrentView: React.Dispatch<SetStateAction<View>>;
 	products: Product[];
 }) => {
+	const { t } = useTranslation();
 	const { cart, setCart } = useContext(CartContext);
 	const [isPaying, setIsPaying] = useState(false);
 	const payingTimeout = useRef<number | null>(null);
@@ -113,13 +117,13 @@ const Order = ({
 										onClick={() => setCurrentView(View.Menu)}
 									/>
 									<h2 className="text-2xl font-bold flex items-center my-8">
-										Review your Order
+										{t("review_order")}
 									</h2>
 								</div>
 								{cartItems.length === 0 ? (
 									<div className="flex flex-col items-center justify-center pb-96 h-full">
 										<h3 className="text-center text-2xl text-gray-400 font-semibold">
-											Your basket is empty
+											{t("basket_empty")}
 										</h3>
 									</div>
 								) : (
@@ -142,7 +146,7 @@ const Order = ({
 														<p className="text-[28px] font-bold mt-4">
 															{formatCurrency(item.price * item.quantity)}{" "}
 															<span className="text-gray-400 font-normal">
-																({formatCurrency(item.price)} per piece)
+																({formatCurrency(item.price)} {t("per_piece")})
 															</span>
 														</p>
 													</div>
@@ -174,7 +178,7 @@ const Order = ({
 								<div className="px-16 pt-16 w-full">
 									<div className="flex justify-between items-end w-full">
 										<div className="flex flex-col gap-6 items-center">
-											<h3 className="font-semibold">Calories</h3>
+											<h3 className="font-semibold">{t("order_calories")}</h3>
 											<div className="w-[170px] relative">
 												<Pie
 													data={{
@@ -194,7 +198,8 @@ const Order = ({
 
 										<div className="text-right mt-16">
 											<h3 className="text-xl font-bold">
-												Total: {formatCurrency(totalPrice)}
+												{t("order_total")}
+												{formatCurrency(totalPrice)}
 											</h3>
 										</div>
 									</div>
@@ -202,7 +207,7 @@ const Order = ({
 										className="text-white-primary bg-lime py-8 rounded-full my-20 font-bold w-full"
 										onClick={() => setIsPaying(true)}
 									>
-										Proceed to checkout
+										{t("checkout")}
 									</button>
 								</div>
 							</div>
@@ -214,9 +219,10 @@ const Order = ({
 				<Popup setIsVisible={setIsPaying}>
 					<div className="min-h-[400px] flex flex-col items-center justify-center">
 						<h3 className="font-bold">
-							Payable Amount: {formatCurrency(totalPrice)}
+							{t("payable_amount")}
+							{formatCurrency(totalPrice)}
 						</h3>
-						<p>Please follow the instructions on the terminal</p>
+						<p>{t("follow_terminal")}</p>
 					</div>
 				</Popup>
 			)}

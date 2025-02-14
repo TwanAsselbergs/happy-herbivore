@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { wrap } from "@popmotion/popcorn";
 import { ShoppingBag } from "lucide-react";
 import { View } from "../../App";
-
+import LanguageSwitcher from "../LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 import { IMAGES } from "./Images";
 
 const sliderVariants = {
@@ -30,6 +31,7 @@ const IdleScreen = ({
 }: {
 	setCurrentView: React.Dispatch<React.SetStateAction<View>>;
 }) => {
+	const { t } = useTranslation();
 	const [[imageCount, direction], setImageCount] = useState([0, 0]);
 	const scrollInterval = useRef<number | null>(null);
 	const activeImageIndex = wrap(0, IMAGES.length, imageCount);
@@ -81,24 +83,25 @@ const IdleScreen = ({
 			</div>
 			<div className="flex flex-col items-center pb-[12rem]">
 				<h2 className="text-white-primary uppercase text-[4rem] font-bold text-center leading-[100%]">
-					<span className="rotate-[-4deg] block">Brighten up your day,</span>
+					<span className="rotate-[-4deg] block">{t("idle_title")}</span>
 					<br />
 					<span className="flex items-center gap-6 -mt-10">
-						the{" "}
-						<span className="text-lime text-[8rem] block leading-[100%]">green</span>{" "}
-						way
+						{t("idle_span_1")}{" "}
+						<span className="text-lime text-[8rem] block leading-[100%]">
+							{" "}
+							{t("idle_span_2")}
+						</span>{" "}
+						{t("idle_span_3")}
 					</span>
 				</h2>
-				<h3 className=" text-white-primary mt-4">
-					Happy Herbivore - Healthy in a Hurry
-				</h3>
+				<h3 className=" text-white-primary mt-4">{t("idle_p")}</h3>
 			</div>
 			<button
 				className="font-bold bg-white-primary w-[80%] h-[370px] rounded-t-3xl uppercase flex items-center justify-center gap-4"
 				onClick={() => setCurrentView(View.Menu)}
 			>
 				<ShoppingBag height={40} width={40} />
-				Start ordering
+				{t("idle_order")}
 			</button>
 		</div>
 	);

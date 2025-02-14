@@ -6,6 +6,8 @@ import { ArcElement, Chart } from "chart.js";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../LanguageSwitcher";
 
 Chart.register(ArcElement);
 
@@ -50,6 +52,7 @@ export default function ProductDetails({
 	>;
 	setShowingDetailsId: React.Dispatch<React.SetStateAction<number | null>>;
 }>) {
+	const { t } = useTranslation();
 	const [productQuantity, setProductQuantity] = useState(1);
 
 	function handleAddToCart() {
@@ -66,7 +69,7 @@ export default function ProductDetails({
 			}
 		});
 
-		toast.success("Product(s) added to basket!");
+		toast.success(t("basket_confirmation"));
 
 		setShowingDetailsId(null);
 	}
@@ -126,7 +129,9 @@ export default function ProductDetails({
 									</div>
 								</div>
 
-								<p>*({+((product.kcal / 2000) * 100).toFixed(2)}% of daily intake)</p>
+								<p>
+									*({+((product.kcal / 2000) * 100).toFixed(2)}% {t("daily_intake")})
+								</p>
 							</div>
 						</div>
 						<div className="flex justify-between items-center">
@@ -154,7 +159,7 @@ export default function ProductDetails({
 								className="text-white-primary font-bold bg-lime w-full py-6 rounded-full"
 								onClick={handleAddToCart}
 							>
-								Add to basket
+								{t("basket_add")}
 							</button>
 						</div>
 					</div>

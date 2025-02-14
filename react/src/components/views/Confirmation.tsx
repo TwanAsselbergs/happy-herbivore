@@ -2,6 +2,8 @@ import { View } from "../../App";
 import { SetStateAction, useContext, useEffect } from "react";
 import { CartContext } from "../../App";
 import { motion } from "framer-motion";
+import LanguageSwitcher from "../LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const Confirmation = ({
 	setCurrentView,
@@ -10,6 +12,7 @@ const Confirmation = ({
 	setCurrentView: React.Dispatch<SetStateAction<View>>;
 	orderNumber: number | null;
 }) => {
+	const { t } = useTranslation();
 	const { setCart } = useContext(CartContext);
 
 	function resetOrder() {
@@ -28,10 +31,8 @@ const Confirmation = ({
 				alt="Logo"
 				className="w-full max-w-[500px]"
 			/>
-			<h1 className="font-bold text-4xl max-w-lg">Thank you for your order!</h1>
-			<p className="text-2xl text-gray-400 mb-4">
-				Your order number is #{orderNumber}
-			</p>
+			<h1 className="font-bold text-4xl max-w-lg">{t("thank_you")}</h1>
+			<p className="text-2xl text-gray-400 mb-4">{t("order_number")} #{orderNumber}</p>
 			<button
 				className="text-white-primary text-xl block bg-lime px-20 py-10 relative rounded-full overflow-hidden font-bold"
 				onClick={resetOrder}
@@ -42,7 +43,7 @@ const Confirmation = ({
 					animate={{ x: 0 }}
 					transition={{ duration: 10, type: "tween" }}
 				></motion.span>
-				<span className="z-10 relative">Back to the homepage</span>
+				<span className="z-10 relative">{t("back_to_homepage")}</span>
 			</button>
 		</div>
 	);
