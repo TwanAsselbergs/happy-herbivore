@@ -20,7 +20,8 @@ i18n
 					idle_span_2: "green",
 					idle_span_3: "way",
 					idle_p: "Happy Herbivore - Healthy in a Hurry",
-					idle_order: "Start ordering",
+					takeaway: "Take Out",
+					eat_in: "Dine In",
 					// Order.tsx
 					review_order: "Review your Order",
 					basket_empty: "Your basket is empty",
@@ -32,7 +33,7 @@ i18n
 					follow_terminal: "Please follow the instructions on the terminal",
 					// Confirmation.tsx
 					thank_you: "Thank you for your order!",
-					order_number: "Your order number is #12345",
+					order_number: "Your order number is ",
 					back_to_homepage: "Back to the homepage",
 					// ProductDetails.tsx
 					daily_intake: "of daily intake",
@@ -53,7 +54,8 @@ i18n
 					idle_span_2: "groene",
 					idle_span_3: "manier",
 					idle_p: "Happy Herbivore - Snel en Gezond",
-					idle_order: "Begin met bestellen",
+					takeaway: "Meenemen",
+					eat_in: "Hier Eten",
 					// Order.tsx
 					review_order: "Bekijk je bestelling",
 					basket_empty: "Je mandje is leeg",
@@ -65,7 +67,7 @@ i18n
 					follow_terminal: "Volg de instructies op het scherm",
 					// Confirmation.tsx
 					thank_you: "Bedankt voor je bestelling!",
-					order_number: "Je bestelnummer is #12345",
+					order_number: "Je bestelnummer is ",
 					back_to_homepage: "Terug naar de homepagina",
 					// ProductDetails.tsx
 					daily_intake: "van dagelijkse inname",

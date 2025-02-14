@@ -52,12 +52,15 @@ const IdleScreen = ({
 
 	return (
 		<div className="row-span-full flex flex-col justify-between text-xl items-center w-full h-screen bg-dark-blue">
-			<div className="pt-24">
+			<div className="pt-24 flex w-full relative">
 				<img
 					src="/img/logo_big_happy_herbivore_transparent.webp"
 					alt=""
-					className="w-full max-w-[250px]"
+					className="w-full max-w-[250px] mx-auto"
 				/>
+				<div className="absolute right-24 top-27">
+					<LanguageSwitcher />
+				</div>
 			</div>
 			<div className="grow flex flex-col items-center w-full p-24 h-full">
 				<div className="relative w-full h-full">
@@ -96,13 +99,22 @@ const IdleScreen = ({
 				</h2>
 				<h3 className=" text-white-primary mt-4">{t("idle_p")}</h3>
 			</div>
-			<button
-				className="font-bold bg-white-primary w-[80%] h-[370px] rounded-t-3xl uppercase flex items-center justify-center gap-4"
-				onClick={() => setCurrentView(View.Menu)}
-			>
-				<ShoppingBag height={40} width={40} />
-				{t("idle_order")}
-			</button>
+			<div className="grid grid-cols-2 gap-16 mb-32">
+				<button
+					className="font-bold bg-white-primary w-105 h-[200px] rounded-3xl uppercase flex items-center justify-center gap-4 p-24"
+					onClick={() => setCurrentView(View.Menu)}
+				>
+					<ShoppingBag height={40} width={40} className="shrink-0" />
+					{t("takeaway")}
+				</button>
+				<button
+					className="font-bold bg-white-primary w-105 h-[200px] rounded-3xl uppercase flex items-center justify-center gap-4 p-24"
+					onClick={() => setCurrentView(View.Menu)}
+				>
+					<ShoppingBag height={40} width={40} className="shrink-0" />
+					{t("eat_in")}
+				</button>
+			</div>
 		</div>
 	);
 };
