@@ -14,6 +14,21 @@ export type Order = {
 	price: number;
 	status: Status;
 	orderProducts: OrderProduct[];
+	pickupNumber: number;
+};
+
+export interface OrderItem {
+	id: number;
+	quantity: number;
+	price?: number;
+}
+
+export type OrderWithoutStatus = {
+	id: number;
+	pickupNumber: number;
+	createdAt: Date;
+	price: number;
+	orderProducts: Omit<OrderProduct, "status">[];
 };
 
 export type OrderProduct = {

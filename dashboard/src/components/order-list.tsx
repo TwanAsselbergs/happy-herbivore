@@ -20,6 +20,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import { Status, Order, OrderProduct } from "@/types/common";
 import { motion } from "framer-motion";
+import { formatOrderNumber } from "@/lib/utils";
 
 const WEBSOCKET_URL = "ws://localhost:3000?token=your-secret-token";
 
@@ -127,7 +128,7 @@ export function OrderList() {
 						<CardHeader>
 							<CardTitle className="flex justify-between items-center">
 								<span>
-									Order #{order.id}{" "}
+									Order #{formatOrderNumber(order.pickupNumber)}{" "}
 									<span className="text-gray-400 font-medium" suppressHydrationWarning>
 										- Placed at: {order.createdAt.toLocaleTimeString()}
 									</span>

@@ -84,7 +84,7 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 
 		const placedOrder = await db.order.create({
 			data: {
-				pickupNumber: ordersThisDay + 1,
+				pickupNumber: (ordersThisDay % 99) + 1,
 				price: totalPrice,
 				orderProducts: {
 					createMany: {
@@ -101,6 +101,7 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 				id: true,
 				createdAt: true,
 				price: true,
+				pickupNumber: true,
 				orderProducts: {
 					select: {
 						price: true,
@@ -157,6 +158,7 @@ export async function fetchTodaysOrders() {
 			id: true,
 			createdAt: true,
 			price: true,
+			pickupNumber: true,
 			orderProducts: {
 				select: {
 					price: true,

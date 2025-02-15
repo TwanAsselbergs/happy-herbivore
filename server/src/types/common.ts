@@ -16,6 +16,7 @@ export type Order = {
 	price: Decimal;
 	status: Status;
 	orderProducts: OrderProduct[];
+	pickupNumber: number;
 };
 
 export interface OrderItem {
@@ -26,6 +27,7 @@ export interface OrderItem {
 
 export type OrderWithoutStatus = {
 	id: number;
+	pickupNumber: number;
 	createdAt: Date;
 	price: Decimal;
 	orderProducts: Omit<OrderProduct, "status">[];

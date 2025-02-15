@@ -2,7 +2,7 @@ import fastify from "fastify";
 import websocket, { type WebSocket } from "@fastify/websocket";
 import cors from "@fastify/cors";
 import { configureCors } from "./src/config/cors";
-import { productsIndex } from "@/api/products";
+import { productsIndex, fetchSingleProduct } from "@/api/products";
 import { websocketHandler } from "@/utils/websocket";
 import { categoriesIndex } from "@/api/categories";
 import { placeOrder, fetchTodaysOrders } from "@/api/orders";
@@ -20,6 +20,8 @@ app.get("/", { websocket: true }, websocketHandler);
 app.register(
 	(api, _, done) => {
 		api.get("/products", productsIndex);
+		api.get("/products/:id", fetchSingleProduct);
+
 		api.get("/categories", categoriesIndex);
 
 		api.post("/orders", placeOrder);
