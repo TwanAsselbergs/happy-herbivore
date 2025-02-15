@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
 import { Status, Order, OrderProduct } from "@/types/common";
+import { motion } from "framer-motion";
 
 const WEBSOCKET_URL = "ws://localhost:3000?token=your-secret-token";
 
@@ -57,8 +58,6 @@ export function OrderList() {
 			prevOrders.map((order) => {
 				if (order.id === orderId) {
 					const updatedProducts = order.orderProducts.map((orderProduct) => {
-						console.log(orderProduct);
-
 						return orderProduct.product.id === productId
 							? { ...orderProduct, status: newStatus }
 							: orderProduct;
@@ -96,8 +95,6 @@ export function OrderList() {
 		}
 	}
 
-	// console.log(orders[0].createdAt.toLocaleTimeString());
-
 	const completeOrder = (orderId: number) => {
 		setOrders((prevOrders) =>
 			prevOrders.map((order) =>
@@ -117,103 +114,112 @@ export function OrderList() {
 
 	return (
 		<div className="space-y-4 w-full">
+			{orders.length === 0 && <h3 className="text-gray-500">No orders today.</h3>}
 			{orders.map((order) => (
-				<Card key={order.id} className="w-full">
-					<CardHeader>
-						<CardTitle className="flex justify-between items-center">
-							<span>
-								Order #{order.id}{" "}
-								<span className="text-gray-400 font-medium" suppressHydrationWarning>
-									- Placed at: {order.createdAt.toLocaleTimeString()}
+				<motion.div
+					key={order.id}
+					initial={{ opacity: 0, scale: 0.9 }}
+					animate={{ opacity: 1, scale: 1 }}
+					transition={{ type: "spring", damping: 20, stiffness: 300 }}
+					layout
+				>
+					<Card className="w-full">
+						<CardHeader>
+							<CardTitle className="flex justify-between items-center">
+								<span>
+									Order #{order.id}{" "}
+									<span className="text-gray-400 font-medium" suppressHydrationWarning>
+										- Placed at: {order.createdAt.toLocaleTimeString()}
+									</span>
 								</span>
-							</span>
-							<Badge
-								variant={
-									order.status === Status.COMPLETED
-										? "lime"
-										: order.status === Status.PENDING
-										? "secondary"
-										: "orange"
-								}
-							>
-								{order.status}
-							</Badge>
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<Collapsible>
-							<CollapsibleTrigger asChild>
-								<Button variant="ghost" className="flex w-full justify-between">
-									View Products
-									<ChevronDown className="h-4 w-4" />
-								</Button>
-							</CollapsibleTrigger>
-							<CollapsibleContent>
-								<Table>
-									<TableHeader>
-										<TableRow>
-											<TableHead>Product</TableHead>
-											<TableHead>Status</TableHead>
-											<TableHead>Quantity</TableHead>
-											<TableHead className="w-fit">Actions</TableHead>
-										</TableRow>
-									</TableHeader>
-									<TableBody>
-										{order.orderProducts.map((orderProduct) => (
-											<TableRow key={orderProduct.product.id}>
-												<TableCell>{orderProduct.product.name}</TableCell>
-												<TableCell>
-													<Badge
-														variant={
-															orderProduct.status === "completed" ? "lime" : "secondary"
-														}
-													>
-														{orderProduct.status}
-													</Badge>
-												</TableCell>
-												<TableCell>{orderProduct.quantity}</TableCell>
-												<TableCell className="w-fit">
-													{orderProduct.status !== "completed" && (
-														<span className="flex">
-															<Button
-																variant="orange"
-																size="sm"
-																className="mr-2"
-																onClick={() =>
-																	updateProductStatus(
-																		order.id,
-																		orderProduct.product.id,
-																		Status.PREPARING
-																	)
-																}
-																disabled={orderProduct.status === Status.PREPARING}
-															>
-																Prepare
-															</Button>
-															<Button
-																variant="green"
-																size="sm"
-																onClick={() =>
-																	updateProductStatus(
-																		order.id,
-																		orderProduct.product.id,
-																		Status.COMPLETED
-																	)
-																}
-															>
-																Complete
-															</Button>
-														</span>
-													)}
-												</TableCell>
+								<Badge
+									variant={
+										order.status === Status.COMPLETED
+											? "lime"
+											: order.status === Status.PENDING
+											? "secondary"
+											: "orange"
+									}
+								>
+									{order.status}
+								</Badge>
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<Collapsible>
+								<CollapsibleTrigger asChild>
+									<Button variant="ghost" className="flex w-full justify-between">
+										View Products
+										<ChevronDown className="h-4 w-4" />
+									</Button>
+								</CollapsibleTrigger>
+								<CollapsibleContent>
+									<Table>
+										<TableHeader>
+											<TableRow>
+												<TableHead>Product</TableHead>
+												<TableHead>Status</TableHead>
+												<TableHead>Quantity</TableHead>
+												<TableHead className="w-fit">Actions</TableHead>
 											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</CollapsibleContent>
-						</Collapsible>
-					</CardContent>
-				</Card>
+										</TableHeader>
+										<TableBody>
+											{order.orderProducts.map((orderProduct) => (
+												<TableRow key={orderProduct.product.id}>
+													<TableCell>{orderProduct.product.name}</TableCell>
+													<TableCell>
+														<Badge
+															variant={
+																orderProduct.status === "completed" ? "lime" : "secondary"
+															}
+														>
+															{orderProduct.status}
+														</Badge>
+													</TableCell>
+													<TableCell>{orderProduct.quantity}</TableCell>
+													<TableCell className="w-fit">
+														{orderProduct.status !== "completed" && (
+															<span className="flex">
+																<Button
+																	variant="orange"
+																	size="sm"
+																	className="mr-2"
+																	onClick={() =>
+																		updateProductStatus(
+																			order.id,
+																			orderProduct.product.id,
+																			Status.PREPARING
+																		)
+																	}
+																	disabled={orderProduct.status === Status.PREPARING}
+																>
+																	Prepare
+																</Button>
+																<Button
+																	variant="green"
+																	size="sm"
+																	onClick={() =>
+																		updateProductStatus(
+																			order.id,
+																			orderProduct.product.id,
+																			Status.COMPLETED
+																		)
+																	}
+																>
+																	Complete
+																</Button>
+															</span>
+														)}
+													</TableCell>
+												</TableRow>
+											))}
+										</TableBody>
+									</Table>
+								</CollapsibleContent>
+							</Collapsible>
+						</CardContent>
+					</Card>
+				</motion.div>
 			))}
 		</div>
 	);
