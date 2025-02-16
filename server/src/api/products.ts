@@ -3,27 +3,53 @@ import type { FastifyRequest, FastifyReply } from "fastify";
 import { type Product } from "@/types/common";
 
 export async function productsIndex(req: FastifyRequest, res: FastifyReply) {
-	const products = await db.product.findMany({
-		select: {
-			category: {
-				select: {
-					name: true,
-					id: true,
-				},
-			},
-			description: true,
-			image: {
-				select: {
-					filename: true,
-					description: true,
-				},
-			},
-			kcal: true,
-			id: true,
-			name: true,
-			price: true,
+	let { lang } = req.query as { lang?: string };
+
+	const correspondingLanguage = await db.language.findFirst({
+		where: {
+			code: lang,
 		},
 	});
+
+	if (!correspondingLanguage) {
+		lang = "en";
+	}
+
+	const products: Product[] = (
+		await db.product.findMany({
+			select: {
+				category: {
+					select: {
+						name: true,
+						id: true,
+						image: true,
+					},
+				},
+				image: {
+					select: {
+						filename: true,
+						description: true,
+					},
+				},
+				kcal: true,
+				id: true,
+				price: true,
+				productTranslations: {
+					where: { language: { code: lang } },
+					select: {
+						name: true,
+						description: true,
+					},
+				},
+			},
+		})
+	).map((product) => ({
+		...product,
+		name: product.productTranslations[0].name,
+		description: product.productTranslations[0].description,
+		productTranslations: undefined,
+	}));
+
 	return products;
 }
 
@@ -37,7 +63,19 @@ export async function fetchSingleProduct(
 		return res.status(400).send({ error: "Id is required" });
 	}
 
-	const product: Product | null = await db.product.findUnique({
+	let { lang } = req.query as { lang?: string };
+
+	const correspondingLanguage = await db.language.findFirst({
+		where: {
+			code: lang,
+		},
+	});
+
+	if (!correspondingLanguage) {
+		lang = "en";
+	}
+
+	const fetchedProduct = await db.product.findUnique({
 		where: {
 			id,
 		},
@@ -48,7 +86,6 @@ export async function fetchSingleProduct(
 					id: true,
 				},
 			},
-			description: true,
 			image: {
 				select: {
 					filename: true,
@@ -57,14 +94,30 @@ export async function fetchSingleProduct(
 			},
 			kcal: true,
 			id: true,
-			name: true,
 			price: true,
+			productTranslations: {
+				where: { language: { code: lang } },
+				select: {
+					name: true,
+					description: true,
+				},
+			},
 		},
 	});
 
-	if (!product) {
+	if (!fetchedProduct) {
 		return res.status(404).send({ error: "Product does not exist" });
 	}
+
+	const product: Product = {
+		...fetchedProduct,
+		image: {
+			filename: fetchedProduct.image?.filename ?? "",
+			description: fetchedProduct.image?.description ?? "",
+		},
+		name: fetchedProduct.productTranslations[0].name,
+		description: fetchedProduct.productTranslations[1].description ?? null,
+	};
 
 	return product;
 }

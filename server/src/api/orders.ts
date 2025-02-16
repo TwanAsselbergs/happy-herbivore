@@ -4,8 +4,9 @@ import {
 	Status,
 	type OrderItem,
 	type OrderWithoutStatus,
+	type Order,
+	type OrderProduct,
 } from "@/types/common";
-import { type Order, type OrderProduct } from "@/types/common";
 import { broadcastMessage } from "@/utils/websocket";
 import { OrderStatus } from "@prisma/client";
 import type { FastifyReply, FastifyRequest } from "fastify";
@@ -109,7 +110,12 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 						product: {
 							select: {
 								id: true,
-								name: true,
+								productTranslations: {
+									select: {
+										name: true,
+										description: true,
+									},
+								},
 								image: true,
 							},
 						},
@@ -122,6 +128,10 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 			...placedOrder.orderProducts.map((orderProduct) => ({
 				...orderProduct,
 				status: Status.PENDING,
+				product: {
+					...orderProduct.product,
+					name: orderProduct.product.productTranslations[0].name,
+				},
 			})),
 		];
 
@@ -166,7 +176,12 @@ export async function fetchTodaysOrders() {
 					product: {
 						select: {
 							id: true,
-							name: true,
+							productTranslations: {
+								select: {
+									name: true,
+									description: true,
+								},
+							},
 							image: true,
 						},
 					},
@@ -178,9 +193,19 @@ export async function fetchTodaysOrders() {
 		},
 	});
 
-	const ordersWithStatus: Order[] = ordersThisDay.map((order) =>
-		addStatusToOrder(order)
-	);
+	const ordersWithStatus: Order[] = ordersThisDay.map((order) => {
+		const orderWithStatus = addStatusToOrder({
+			...order,
+			orderProducts: order.orderProducts.map((orderProduct) => ({
+				...orderProduct,
+				product: {
+					...orderProduct.product,
+					name: orderProduct.product.productTranslations[0].name,
+				},
+			})),
+		});
+		return orderWithStatus;
+	});
 
 	return {
 		orders: ordersWithStatus,

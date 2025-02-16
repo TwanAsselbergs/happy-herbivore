@@ -4,10 +4,6 @@ export enum Status {
 	COMPLETED = "completed",
 }
 
-export type Product = {
-	id: number;
-	name: string;
-};
 export type Order = {
 	id: number;
 	createdAt: Date;
@@ -34,6 +30,34 @@ export type OrderWithoutStatus = {
 export type OrderProduct = {
 	price: number;
 	quantity: number;
-	product: Product;
+	product: {
+		id: number;
+		name: string;
+	};
 	status: Status;
 };
+
+export interface Product {
+	id: number;
+	name: string;
+	category: {
+		id: number;
+		name: string;
+	};
+	image: Image | null;
+	description: string | null;
+	price: number;
+	kcal: number;
+}
+
+export interface Category {
+	id: number;
+	name: string;
+	description?: string;
+	image: Image | null;
+}
+
+export interface Image {
+	filename: string;
+	description?: string | null;
+}
