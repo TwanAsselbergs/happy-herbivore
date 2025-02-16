@@ -120,7 +120,7 @@ const Order = ({
 								</div>
 								{cartItems.length === 0 ? (
 									<div className="flex flex-col items-center justify-center pb-96 h-full">
-										<h3 className="text-center text-2xl text-gray-400 font-semibold">
+										<h3 className="text-center text-2xl text-gray-300 font-semibold">
 											{t("basket_empty")}
 										</h3>
 									</div>
