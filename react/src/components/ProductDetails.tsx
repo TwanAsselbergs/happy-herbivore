@@ -10,16 +10,6 @@ import { useTranslation } from "react-i18next";
 
 Chart.register(ArcElement);
 
-const sliderVariants = {
-	incoming: () => ({
-		y: "100%",
-	}),
-	active: { y: 0, opacity: 1 },
-	exit: () => ({
-		y: "100%",
-	}),
-};
-
 const overlayVariants = {
 	incoming: () => ({
 		opacity: 0,
@@ -28,11 +18,6 @@ const overlayVariants = {
 	exit: () => ({
 		opacity: 0,
 	}),
-};
-
-const sliderTransition = {
-	duration: 0.3,
-	ease: "easeInOut",
 };
 
 const overlayTransition = {

@@ -3,16 +3,19 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "electron ."
   },
   "dependencies": {
     "@popmotion/popcorn": "^0.4.4",
     "@tailwindcss/vite": "^4.0.3",
     "chart.js": "^4.4.7",
+    "electron": "^34.2.0",
     "framer-motion": "^12.3.1",
     "i18next": "^24.2.2",
     "i18next-browser-languagedetector": "^8.0.2",
