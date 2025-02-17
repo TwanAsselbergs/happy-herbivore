@@ -1,8 +1,12 @@
 import { db } from "@/db/prisma-client";
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { type Product } from "@/types/common";
+import { transformProduct } from "@/utils/misc";
 
-export async function productsIndex(req: FastifyRequest, res: FastifyReply) {
+export async function productsIndex(
+	req: FastifyRequest,
+	res: FastifyReply
+): Promise<Product[]> {
 	let { lang } = req.query as { lang?: string };
 
 	const correspondingLanguage = await db.language.findFirst({
@@ -43,12 +47,7 @@ export async function productsIndex(req: FastifyRequest, res: FastifyReply) {
 				},
 			},
 		})
-	).map((product) => ({
-		...product,
-		name: product.productTranslations[0].name,
-		description: product.productTranslations[0].description,
-		productTranslations: undefined,
-	}));
+	).map(transformProduct);
 
 	return products;
 }
@@ -56,7 +55,7 @@ export async function productsIndex(req: FastifyRequest, res: FastifyReply) {
 export async function fetchSingleProduct(
 	req: FastifyRequest,
 	res: FastifyReply
-) {
+): Promise<Product> {
 	const id = Number((req.params as { id?: number }).id);
 
 	if (!id) {
@@ -109,15 +108,7 @@ export async function fetchSingleProduct(
 		return res.status(404).send({ error: "Product does not exist" });
 	}
 
-	const product: Product = {
-		...fetchedProduct,
-		image: {
-			filename: fetchedProduct.image?.filename ?? "",
-			description: fetchedProduct.image?.description ?? "",
-		},
-		name: fetchedProduct.productTranslations[0].name,
-		description: fetchedProduct.productTranslations[1].description ?? null,
-	};
+	const product: Product = transformProduct(fetchedProduct);
 
 	return product;
 }

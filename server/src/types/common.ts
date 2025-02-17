@@ -63,3 +63,8 @@ export interface Image {
 	filename: string;
 	description?: string | null;
 }
+
+export interface ProductTranslation {
+	name: string;
+	description: string | null;
+}

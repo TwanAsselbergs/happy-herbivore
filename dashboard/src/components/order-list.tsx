@@ -160,14 +160,15 @@ export function OrderList() {
 											<TableRow>
 												<TableHead>Product</TableHead>
 												<TableHead>Status</TableHead>
-												<TableHead>Quantity</TableHead>
 												<TableHead className="w-fit">Actions</TableHead>
 											</TableRow>
 										</TableHeader>
 										<TableBody>
 											{order.orderProducts.map((orderProduct) => (
 												<TableRow key={orderProduct.product.id}>
-													<TableCell>{orderProduct.product.name}</TableCell>
+													<TableCell>
+														{orderProduct.product.name} x{orderProduct.quantity}
+													</TableCell>
 													<TableCell>
 														<Badge
 															variant={
@@ -177,7 +178,6 @@ export function OrderList() {
 															{orderProduct.status}
 														</Badge>
 													</TableCell>
-													<TableCell>{orderProduct.quantity}</TableCell>
 													<TableCell className="w-fit">
 														{orderProduct.status !== "completed" && (
 															<span className="flex">

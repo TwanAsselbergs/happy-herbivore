@@ -6,10 +6,13 @@ import {
 	type OrderWithoutStatus,
 	type Order,
 	type OrderProduct,
+	type Product,
+	type ProductTranslation,
 } from "@/types/common";
 import { broadcastMessage } from "@/utils/websocket";
 import { OrderStatus } from "@prisma/client";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { transformProduct } from "@/utils/misc";
 
 // POST request for placing an order
 export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
@@ -113,7 +116,6 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 								productTranslations: {
 									select: {
 										name: true,
-										description: true,
 									},
 								},
 								image: true,
@@ -125,14 +127,26 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 		});
 
 		const placedOrderProducts: OrderProduct[] = [
-			...placedOrder.orderProducts.map((orderProduct) => ({
-				...orderProduct,
-				status: Status.PENDING,
-				product: {
+			...placedOrder.orderProducts.map((orderProduct) => {
+				const product: {
+					id: number;
+					name: string;
+					productTranslations?: { name: string }[];
+				} = {
 					...orderProduct.product,
 					name: orderProduct.product.productTranslations[0].name,
-				},
-			})),
+				};
+
+				delete product["productTranslations"];
+
+				const res: OrderProduct = {
+					...orderProduct,
+					status: Status.PENDING,
+					product,
+				};
+
+				return res;
+			}),
 		];
 
 		const fullOrder: Order = {
@@ -145,7 +159,7 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 		});
 
 		res.status(200).send({
-			order: placedOrder,
+			order: fullOrder,
 		});
 	} catch (e) {
 		res
