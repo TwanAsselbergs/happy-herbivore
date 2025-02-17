@@ -62,22 +62,45 @@ model OrderProduct {
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId  Int
-  image       Image?   @relation(fields: [imageId], references: [id], onDelete: SetNull)
-  imageId     Int?
-  name        String   @db.VarChar(255)
-  description String?  @db.VarChar(255)
-  price       Decimal  @db.Decimal(10, 2)
-  kcal        Int
-  available   Boolean  @default(true)
+  id         Int      @id @default(autoincrement())
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId Int
+  image      Image?   @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  imageId    Int?
+  price      Decimal  @db.Decimal(10, 2)
+  kcal       Int
+  available  Boolean  @default(true)
 
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  orderProducts OrderProduct[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orderProducts       OrderProduct[]
+  productTranslations ProductTranslation[]
 
   @@index([categoryId])
   @@index([imageId])
   @@map("products")
+}
+
+model Language {
+  id   Int    @id @default(autoincrement())
+  code String @unique @db.VarChar(10)
+  name String @db.VarChar(50)
+
+  productTranslations ProductTranslation[]
+
+  @@map("languages")
+}
+
+model ProductTranslation {
+  id          Int      @id @default(autoincrement())
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   Int
+  language    Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId  Int
+  name        String   @db.VarChar(255)
+  description String?  @db.VarChar(255)
+
+  @@unique([productId, languageId])
+  @@map("product_translations")
 }
