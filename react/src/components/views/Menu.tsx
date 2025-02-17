@@ -30,7 +30,7 @@ export default function Menu({
 					selectedCategory === null || product.category.id === selectedCategory
 			)
 		);
-	}, [selectedCategory]);
+	}, [selectedCategory, products]);
 
 	useEffect(() => {
 		setTotal(

@@ -24,7 +24,7 @@ export default function TopBar({
 	return (
 		<>
 			<div className="bg-white-primary px-4 z-10 relative w-full flex justify-between items-center py-10">
-				<div className="flex gap-12">
+				<div className="flex gap-12 items-center">
 					<img
 						src="/img/logo_big_happy_herbivore_transparent.webp"
 						alt=""

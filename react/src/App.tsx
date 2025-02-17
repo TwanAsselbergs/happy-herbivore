@@ -11,6 +11,7 @@ import Confirmation from "./components/views/Confirmation";
 import TopBar from "./components/global/TopBar";
 import { Product, Category } from "./lib/types";
 import { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 export enum View {
 	Idle,
@@ -42,6 +43,8 @@ const App = () => {
 	const [categories, setCategories] = useState<Category[]>([]);
 	const [orderNumber, setOrderNumber] = useState<number | null>(null);
 
+	const language = useTranslation().i18n.language;
+
 	function cancelOrder() {
 		setCart([]);
 		setCurrentView(View.Idle);
@@ -53,13 +56,19 @@ const App = () => {
 	};
 
 	const fetchProducts = async () => {
-		const res = await fetch("http://localhost:3000/api/v1/products");
+		console.log("Fetching products...");
+
+		const res = await fetch(
+			`http://localhost:3000/api/v1/products?lang=${language}`
+		);
 
 		if (!res.ok) {
 			return;
 		}
 
 		const data = await res.json();
+
+		console.log(data);
 		setProducts(data);
 	};
 
@@ -77,7 +86,7 @@ const App = () => {
 
 	useEffect(() => {
 		fetchData();
-	}, []);
+	}, [language]);
 
 	return (
 		<CartContext.Provider value={{ cart, setCart }}>

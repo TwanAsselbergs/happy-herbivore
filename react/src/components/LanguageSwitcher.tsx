@@ -5,24 +5,30 @@ const LanguageSwitcher = () => {
 	const { i18n } = useTranslation();
 	const [currentLang, setCurrentLang] = useState(i18n.language || "en");
 
-	const toggleLanguage = () => {
-		const newLang = currentLang === "en" ? "nl" : "en";
-		i18n.changeLanguage(newLang);
-		setCurrentLang(newLang);
+	const toggleLanguage = (lang: string) => {
+		i18n.changeLanguage(lang);
+		setCurrentLang(lang);
 	};
 
 	return (
-		<button
-			onClick={toggleLanguage}
-			className="w-18 h-18 border-2 rounded-full border-gray-300"
-		>
-			<img
-				src={`img/flags/${
-					currentLang === "en" ? "netherlands" : "united-kingdom"
-				}.png`}
-				alt={currentLang === "en" ? "Dutch" : "English"}
-			/>
-		</button>
+		<div className="flex gap-4">
+			<button
+				onClick={() => toggleLanguage("en")}
+				className={`w-14 h-14 border-2 rounded-full border-gray-300 transition-all ${
+					currentLang == "nl" ? "opacity-50" : ""
+				}`}
+			>
+				<img src={`img/flags/united-kingdom.png`} alt={"English"} />
+			</button>
+			<button
+				onClick={() => toggleLanguage("nl")}
+				className={`w-14 h-14 border-2 rounded-full border-gray-300 transition-all ${
+					currentLang == "en" ? "opacity-50" : ""
+				}`}
+			>
+				<img src={`img/flags/netherlands.png`} alt={"Dutch"} />
+			</button>
+		</div>
 	);
 };
 
