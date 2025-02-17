@@ -11,7 +11,7 @@ const LanguageSwitcher = () => {
 	};
 
 	return (
-		<div className="flex gap-4">
+		<div className="flex gap-6">
 			<button
 				onClick={() => toggleLanguage("en")}
 				className={`w-14 h-14 border-2 rounded-full border-gray-300 transition-all ${
