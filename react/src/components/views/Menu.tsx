@@ -5,6 +5,8 @@ import Product from "../menu/Product";
 import { View, CartContext } from "../../App";
 import { Category, Product as ProductType } from "../../lib/types";
 import { AnimatePresence } from "framer-motion";
+import { toggleFromArray } from "../../lib/utils";
+import { Plus } from "lucide-react";
 
 export default function Menu({
 	setCurrentView,
@@ -21,29 +23,34 @@ export default function Menu({
 	);
 	const [total, setTotal] = useState(0);
 	const [showingProducts, setShowingProducts] = useState(products);
-	const [dietType, setDietType] = useState<"VEGGIE" | "VEGAN">("VEGAN");
+	const [dietType, setDietType] = useState<("VEGGIE" | "VEGAN")[]>([
+		"VEGAN",
+		"VEGGIE",
+	]);
 	const { cart, setCart } = useContext(CartContext);
 
 	useEffect(() => {
-		console.log("Selected Category:", selectedCategory);
-		console.log("Diet Type:", dietType);
-		console.log("Products:", products);
-
 		const filteredProducts = products.filter((product) => {
 			const matchesCategory =
 				selectedCategory === null || product.category.id === selectedCategory;
-			const matchesDietType = product.dietType === dietType;
-
-			console.log(
-				`Product: ${product.name}, Category Match: ${matchesCategory}, Diet Type Match: ${matchesDietType}`
-			);
+			const matchesDietType =
+				dietType.length != 0 ? dietType.includes(product.dietType) : true;
 
 			return matchesCategory && matchesDietType;
 		});
 
-		console.log("Filtered Products:", filteredProducts);
 		setShowingProducts(filteredProducts);
 	}, [selectedCategory, products, dietType]);
+
+	function handleDietToggle(diet: "VEGGIE" | "VEGAN") {
+		const toggleRes = toggleFromArray(dietType, diet);
+
+		setDietType(toggleRes);
+	}
+
+	useEffect(() => {
+		setDietType(["VEGAN", "VEGGIE"]);
+	}, [selectedCategory]);
 
 	useEffect(() => {
 		setTotal(
@@ -65,25 +72,39 @@ export default function Menu({
 				selectedCategory={selectedCategory}
 			/>
 			<div className="bg-white-secondary w-full overflow-y-auto h-full">
-				<div className="flex justify-between items-center p-4">
-					<h2 className="font-black text-center mb-4 mt-16 text-xl uppercase">
+				<div className="flex justify-between items-center px-8 pt-16 pb-2">
+					<h2 className="font-black text-center text-xl uppercase">
 						{categories.find((category) => category.id === selectedCategory)?.name}
 					</h2>
-					<div>
+					<div className="flex gap-4">
 						<button
-							className={`px-4 py-2 ${
-								dietType === "VEGGIE" ? "bg-green-500" : "bg-gray-200"
+							className={`px-4 py-2 flex rounded-full items-center gap-2 transition-colors ${
+								dietType.includes("VEGGIE")
+									? "bg-lime/30 border-lime border-2"
+									: "border-gray-300 border-2"
 							}`}
-							onClick={() => setDietType("VEGGIE")}
+							onClick={() => handleDietToggle("VEGGIE")}
 						>
+							<Plus
+								className={`rotate-0 transition-transform ${
+									dietType.includes("VEGGIE") ? "rotate-45" : ""
+								}`}
+							/>
 							Veggie
 						</button>
 						<button
-							className={`px-4 py-2 ${
-								dietType === "VEGAN" ? "bg-green-500" : "bg-gray-200"
+							className={`px-4 py-2 flex rounded-full items-center gap-2 ${
+								dietType.includes("VEGAN")
+									? "bg-lime/30 border-lime border-2"
+									: "border-gray-300 border-2"
 							}`}
-							onClick={() => setDietType("VEGAN")}
+							onClick={() => handleDietToggle("VEGAN")}
 						>
+							<Plus
+								className={`rotate-0  transition-transform ${
+									dietType.includes("VEGAN") ? "rotate-45" : ""
+								}`}
+							/>
 							Vegan
 						</button>
 					</div>
