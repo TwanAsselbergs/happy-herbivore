@@ -8,9 +8,7 @@ import fastifyBearerAuth from "@fastify/bearer-auth";
 import { categoriesIndex } from "@/api/categories";
 import { placeOrder, fetchTodaysOrders } from "@/api/orders";
 
-const keys = (process.env.BEARER_TOKENS as string).split(", ") ?? [
-	"placeholder_value",
-];
+const keys = (process.env.BEARER_TOKENS ?? "placeholder_value").split(", ");
 
 const app = fastify({ logger: true });
 
