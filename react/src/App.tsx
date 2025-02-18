@@ -56,10 +56,18 @@ const App = () => {
 	};
 
 	const fetchProducts = async () => {
-		console.log("Fetching products...");
+		const headers = new Headers();
+
+		headers.append(
+			"authorization",
+			`Bearer ${import.meta.env.VITE_API_TOKEN ?? "placeholder_value"}`
+		);
 
 		const res = await fetch(
-			`http://localhost:3000/api/v1/products?lang=${language}`
+			`http://localhost:3000/api/v1/products?lang=${language}`,
+			{
+				headers,
+			}
 		);
 
 		if (!res.ok) {
@@ -68,12 +76,20 @@ const App = () => {
 
 		const data = await res.json();
 
-		console.log(data);
 		setProducts(data);
 	};
 
 	const fetchCategories = async () => {
-		const res = await fetch("http://localhost:3000/api/v1/categories");
+		const headers = new Headers();
+
+		headers.append(
+			"authorization",
+			`Bearer ${import.meta.env.VITE_API_TOKEN ?? "placeholder_value"}`
+		);
+
+		const res = await fetch("http://localhost:3000/api/v1/categories", {
+			headers,
+		});
 
 		if (!res.ok) {
 			return;

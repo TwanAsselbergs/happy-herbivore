@@ -3,10 +3,8 @@ import type { FastifyRequest, FastifyReply } from "fastify";
 import { type Product } from "@/types/common";
 import { transformProduct } from "@/utils/misc";
 
-export async function productsIndex(
-	req: FastifyRequest,
-	res: FastifyReply
-): Promise<Product[]> {
+// Route (GET: /api/v1/products
+export async function productsIndex(req: FastifyRequest): Promise<Product[]> {
 	let { lang } = req.query as { lang?: string };
 
 	const correspondingLanguage = await db.language.findFirst({
@@ -53,6 +51,7 @@ export async function productsIndex(
 	return products;
 }
 
+// Route: /api/v1/products/:id
 export async function fetchSingleProduct(
 	req: FastifyRequest,
 	res: FastifyReply

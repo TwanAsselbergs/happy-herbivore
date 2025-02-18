@@ -1,14 +1,13 @@
 import { type WebSocket } from "@fastify/websocket";
-import type { FastifyRequest } from "fastify";
 
 const clients: Set<WebSocket> = new Set();
 
-export async function websocketHandler(socket: WebSocket, req: FastifyRequest) {
+export async function websocketHandler(socket: WebSocket) {
 	clients.add(socket);
 	console.log("Client connected");
 
-	socket.on("message", (message) => {
-		socket.send("hi from server");
+	socket.on("message", (msg) => {
+		socket.send("hi from server, you sent: " + JSON.stringify(msg));
 	});
 
 	socket.on("close", () => {

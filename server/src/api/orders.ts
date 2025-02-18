@@ -6,15 +6,12 @@ import {
 	type OrderWithoutStatus,
 	type Order,
 	type OrderProduct,
-	type Product,
-	type ProductTranslation,
 } from "@/types/common";
 import { broadcastMessage } from "@/utils/websocket";
 import { OrderStatus } from "@prisma/client";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { transformProduct } from "@/utils/misc";
 
-// POST request for placing an order
+// Route (POST): /api/v1/orders
 export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 	const body = req.body as { order: OrderItem[] };
 
@@ -64,22 +61,15 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 			products.map((product) => [product.id, product.price])
 		);
 
-		try {
-			order.forEach((item) => {
-				const price = productPriceMap.get(item.id);
+		order.forEach((item) => {
+			const price = productPriceMap.get(item.id);
 
-				if (!price) {
-					throw new Error("Product does not exist.");
-				}
+			if (!price) {
+				throw new Error("Product does not exist.");
+			}
 
-				item.price = productPriceMap.get(item.id);
-			});
-		} catch (e) {
-			res.status(400).send({
-				error:
-					e instanceof Error ? e.message : "Something went wrong, please try again.",
-			});
-		}
+			item.price = productPriceMap.get(item.id);
+		});
 
 		const totalPrice = order.reduce(
 			(acc, item) => acc + (item.price ? Number(item.price) : 0) * item.quantity,
@@ -126,6 +116,7 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 			},
 		});
 
+		// Format the placed order so it matches the TypeScript type
 		const placedOrderProducts: OrderProduct[] = [
 			...placedOrder.orderProducts.map((orderProduct) => {
 				const product: {
@@ -154,20 +145,22 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 			orderProducts: placedOrderProducts,
 			status: Status.PENDING,
 		};
+
 		broadcastMessage("order", {
 			data: fullOrder,
 		});
 
-		res.status(200).send({
+		return res.status(200).send({
 			order: fullOrder,
 		});
 	} catch (e) {
-		res
+		return res
 			.status(400)
 			.send({ error: e instanceof Error ? e.message : "Invalid request." });
 	}
 }
 
+// Route (GET): /api/v1/orders/today
 export async function fetchTodaysOrders() {
 	const startOfDay = new Date();
 	startOfDay.setHours(0, 0, 0, 0);

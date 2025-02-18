@@ -1,7 +1,7 @@
 import { db } from "@/db/prisma-client";
-import type { FastifyReply, FastifyRequest } from "fastify";
 
-export async function categoriesIndex(req: FastifyRequest, res: FastifyReply) {
+// Route (GET): /api/v1/categories
+export async function categoriesIndex() {
 	const categories = await db.category.findMany({
 		select: {
 			name: true,
@@ -13,5 +13,6 @@ export async function categoriesIndex(req: FastifyRequest, res: FastifyReply) {
 			},
 		},
 	});
+
 	return categories;
 }

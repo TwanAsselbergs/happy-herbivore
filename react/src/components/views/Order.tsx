@@ -1,11 +1,15 @@
 import { ArrowLeft } from "lucide-react";
 import { Product } from "../../lib/types";
-import { View } from "../../App";
 import { formatCurrency } from "../../lib/utils";
-import React, { SetStateAction, useEffect, useRef, useState } from "react";
-import { useContext } from "react";
+import React, {
+	SetStateAction,
+	useEffect,
+	useRef,
+	useState,
+	useContext,
+} from "react";
 import { motion } from "framer-motion";
-import { CartContext } from "../../App";
+import { CartContext, View } from "../../App";
 import Popup from "../reusable/Popup";
 import { Pie } from "react-chartjs-2";
 import { useTranslation } from "react-i18next";
@@ -69,11 +73,18 @@ const Order = ({
 	}, [isPaying]);
 
 	async function placeOrder() {
+		const headers = new Headers();
+
+		headers.append(
+			"authorization",
+			`Bearer ${import.meta.env.VITE_API_TOKEN ?? "placeholder_value"}`
+		);
+
+		headers.append("Content-Type", "application/json");
+
 		const res = await fetch("http://localhost:3000/api/v1/orders", {
 			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
+			headers,
 			body: JSON.stringify({
 				order: cartItems.map((item) => ({
 					id: item.id,

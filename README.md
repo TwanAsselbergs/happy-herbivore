@@ -72,7 +72,7 @@ Follow these steps to set up and run the _Happy Herbivore_ self-service system.
 
    4.3. Edit the `.env` file and update the database URL with your credentials.
 
-5. Migrate and seed the databasw
+5. Migrate and seed the database
 
    ```bash
    bunx migrate dev
@@ -85,12 +85,18 @@ Follow these steps to set up and run the _Happy Herbivore_ self-service system.
    bun --watch ./index.ts
    ```
 
-7. Start the front-end
+7. Configure the front-end
 
-   Open a new terminal, navigate to the `react` directory, and start the front-end:
+   Open a new terminal, navigate to the `react` directory, copy the `.env.example` file and rename it to `.env`:
 
    ```bash
    cd <path-to-the-repo>/react
+   cp .env.example .env
+   ```
+
+8. Start the front-end
+
+   ```bash
    bun run dev
    ```
 

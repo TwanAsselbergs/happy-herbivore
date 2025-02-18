@@ -1,11 +1,16 @@
 import fastify from "fastify";
-import websocket, { type WebSocket } from "@fastify/websocket";
+import websocket from "@fastify/websocket";
 import cors from "@fastify/cors";
 import { configureCors } from "./src/config/cors";
 import { productsIndex, fetchSingleProduct } from "@/api/products";
 import { websocketHandler } from "@/utils/websocket";
+import fastifyBearerAuth from "@fastify/bearer-auth";
 import { categoriesIndex } from "@/api/categories";
 import { placeOrder, fetchTodaysOrders } from "@/api/orders";
+
+const keys = (process.env.BEARER_TOKENS as string).split(", ") ?? [
+	"placeholder_value",
+];
 
 const app = fastify({ logger: true });
 
@@ -19,6 +24,8 @@ await app.register(websocket);
 app.get("/", { websocket: true }, websocketHandler);
 app.register(
 	(api, _, done) => {
+		api.register(fastifyBearerAuth, { keys });
+
 		api.get("/products", productsIndex);
 		api.get("/products/:id", fetchSingleProduct);
 
