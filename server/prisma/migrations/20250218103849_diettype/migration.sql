@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `products` MODIFY `dietType` ENUM('VEGGIE', 'VEGAN') NOT NULL DEFAULT 'VEGAN';

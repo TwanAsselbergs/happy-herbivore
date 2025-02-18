@@ -38,6 +38,7 @@ export async function productsIndex(
 				kcal: true,
 				id: true,
 				price: true,
+				dietType: true,
 				productTranslations: {
 					where: { language: { code: lang } },
 					select: {
@@ -94,6 +95,7 @@ export async function fetchSingleProduct(
 			kcal: true,
 			id: true,
 			price: true,
+			dietType: true,
 			productTranslations: {
 				where: { language: { code: lang } },
 				select: {

@@ -21,16 +21,29 @@ export default function Menu({
 	);
 	const [total, setTotal] = useState(0);
 	const [showingProducts, setShowingProducts] = useState(products);
+	const [dietType, setDietType] = useState<"VEGGIE" | "VEGAN">("VEGAN");
 	const { cart, setCart } = useContext(CartContext);
 
 	useEffect(() => {
-		setShowingProducts(
-			products.filter(
-				(product) =>
-					selectedCategory === null || product.category.id === selectedCategory
-			)
-		);
-	}, [selectedCategory, products]);
+		console.log("Selected Category:", selectedCategory);
+		console.log("Diet Type:", dietType);
+		console.log("Products:", products);
+
+		const filteredProducts = products.filter((product) => {
+			const matchesCategory =
+				selectedCategory === null || product.category.id === selectedCategory;
+			const matchesDietType = product.dietType === dietType;
+
+			console.log(
+				`Product: ${product.name}, Category Match: ${matchesCategory}, Diet Type Match: ${matchesDietType}`
+			);
+
+			return matchesCategory && matchesDietType;
+		});
+
+		console.log("Filtered Products:", filteredProducts);
+		setShowingProducts(filteredProducts);
+	}, [selectedCategory, products, dietType]);
 
 	useEffect(() => {
 		setTotal(
@@ -52,9 +65,29 @@ export default function Menu({
 				selectedCategory={selectedCategory}
 			/>
 			<div className="bg-white-secondary w-full overflow-y-auto h-full">
-				<h2 className="font-black text-center mb-4 mt-16 text-xl uppercase">
-					{categories.find((category) => category.id === selectedCategory)?.name}
-				</h2>
+				<div className="flex justify-between items-center p-4">
+					<h2 className="font-black text-center mb-4 mt-16 text-xl uppercase">
+						{categories.find((category) => category.id === selectedCategory)?.name}
+					</h2>
+					<div>
+						<button
+							className={`px-4 py-2 ${
+								dietType === "VEGGIE" ? "bg-green-500" : "bg-gray-200"
+							}`}
+							onClick={() => setDietType("VEGGIE")}
+						>
+							Veggie
+						</button>
+						<button
+							className={`px-4 py-2 ${
+								dietType === "VEGAN" ? "bg-green-500" : "bg-gray-200"
+							}`}
+							onClick={() => setDietType("VEGAN")}
+						>
+							Vegan
+						</button>
+					</div>
+				</div>
 				<div className="grid grid-cols-3 gap-8 p-8">
 					{showingProducts.map((product) => {
 						return (

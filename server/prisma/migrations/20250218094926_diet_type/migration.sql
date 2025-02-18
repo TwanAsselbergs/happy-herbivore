@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `products` ADD COLUMN `dietType` ENUM('VEGGIE', 'VEGAN') NOT NULL DEFAULT 'VEGGIE';

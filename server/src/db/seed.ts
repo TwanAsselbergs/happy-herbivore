@@ -7,6 +7,7 @@ interface Product {
 	price: number;
 	kcal: number;
 	filename: string;
+	dietType: "VEGGIE" | "VEGAN";
 	translations: ProductTranslation[];
 }
 
@@ -17,7 +18,6 @@ interface ProductTranslation {
 }
 
 async function main() {
-	// Delete existing data (order matters due to foreign key constraints)
 	await prisma.orderProduct.deleteMany({});
 	await prisma.order.deleteMany({});
 	await prisma.product.deleteMany({});
@@ -180,6 +180,7 @@ async function main() {
 			price: 4.5,
 			kcal: 300,
 			filename: "smoothie-bowl.png",
+			dietType: "VEGGIE",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -198,8 +199,9 @@ async function main() {
 		{
 			category: "Breakfast",
 			price: 3.5,
-			kcal: 250,
+			kcal: 500,
 			filename: "eggcellent-wrap.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -220,6 +222,7 @@ async function main() {
 			price: 2.8,
 			kcal: 220,
 			filename: "peanut-butter-toast.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -239,6 +242,7 @@ async function main() {
 			price: 6.0,
 			kcal: 450,
 			filename: "protein-packed-bowl.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -259,6 +263,7 @@ async function main() {
 			price: 5.0,
 			kcal: 300,
 			filename: "supergreen-salad.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -279,6 +284,7 @@ async function main() {
 			price: 4.5,
 			kcal: 400,
 			filename: "zesty-chickpea-wrap.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -299,6 +305,7 @@ async function main() {
 			price: 3.5,
 			kcal: 250,
 			filename: "sweet-potato-wedges.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -319,6 +326,7 @@ async function main() {
 			price: 3.0,
 			kcal: 200,
 			filename: "quinoa-salad-cup.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -339,6 +347,7 @@ async function main() {
 			price: 3.0,
 			kcal: 150,
 			filename: "mini-veggie-platter.webp",
+			dietType: "VEGGIE",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -359,6 +368,7 @@ async function main() {
 			price: 3.5,
 			kcal: 300,
 			filename: "brown-rice-bowl.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -379,6 +389,7 @@ async function main() {
 			price: 2.5,
 			kcal: 180,
 			filename: "roasted-chickpeas.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -399,6 +410,7 @@ async function main() {
 			price: 2.0,
 			kcal: 200,
 			filename: "trail-mix-cup.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -418,6 +430,7 @@ async function main() {
 			price: 3.0,
 			kcal: 250,
 			filename: "chia-pudding-cup.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -438,6 +451,7 @@ async function main() {
 			price: 3.5,
 			kcal: 220,
 			filename: "baked-falafel-bites.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -457,6 +471,7 @@ async function main() {
 			price: 2.0,
 			kcal: 150,
 			filename: "whole-grain-bread-sticks.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -478,6 +493,7 @@ async function main() {
 			price: 2.5,
 			kcal: 100,
 			filename: "apple-cinnamon-chips.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -496,6 +512,7 @@ async function main() {
 			price: 3.0,
 			kcal: 180,
 			filename: "zucchini-fries.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -516,6 +533,7 @@ async function main() {
 			price: 0.8,
 			kcal: 70,
 			filename: "classic-hummus.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -532,6 +550,7 @@ async function main() {
 			price: 1.0,
 			kcal: 80,
 			filename: "avocado-lime-dip.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -548,6 +567,7 @@ async function main() {
 			price: 0.7,
 			kcal: 50,
 			filename: "greek-yogurt-ranch.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -564,6 +584,7 @@ async function main() {
 			price: 0.7,
 			kcal: 60,
 			filename: "spicy-sriracha-mayo.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -580,6 +601,7 @@ async function main() {
 			price: 0.9,
 			kcal: 90,
 			filename: "garlic-tahini-sauce.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -596,6 +618,7 @@ async function main() {
 			price: 0.6,
 			kcal: 20,
 			filename: "zesty-tomato-salsa.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -612,6 +635,7 @@ async function main() {
 			price: 0.9,
 			kcal: 100,
 			filename: "peanut-dipping-sauce.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -628,6 +652,7 @@ async function main() {
 			price: 3.5,
 			kcal: 120,
 			filename: "green-glow-smoothie.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -646,6 +671,7 @@ async function main() {
 			price: 3.0,
 			kcal: 90,
 			filename: "iced-matcha-latte.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -664,6 +690,7 @@ async function main() {
 			price: 1.5,
 			kcal: 0,
 			filename: "fruit-infused-water.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -685,6 +712,7 @@ async function main() {
 			price: 3.8,
 			kcal: 140,
 			filename: "berry-blast-smoothie.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -705,6 +733,7 @@ async function main() {
 			price: 3.0,
 			kcal: 90,
 			filename: "citrus-cooler.png",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -732,49 +761,51 @@ async function main() {
 			filename: product.filename,
 			price: product.price,
 			kcal: product.kcal,
+			dietType: product.dietType,
 			translations: product.translations,
+		});
+
+		console.log("Seeding complete!");
+	}
+
+	async function createProduct(product: Product) {
+		const image = await prisma.image.create({
+			data: {
+				filename: `/img/products/${product.filename}`,
+			},
+			select: {
+				id: true,
+			},
+		});
+
+		await prisma.product.create({
+			data: {
+				categoryId: product.categoryId,
+				imageId: image.id,
+				price: product.price,
+				kcal: product.kcal,
+				dietType: product.dietType,
+				available: true,
+				productTranslations: {
+					createMany: {
+						data: product.translations.map((translation) => ({
+							name: translation.name,
+							description: translation.description,
+							languageId: translation.languageId,
+						})),
+					},
+				},
+			},
 		});
 	}
 
-	console.log("Seeding complete!");
+	main()
+		.then(async () => {
+			await prisma.$disconnect();
+		})
+		.catch(async (e) => {
+			console.error(e);
+			await prisma.$disconnect();
+			process.exit(1);
+		});
 }
-
-async function createProduct(product: Product) {
-	const image = await prisma.image.create({
-		data: {
-			filename: `/img/products/${product.filename}`,
-		},
-		select: {
-			id: true,
-		},
-	});
-
-	await prisma.product.create({
-		data: {
-			categoryId: product.categoryId,
-			imageId: image.id,
-			price: product.price,
-			kcal: product.kcal,
-			available: true,
-			productTranslations: {
-				createMany: {
-					data: product.translations.map((translation) => ({
-						name: translation.name,
-						description: translation.description,
-						languageId: translation.languageId,
-					})),
-				},
-			},
-		},
-	});
-}
-
-main()
-	.then(async () => {
-		await prisma.$disconnect();
-	})
-	.catch(async (e) => {
-		console.error(e);
-		await prisma.$disconnect();
-		process.exit(1);
-	});

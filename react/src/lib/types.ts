@@ -6,6 +6,7 @@ export interface Product {
 	description?: string;
 	price: number;
 	kcal: number;
+	dietType: "VEGGIE" | "VEGAN";
 }
 
 export interface Category {
