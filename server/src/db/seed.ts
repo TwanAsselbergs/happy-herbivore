@@ -180,7 +180,7 @@ async function main() {
 			price: 4.5,
 			kcal: 300,
 			filename: "smoothie-bowl.png",
-			dietType: "VEGGIE",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -201,7 +201,7 @@ async function main() {
 			price: 3.5,
 			kcal: 500,
 			filename: "eggcellent-wrap.png",
-			dietType: "VEGAN",
+			dietType: "VEGGIE",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -347,7 +347,7 @@ async function main() {
 			price: 3.0,
 			kcal: 150,
 			filename: "mini-veggie-platter.webp",
-			dietType: "VEGGIE",
+			dietType: "VEGAN",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -567,7 +567,7 @@ async function main() {
 			price: 0.7,
 			kcal: 50,
 			filename: "greek-yogurt-ranch.png",
-			dietType: "VEGAN",
+			dietType: "VEGGIE",
 			translations: [
 				{
 					languageId: englishLanguageId,
@@ -584,7 +584,7 @@ async function main() {
 			price: 0.7,
 			kcal: 60,
 			filename: "spicy-sriracha-mayo.png",
-			dietType: "VEGAN",
+			dietType: "VEGGIE",
 			translations: [
 				{
 					languageId: englishLanguageId,
