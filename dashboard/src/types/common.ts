@@ -61,3 +61,8 @@ export interface Image {
 	filename: string;
 	description?: string | null;
 }
+
+export interface RevenueResponse {
+	lastMonth: number;
+	thisMonth: number;
+}

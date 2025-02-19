@@ -75,4 +75,9 @@ export interface CategoryTranslation {
 	description?: string | null;
 }
 
+export interface RevenueResponse {
+	lastMonth: number;
+	thisMonth: number;
+}
+
 export type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;

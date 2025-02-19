@@ -16,6 +16,7 @@ import {
 	productsSchema,
 	ordersRequestSchema,
 } from "@/utils/response-schemas";
+import { calculateRevenue, getOrdersAmount } from "@/api/stats";
 
 const keys = (process.env.BEARER_TOKENS ?? "placeholder_value").split(", ");
 
@@ -67,6 +68,9 @@ app.register(
 		api.post("/orders", ordersRequestSchema, placeOrder);
 
 		api.get("/orders/today", ordersResponseSchema, fetchTodaysOrders);
+
+		api.get("/stats/revenue", calculateRevenue);
+		api.get("/stats/orders", getOrdersAmount);
 
 		done();
 	},

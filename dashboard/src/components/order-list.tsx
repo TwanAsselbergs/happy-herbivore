@@ -18,11 +18,12 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
-import { Status, Order, OrderProduct } from "@/types/common";
+import { Status, Order } from "@/types/common";
 import { motion } from "framer-motion";
 import { formatOrderNumber } from "@/lib/utils";
 
 const WEBSOCKET_URL = "ws://localhost:3000?token=your-secret-token";
+const BEARER_TOKEN = process.env.API_TOKEN ?? "placeholder_value";
 
 export function OrderList() {
 	const [orders, setOrders] = useState<Order[]>([]);
@@ -82,7 +83,11 @@ export function OrderList() {
 	}, []);
 
 	async function fetchInitialOrders() {
-		const res = await fetch("http://localhost:3000/api/v1/orders/today");
+		const res = await fetch("http://localhost:3000/api/v1/orders/today", {
+			headers: {
+				Authorization: `Bearer ${BEARER_TOKEN}`,
+			},
+		});
 
 		const { orders } = await res.json();
 
