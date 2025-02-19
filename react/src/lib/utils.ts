@@ -21,3 +21,7 @@ export function toggleFromArray(array: any[], value: any) {
 
 	return newArr;
 }
+
+export function formatOrderNumber(number: number) {
+	return number.toString().padStart(2, "0");
+}

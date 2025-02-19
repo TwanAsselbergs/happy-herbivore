@@ -104,6 +104,16 @@ const Order = ({
 		setCurrentView(View.Confirmation);
 	}
 
+	const calculateCalorieChartColor = (kcal: number) => {
+		if (kcal < 2250 * 0.75) {
+			return "#8CD003";
+		} else if (kcal < 2250) {
+			return "orange";
+		} else {
+			return "#FB2C36";
+		}
+	};
+
 	return (
 		<>
 			<motion.div
@@ -193,8 +203,14 @@ const Order = ({
 													data={{
 														datasets: [
 															{
-																data: [totalKcal, 2250 - totalKcal],
-																backgroundColor: ["#8CD003", "#D9D9D9"],
+																data: [
+																	Math.min(totalKcal, 2250),
+																	Math.max(2250 - totalKcal, 0),
+																],
+																backgroundColor: [
+																	calculateCalorieChartColor(totalKcal),
+																	"#D9D9D9",
+																],
 															},
 														],
 													}}

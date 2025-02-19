@@ -1,8 +1,8 @@
-import { View } from "../../App";
+import { View, CartContext } from "../../App";
 import { SetStateAction, useContext, useEffect } from "react";
-import { CartContext } from "../../App";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { formatOrderNumber } from "../../lib/utils";
 
 const Confirmation = ({
 	setCurrentView,
@@ -32,7 +32,7 @@ const Confirmation = ({
 			/>
 			<h1 className="font-bold text-4xl max-w-lg">{t("thank_you")}</h1>
 			<p className="text-2xl text-gray-400 mb-4">
-				{t("order_number")} #{orderNumber}
+				{t("order_number")} #{formatOrderNumber(orderNumber!)}
 			</p>
 			<button
 				className="text-white-primary text-xl block bg-lime px-20 py-10 relative rounded-full overflow-hidden font-bold"
