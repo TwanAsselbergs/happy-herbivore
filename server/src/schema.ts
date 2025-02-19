@@ -1,6 +1,9 @@
 import { z } from "zod";
+import { extendZodWithOpenApi } from "@anatine/zod-openapi";
 
-export const orderSchema = z
+extendZodWithOpenApi(z);
+
+export const PlaceOrderSchema = z
 	.object({
 		id: z.number({
 			required_error: "Id is required",

@@ -1,5 +1,5 @@
 import { db } from "@/db/prisma-client";
-import { orderSchema } from "@/schema";
+import { PlaceOrderSchema } from "@/schema";
 import {
 	Status,
 	type OrderItem,
@@ -22,7 +22,7 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 			throw new Error("Order is required.");
 		}
 
-		const parseRes = orderSchema.safeParse(order);
+		const parseRes = PlaceOrderSchema.safeParse(order);
 
 		if (!parseRes.success) {
 			res.status(400).send(parseRes.error.flatten());
