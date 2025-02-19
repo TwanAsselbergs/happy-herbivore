@@ -87,9 +87,12 @@ const App = () => {
 			`Bearer ${import.meta.env.VITE_API_TOKEN ?? "placeholder_value"}`
 		);
 
-		const res = await fetch("http://localhost:3000/api/v1/categories", {
-			headers,
-		});
+		const res = await fetch(
+			`http://localhost:3000/api/v1/categories?lang=${language}`,
+			{
+				headers,
+			}
+		);
 
 		if (!res.ok) {
 			return;

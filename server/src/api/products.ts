@@ -22,9 +22,12 @@ export async function productsIndex(req: FastifyRequest): Promise<Product[]> {
 			select: {
 				category: {
 					select: {
-						name: true,
 						id: true,
 						image: true,
+						categoryTranslations: {
+							select: { name: true },
+							where: { language: { code: lang } },
+						},
 					},
 				},
 				image: {
@@ -46,7 +49,18 @@ export async function productsIndex(req: FastifyRequest): Promise<Product[]> {
 				},
 			},
 		})
-	).map(transformProduct);
+	).map((product) => {
+		const newProduct = {
+			...product,
+			category: {
+				...product.category,
+				name: product.category.categoryTranslations[0].name,
+				categoryTranslations: undefined,
+			},
+		};
+
+		return transformProduct(newProduct);
+	});
 
 	return products;
 }
@@ -81,8 +95,11 @@ export async function fetchSingleProduct(
 		select: {
 			category: {
 				select: {
-					name: true,
 					id: true,
+					categoryTranslations: {
+						select: { name: true },
+						where: { language: { code: lang } },
+					},
 				},
 			},
 			image: {
@@ -109,7 +126,18 @@ export async function fetchSingleProduct(
 		return res.status(404).send({ error: "Product does not exist" });
 	}
 
-	const product: Product = transformProduct(fetchedProduct);
+	const newProduct = {
+		...fetchedProduct,
+		category: {
+			...fetchedProduct.category,
+			name: fetchedProduct.category.categoryTranslations[0].name,
+			categoryTranslations: undefined,
+		},
+	};
+
+	const product: Product = {
+		...transformProduct(newProduct),
+	};
 
 	return product;
 }

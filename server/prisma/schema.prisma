@@ -21,12 +21,12 @@ enum DietType {
 }
 
 model Category {
-  id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(255)
-  description String?   @db.VarChar(255)
-  products    Product[]
-  image       Image?    @relation(fields: [imageId], references: [id])
-  imageId     Int?
+  id       Int       @id @default(autoincrement())
+  products Product[]
+  image    Image?    @relation(fields: [imageId], references: [id])
+  imageId  Int?
+
+  categoryTranslations CategoryTranslation[]
 
   @@map("categories")
 }
@@ -93,7 +93,8 @@ model Language {
   code String @unique @db.VarChar(10)
   name String @db.VarChar(50)
 
-  productTranslations ProductTranslation[]
+  productTranslations  ProductTranslation[]
+  categoryTranslations CategoryTranslation[]
 
   @@map("languages")
 }
@@ -109,4 +110,15 @@ model ProductTranslation {
 
   @@unique([productId, languageId])
   @@map("product_translations")
+}
+
+model CategoryTranslation {
+  id         Int      @id @default(autoincrement())
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId Int
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  languageId Int
+
+  name        String @db.VarChar(255)
+  description String @db.VarChar(255)
 }

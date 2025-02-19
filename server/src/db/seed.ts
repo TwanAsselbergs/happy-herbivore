@@ -82,57 +82,165 @@ async function main() {
 		},
 	});
 
-	await prisma.category.createMany({
-		data: [
-			{
-				name: "Breakfast",
-				imageId:
-					categoryImages.find(
-						(img) => img.filename === "/img/categories/breakfast-no-background.png"
-					)?.id ?? 0,
-			},
-			{
-				name: "Lunch & Dinner",
-				imageId:
-					categoryImages.find(
-						(img) => img.filename === "/img/categories/lunch-no-background.png"
-					)?.id ?? 0,
-			},
-			{
-				name: "Sides",
-				imageId:
-					categoryImages.find(
-						(img) => img.filename === "/img/categories/sides-no-background.png"
-					)?.id ?? 0,
-			},
-			{
-				name: "Snacks",
-				imageId:
-					categoryImages.find(
-						(img) => img.filename === "/img/categories/snacks-no-background.png"
-					)?.id ?? 0,
-			},
-			{
-				name: "Dips",
-				imageId:
-					categoryImages.find(
-						(img) => img.filename === "/img/categories/dips-no-background.png"
-					)?.id ?? 0,
-			},
-			{
-				name: "Drinks",
-				imageId:
-					categoryImages.find(
-						(img) => img.filename === "/img/categories/drinks-no-background.png"
-					)?.id ?? 0,
-			},
-		],
-		skipDuplicates: true,
-	});
+	const categories: {
+		imageId: number;
+		categoryTranslations: {
+			languageId: number;
+			name: string;
+			description: string;
+		}[];
+	}[] = [
+		{
+			imageId:
+				categoryImages.find(
+					(img) => img.filename === "/img/categories/breakfast-no-background.png"
+				)?.id ?? 0,
+			categoryTranslations: [
+				{
+					languageId: englishLanguageId,
+					name: "Breakfast",
+					description: "",
+				},
+				{
+					languageId: dutchLanguageId,
+					name: "Ontbijt",
+					description: "",
+				},
+			],
+		},
+		{
+			imageId:
+				categoryImages.find(
+					(img) => img.filename === "/img/categories/lunch-no-background.png"
+				)?.id ?? 0,
+			categoryTranslations: [
+				{
+					languageId: englishLanguageId,
+					name: "Lunch & Dinner",
+					description: "",
+				},
+				{
+					languageId: dutchLanguageId,
+					name: "Lunch & Diner",
+					description: "",
+				},
+			],
+		},
+		{
+			imageId:
+				categoryImages.find(
+					(img) => img.filename === "/img/categories/sides-no-background.png"
+				)?.id ?? 0,
+			categoryTranslations: [
+				{
+					languageId: englishLanguageId,
+					name: "Sides",
+					description: "",
+				},
+				{
+					languageId: dutchLanguageId,
+					name: "Bijgerechten",
+					description: "",
+				},
+			],
+		},
+		{
+			imageId:
+				categoryImages.find(
+					(img) => img.filename === "/img/categories/snacks-no-background.png"
+				)?.id ?? 0,
+			categoryTranslations: [
+				{
+					languageId: englishLanguageId,
+					name: "Snacks",
+					description: "",
+				},
+				{
+					languageId: dutchLanguageId,
+					name: "Snacks",
+					description: "",
+				},
+			],
+		},
+		{
+			imageId:
+				categoryImages.find(
+					(img) => img.filename === "/img/categories/dips-no-background.png"
+				)?.id ?? 0,
+			categoryTranslations: [
+				{
+					languageId: englishLanguageId,
+					name: "Dips",
+					description: "",
+				},
+				{
+					languageId: dutchLanguageId,
+					name: "Dips",
+					description: "",
+				},
+			],
+		},
+		{
+			imageId:
+				categoryImages.find(
+					(img) => img.filename === "/img/categories/drinks-no-background.png"
+				)?.id ?? 0,
+			categoryTranslations: [
+				{
+					languageId: englishLanguageId,
+					name: "Drinks",
+					description: "",
+				},
+				{
+					languageId: dutchLanguageId,
+					name: "Dranken",
+					description: "",
+				},
+			],
+		},
+	];
 
-	const categoryIds = await prisma.category.findMany({
-		select: { id: true, name: true },
-	});
+	for (const category of categories) {
+		await createCategory(category);
+	}
+
+	async function createCategory({
+		categoryTranslations,
+		imageId,
+	}: {
+		imageId: number;
+		categoryTranslations: {
+			languageId: number;
+			name: string;
+			description: string;
+		}[];
+	}) {
+		await prisma.category.create({
+			data: {
+				imageId,
+				categoryTranslations: {
+					createMany: {
+						data: categoryTranslations,
+					},
+				},
+			},
+		});
+	}
+
+	const categoryIds: { id: number; name: string }[] = (
+		await prisma.category.findMany({
+			select: {
+				id: true,
+				categoryTranslations: {
+					select: { name: true },
+					where: { language: { code: "en" } },
+				},
+			},
+		})
+	).map((category) => ({
+		...category,
+		name: category.categoryTranslations[0].name,
+	}));
 
 	const filenames = [
 		"apple-cinnamon-chips.png",
