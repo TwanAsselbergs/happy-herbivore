@@ -1,21 +1,11 @@
 import { db } from "@/db/prisma-client";
 import type { FastifyRequest, FastifyReply } from "fastify";
-import { type Product } from "@/types/common";
-import { transformProduct } from "@/utils/misc";
+import { type Category, type Product } from "@/types/common";
+import { getLanguage, transformCategory, transformProduct } from "@/utils/misc";
 
-// Route (GET: /api/v1/products
+// Route (GET): /api/v1/products
 export async function productsIndex(req: FastifyRequest): Promise<Product[]> {
-	let { lang } = req.query as { lang?: string };
-
-	const correspondingLanguage = await db.language.findFirst({
-		where: {
-			code: lang,
-		},
-	});
-
-	if (!correspondingLanguage) {
-		lang = "en";
-	}
+	const lang = await getLanguage(req.query as { lang?: string });
 
 	const products: Product[] = (
 		await db.product.findMany({
@@ -49,23 +39,18 @@ export async function productsIndex(req: FastifyRequest): Promise<Product[]> {
 				},
 			},
 		})
-	).map((product) => {
-		const newProduct = {
-			...product,
-			category: {
-				...product.category,
-				name: product.category.categoryTranslations[0].name,
-				categoryTranslations: undefined,
-			},
-		};
-
-		return transformProduct(newProduct);
-	});
+	).map(
+		(product) =>
+			transformProduct({
+				...product,
+				category: transformCategory(product.category) as Category,
+			}) as Product
+	);
 
 	return products;
 }
 
-// Route: /api/v1/products/:id
+// Route (GET): /api/v1/products/:id
 export async function fetchSingleProduct(
 	req: FastifyRequest,
 	res: FastifyReply
@@ -76,17 +61,7 @@ export async function fetchSingleProduct(
 		return res.status(400).send({ error: "Id is required" });
 	}
 
-	let { lang } = req.query as { lang?: string };
-
-	const correspondingLanguage = await db.language.findFirst({
-		where: {
-			code: lang,
-		},
-	});
-
-	if (!correspondingLanguage) {
-		lang = "en";
-	}
+	const lang = await getLanguage(req.query as { lang?: string });
 
 	const fetchedProduct = await db.product.findUnique({
 		where: {
@@ -126,18 +101,11 @@ export async function fetchSingleProduct(
 		return res.status(404).send({ error: "Product does not exist" });
 	}
 
-	const newProduct = {
+	// Transform database response so it doesn't include the ugly translations array
+	const product: Product = transformProduct({
 		...fetchedProduct,
-		category: {
-			...fetchedProduct.category,
-			name: fetchedProduct.category.categoryTranslations[0].name,
-			categoryTranslations: undefined,
-		},
-	};
-
-	const product: Product = {
-		...transformProduct(newProduct),
-	};
+		category: transformCategory(fetchedProduct.category) as Category,
+	}) as Product;
 
 	return product;
 }

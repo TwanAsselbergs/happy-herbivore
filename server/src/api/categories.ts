@@ -1,25 +1,10 @@
 import { db } from "@/db/prisma-client";
+import { transformCategory, getLanguage } from "@/utils/misc";
 import type { FastifyRequest } from "fastify";
 
 // Route (GET): /api/v1/categories
 export async function categoriesIndex(req: FastifyRequest) {
-	let { lang } = req.query as { lang?: string };
-
-	if (lang) {
-		const correspondingLanguage = await db.language.findFirst({
-			where: {
-				code: lang,
-			},
-		});
-
-		lang = correspondingLanguage?.code;
-	}
-
-	if (!lang) {
-		lang = "en";
-	}
-
-	console.log(lang);
+	const lang = await getLanguage(req.query as { lang?: string });
 
 	const categories = (
 		await db.category.findMany({
@@ -33,11 +18,7 @@ export async function categoriesIndex(req: FastifyRequest) {
 				categoryTranslations: { where: { language: { code: lang } } },
 			},
 		})
-	).map((category) => ({
-		...category,
-		name: category.categoryTranslations[0].name,
-		categoryTranslations: undefined,
-	}));
+	).map(transformCategory);
 
 	return categories;
 }

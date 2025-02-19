@@ -56,7 +56,7 @@ export interface Product {
 export interface Category {
 	id: number;
 	name: string;
-	description?: string;
+	description: string | null;
 	image: Image | null;
 }
 
@@ -69,3 +69,10 @@ export interface ProductTranslation {
 	name: string;
 	description: string | null;
 }
+
+export interface CategoryTranslation {
+	name: string;
+	description?: string | null;
+}
+
+export type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;
