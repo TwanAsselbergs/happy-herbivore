@@ -23,6 +23,7 @@ export default function StatisticsPage() {
 	} | null>(null);
 	const [orders, setOrders] = useState<Order[]>([]);
 	const wsRef = useRef<WebSocket | null>(null);
+	const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
 	// Fetch API Data
 	useEffect(() => {
@@ -47,16 +48,40 @@ export default function StatisticsPage() {
 
 	// WebSocket Connection
 	useEffect(() => {
-		wsRef.current = new WebSocket(WEBSOCKET_URL);
+		function connectWs() {
+			console.log(wsRef.current);
 
-		wsRef.current.onmessage = (event) => {
-			const { type, message } = JSON.parse(event.data);
+			if (wsRef.current) return;
 
-			if (type === "order") handleNewOrder(message.data);
-			else if (type === "status_update") handleStatusUpdate(message.data);
+			wsRef.current = new WebSocket(WEBSOCKET_URL);
+
+			wsRef.current.onopen = () => {
+				console.log("Connected to the server.");
+			};
+
+			wsRef.current.onmessage = (event) => {
+				const { type, message } = JSON.parse(event.data);
+				if (type === "order") handleNewOrder(message.data);
+				else if (type === "status_update") handleStatusUpdate(message.data);
+			};
+
+			wsRef.current.onclose = () => {
+				console.warn("WebSocket disconnected, attempting to reconnect...");
+				wsRef.current = null;
+				pollingIntervalRef.current = setTimeout(connectWs, 2000);
+			};
+
+			wsRef.current.onerror = (err) => {
+				wsRef.current?.close();
+			};
+		}
+
+		connectWs();
+
+		return () => {
+			wsRef.current?.close();
+			if (pollingIntervalRef.current) clearTimeout(pollingIntervalRef.current);
 		};
-
-		return () => wsRef.current?.close();
 	}, []);
 
 	const handleNewOrder = (newOrder: Order) => {
@@ -70,7 +95,13 @@ export default function StatisticsPage() {
 			thisMonth: (prev?.thisMonth ?? 0) + 1,
 		}));
 
-		setOrders((prev) => [newOrder, ...prev]);
+		setOrders((prev) => [
+			{
+				...newOrder,
+				createdAt: new Date(newOrder.createdAt),
+			},
+			...prev,
+		]);
 	};
 
 	const handleStatusUpdate = ({
