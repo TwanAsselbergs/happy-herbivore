@@ -22,7 +22,7 @@ export default function Menu({
 		categories[0].id
 	);
 	const [total, setTotal] = useState(0);
-	const [showingProducts, setShowingProducts] = useState(products);
+	const [showingProducts, setShowingProducts] = useState<ProductType[]>([]);
 	const [dietType, setDietType] = useState<("VEGGIE" | "VEGAN")[]>([
 		"VEGAN",
 		"VEGGIE",
@@ -40,7 +40,7 @@ export default function Menu({
 		});
 
 		setShowingProducts(filteredProducts);
-	}, [selectedCategory, products, dietType]);
+	}, [selectedCategory, products, dietType, cart]);
 
 	function handleDietToggle(diet: "VEGGIE" | "VEGAN") {
 		const toggleRes = toggleFromArray(dietType, diet);
