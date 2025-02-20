@@ -35,7 +35,7 @@ const Confirmation = ({
 				{t("order_number")} #{formatOrderNumber(orderNumber!)}
 			</p>
 			<button
-				className="text-white-primary text-xl block bg-lime px-20 py-10 relative rounded-full overflow-hidden font-bold"
+				className="w-[600px] text-white-primary text-xl block bg-lime px-20 py-10 relative rounded-full overflow-hidden font-bold"
 				onClick={resetOrder}
 			>
 				<motion.span
