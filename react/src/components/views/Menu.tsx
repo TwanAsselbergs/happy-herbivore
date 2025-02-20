@@ -73,7 +73,7 @@ export default function Menu({
 			/>
 			<div className="bg-white-secondary w-full overflow-y-auto h-full">
 				<div className="flex justify-between items-center px-8 pt-16 pb-2">
-					<h2 className="font-black text-center text-xl uppercase">
+					<h2 className="font-black text-center text-xl uppercase ml-2">
 						{categories.find((category) => category.id === selectedCategory)?.name}
 					</h2>
 					<div className="flex gap-4">
