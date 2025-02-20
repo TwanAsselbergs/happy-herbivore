@@ -35,14 +35,14 @@ const Confirmation = ({
 				{t("order_number")} #{formatOrderNumber(orderNumber!)}
 			</p>
 			<button
-				className="text-white-primary text-xl block bg-lime px-20 py-10 relative rounded-full overflow-hidden font-bold"
+				className="w-[600px] text-white-primary text-xl block bg-lime px-20 py-10 relative rounded-full overflow-hidden font-bold"
 				onClick={resetOrder}
 			>
 				<motion.span
 					className="block bg-lime-600 opacity-30 h-full w-full absolute top-0 left-0"
 					initial={{ x: "-100%" }}
 					animate={{ x: 0 }}
-					transition={{ duration: 10, type: "tween" }}
+					transition={{ duration: 1000, type: "tween" }}
 				></motion.span>
 				<span className="z-10 relative">{t("back_to_homepage")}</span>
 			</button>
