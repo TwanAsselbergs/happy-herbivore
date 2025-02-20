@@ -1,6 +1,6 @@
 "use client";
 
-import { SetStateAction, useEffect } from "react";
+import { SetStateAction } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,6 @@ import { Status, Order, OrderStatus, OrderProduct } from "@/types/common";
 import { motion } from "framer-motion";
 import { formatOrderNumber } from "@/lib/utils";
 
-const WEBSOCKET_URL = "ws://localhost:3000?token=your-secret-token";
 const BEARER_TOKEN = process.env.NEXT_PUBLIC_API_TOKEN ?? "placeholder_value";
 
 export function OrderList({
@@ -87,10 +86,6 @@ export function OrderList({
 		);
 	};
 
-	useEffect(() => {
-		fetchInitialOrders();
-	}, []);
-
 	function transformOrderStatus(status: OrderStatus) {
 		switch (status) {
 			case OrderStatus.PICKED_UP:
@@ -116,25 +111,6 @@ export function OrderList({
 				return "lime";
 			default:
 				return "secondary";
-		}
-	}
-
-	async function fetchInitialOrders() {
-		const res = await fetch("http://localhost:3000/api/v1/orders/today", {
-			headers: {
-				Authorization: `Bearer ${BEARER_TOKEN}`,
-			},
-		});
-
-		const { orders } = await res.json();
-
-		if (orders) {
-			setOrders(
-				orders.map((order: any) => ({
-					...order,
-					createdAt: new Date(order.createdAt),
-				}))
-			);
 		}
 	}
 
@@ -164,7 +140,9 @@ export function OrderList({
 
 	return (
 		<div className="space-y-4 w-full">
-			{orders.length === 0 && <h3 className="text-gray-500">No orders today.</h3>}
+			{orders.length === 0 && (
+				<h3 className="text-gray-500">No outstanding orders.</h3>
+			)}
 			{orders.map((order) => (
 				<motion.div
 					key={order.id}

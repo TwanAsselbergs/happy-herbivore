@@ -16,7 +16,11 @@ import {
 	productsSchema,
 	ordersRequestSchema,
 } from "@/utils/response-schemas";
-import { calculateRevenue, getOrdersAmount } from "@/api/stats";
+import {
+	calculateRevenue,
+	getMostOrderedProducts,
+	getOrdersAmount,
+} from "@/api/stats";
 
 const keys = (process.env.BEARER_TOKENS ?? "placeholder_value").split(", ");
 
@@ -71,6 +75,8 @@ app.register(
 
 		api.get("/stats/revenue", calculateRevenue);
 		api.get("/stats/orders", getOrdersAmount);
+
+		api.get("/stats/products", getMostOrderedProducts);
 
 		done();
 	},

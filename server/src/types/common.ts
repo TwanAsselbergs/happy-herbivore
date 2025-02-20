@@ -83,3 +83,10 @@ export interface RevenueResponse {
 }
 
 export type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;
+
+export interface MostOrderedProductType {
+	name: string;
+	quantity: number;
+	id: number;
+	description: string | null;
+}

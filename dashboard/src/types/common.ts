@@ -74,3 +74,10 @@ export enum OrderStatus {
 	READY_FOR_PICKUP = "READY_FOR_PICKUP",
 	PICKED_UP = "PICKED_UP",
 }
+
+export interface MostOrderedProductType {
+	name: string;
+	quantity: number;
+	description: string | null;
+	id: number;
+}
