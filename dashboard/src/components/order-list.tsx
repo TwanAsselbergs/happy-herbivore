@@ -18,7 +18,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
-import { Status, Order, OrderStatus } from "@/types/common";
+import { Status, Order, OrderStatus, OrderProduct } from "@/types/common";
 import { motion } from "framer-motion";
 import { formatOrderNumber } from "@/lib/utils";
 
@@ -41,29 +41,49 @@ export function OrderList({
 	) => {
 		setOrders((prevOrders) =>
 			prevOrders.map((order) => {
-				if (order.id === orderId) {
-					const updatedProducts = order.orderProducts.map((orderProduct) => {
-						return orderProduct.product.id === productId
-							? { ...orderProduct, status: newStatus }
-							: orderProduct;
-					});
-					const allCompleted = updatedProducts.every(
-						(product) => product.status === Status.COMPLETED
-					);
+				if (order.id !== orderId) return order;
 
-					if (allCompleted) {
-						completeOrder(order.id);
-					} else if (order.status == OrderStatus.PLACED_AND_PAID) {
-						markOrderAsPreparing(order.id);
-					}
+				const updatedProducts = getUpdatedProducts(
+					order.orderProducts,
+					productId,
+					newStatus
+				);
+				const newOrderStatus = determineOrderStatus(order, updatedProducts);
 
-					return {
-						...order,
-						orderProducts: updatedProducts,
-					};
-				}
-				return order;
+				if (newOrderStatus) updateOrderStatus(order.id, newOrderStatus);
+
+				return {
+					...order,
+					orderProducts: updatedProducts,
+				};
 			})
+		);
+	};
+
+	const determineOrderStatus = (
+		order: Order,
+		updatedProducts: OrderProduct[]
+	) => {
+		const allCompleted = updatedProducts.every(
+			(product) => product.status === Status.COMPLETED
+		);
+
+		if (allCompleted) return OrderStatus.READY_FOR_PICKUP;
+		if (order.status === OrderStatus.PLACED_AND_PAID)
+			return OrderStatus.PREPARING;
+
+		return null;
+	};
+
+	const getUpdatedProducts = (
+		orderProducts: OrderProduct[],
+		productId: number,
+		newStatus: Status
+	) => {
+		return orderProducts.map((orderProduct) =>
+			orderProduct.product.id === productId
+				? { ...orderProduct, status: newStatus }
+				: orderProduct
 		);
 	};
 
@@ -86,6 +106,19 @@ export function OrderList({
 		}
 	}
 
+	function getStatusColor(status: OrderStatus) {
+		switch (status) {
+			case OrderStatus.PLACED_AND_PAID:
+				return "secondary";
+			case OrderStatus.PREPARING:
+				return "orange";
+			case OrderStatus.READY_FOR_PICKUP:
+				return "lime";
+			default:
+				return "secondary";
+		}
+	}
+
 	async function fetchInitialOrders() {
 		const res = await fetch("http://localhost:3000/api/v1/orders/today", {
 			headers: {
@@ -105,31 +138,29 @@ export function OrderList({
 		}
 	}
 
-	const completeOrder = (orderId: number) => {
+	const updateOrderStatus = (orderId: number, newStatus: OrderStatus) => {
 		if (!ws) return;
+
+		setOrders((prevOrders) =>
+			prevOrders.map((order) =>
+				order.id === orderId ? { ...order, status: newStatus } : order
+			)
+		);
 
 		ws.send(
 			JSON.stringify({
-				type: "complete_order",
+				type: "update_order_status",
 				data: {
 					id: orderId,
+					newStatus,
 				},
 			})
 		);
 	};
 
-	const markOrderAsPreparing = (orderId: number) => {
-		if (!ws) return;
-
-		ws.send(
-			JSON.stringify({
-				type: "mark_order_as_preparing",
-				data: {
-					id: orderId,
-				},
-			})
-		);
-	};
+	function removeOrder(orderId: number) {
+		updateOrderStatus(orderId, OrderStatus.PICKED_UP);
+	}
 
 	return (
 		<div className="space-y-4 w-full">
@@ -151,17 +182,18 @@ export function OrderList({
 										- Placed at: {order.createdAt.toLocaleTimeString()}
 									</span>
 								</span>
-								<Badge
-									variant={
-										order.status === OrderStatus.READY_FOR_PICKUP
-											? "lime"
-											: order.status === OrderStatus.PLACED_AND_PAID
-											? "secondary"
-											: "orange"
-									}
-								>
-									{transformOrderStatus(order.status)}
-								</Badge>
+								<div className="flex gap-2">
+									<Badge variant={getStatusColor(order.status)}>
+										{transformOrderStatus(order.status)}
+									</Badge>
+									{order.status == OrderStatus.READY_FOR_PICKUP && (
+										<Badge variant="destructive">
+											<button onClick={() => removeOrder(order.id)}>
+												Mark as picked up
+											</button>
+										</Badge>
+									)}
+								</div>
 							</CardTitle>
 						</CardHeader>
 						<CardContent>

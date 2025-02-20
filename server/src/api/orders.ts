@@ -171,6 +171,9 @@ export async function fetchTodaysOrders() {
 			createdAt: {
 				gte: startOfDay,
 			},
+			NOT: {
+				orderStatus: OrderStatus.PICKED_UP,
+			},
 		},
 		select: {
 			id: true,

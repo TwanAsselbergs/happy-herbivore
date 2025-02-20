@@ -1,5 +1,4 @@
 import { type WebSocket } from "@fastify/websocket";
-import { db } from "@/db/prisma-client";
 import { OrderStatus } from "@prisma/client";
 import { updateOrderStatus } from "@/api/orders";
 
@@ -12,30 +11,19 @@ export async function websocketHandler(socket: WebSocket) {
 	socket.on("message", async (msg) => {
 		const message = JSON.parse(msg.toString());
 
-		switch (message.type) {
-			case "complete_order":
-				await updateOrderStatus(
-					OrderStatus.READY_FOR_PICKUP,
-					Number(message.data.id)
-				);
+		if (message.type === "update_order_status") {
+			const { id, newStatus } = message.data;
 
-				broadcastMessage("status_update", {
-					data: {
-						id: Number(message.data.id),
-						newStatus: OrderStatus.READY_FOR_PICKUP,
-					},
-				});
-				break;
-			case "mark_order_as_preparing":
-				await updateOrderStatus(OrderStatus.PREPARING, Number(message.data.id));
+			if (!Object.values(OrderStatus).includes(newStatus)) {
+				console.error("Invalid order status:", newStatus);
+				return;
+			}
 
-				broadcastMessage("status_update", {
-					data: {
-						id: Number(message.data.id),
-						newStatus: OrderStatus.PREPARING,
-					},
-				});
-				break;
+			await updateOrderStatus(newStatus, Number(id));
+
+			broadcastMessage("status_update", {
+				data: { id: Number(id), newStatus },
+			});
 		}
 	});
 
