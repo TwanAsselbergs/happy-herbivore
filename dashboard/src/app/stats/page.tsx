@@ -64,8 +64,6 @@ export default function StatisticsPage() {
 		wsRef.current = new WebSocket(WEBSOCKET_URL);
 
 		wsRef.current.onmessage = (event) => {
-			console.log(event.data);
-
 			const data = JSON.parse(event.data);
 
 			if (data.type === "order") {
@@ -93,6 +91,16 @@ export default function StatisticsPage() {
 					},
 					...prev,
 				]);
+			} else if (data.type === "status_update") {
+				setOrders((prev) =>
+					prev.map((order) => ({
+						...order,
+						status:
+							order.id === data.message.data.id
+								? data.message.data.newStatus
+								: order.status,
+					}))
+				);
 			}
 		};
 

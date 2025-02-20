@@ -51,14 +51,15 @@ export function OrderList({
 						(product) => product.status === Status.COMPLETED
 					);
 
-					if (allCompleted) completeOrder(order.id);
+					if (allCompleted) {
+						completeOrder(order.id);
+					} else if (order.status == OrderStatus.PLACED_AND_PAID) {
+						markOrderAsPreparing(order.id);
+					}
 
 					return {
 						...order,
 						orderProducts: updatedProducts,
-						status: allCompleted
-							? OrderStatus.READY_FOR_PICKUP
-							: OrderStatus.PREPARING,
 					};
 				}
 				return order;
@@ -105,13 +106,24 @@ export function OrderList({
 	}
 
 	const completeOrder = (orderId: number) => {
-		console.log("order completed!");
-
 		if (!ws) return;
 
 		ws.send(
 			JSON.stringify({
 				type: "complete_order",
+				data: {
+					id: orderId,
+				},
+			})
+		);
+	};
+
+	const markOrderAsPreparing = (orderId: number) => {
+		if (!ws) return;
+
+		ws.send(
+			JSON.stringify({
+				type: "mark_order_as_preparing",
 				data: {
 					id: orderId,
 				},

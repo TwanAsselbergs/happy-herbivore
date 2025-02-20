@@ -18,6 +18,24 @@ export async function websocketHandler(socket: WebSocket) {
 					OrderStatus.READY_FOR_PICKUP,
 					Number(message.data.id)
 				);
+
+				broadcastMessage("status_update", {
+					data: {
+						id: Number(message.data.id),
+						newStatus: OrderStatus.READY_FOR_PICKUP,
+					},
+				});
+				break;
+			case "mark_order_as_preparing":
+				await updateOrderStatus(OrderStatus.PREPARING, Number(message.data.id));
+
+				broadcastMessage("status_update", {
+					data: {
+						id: Number(message.data.id),
+						newStatus: OrderStatus.PREPARING,
+					},
+				});
+				break;
 		}
 	});
 
