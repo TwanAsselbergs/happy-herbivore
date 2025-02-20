@@ -129,13 +129,17 @@ export default function StatisticsPage() {
 	};
 
 	const getDescription = (prev: number, current: number) =>
-		`${(((current - prev) / prev) * 100).toFixed(2)}% ${
+		`${(((current - prev) / prev) * 100)
+			.toFixed(2)
+			.replace("Infinity", "\u221e")}% ${
 			current > prev ? "increase" : "decrease"
 		} from last month`;
 
 	return (
 		<div className="container mx-auto p-6">
-			<h1 className="text-3xl font-semibold text-gray-800 mb-6">Dashboard</h1>
+			<h1 className="text-3xl font-semibold text-gray-800 mb-6">
+				Happy Herbivore Dashboard
+			</h1>
 			<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 				<KpiCard
 					title="Total Revenue"
