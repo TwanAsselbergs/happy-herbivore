@@ -1,28 +1,16 @@
 "use client";
 
 import type React from "react";
-
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
-import {
-	ArrowDownIcon,
-	ArrowUpIcon,
-	DollarSign,
-	Users,
-	ShoppingCart,
-	Clock,
-} from "lucide-react";
+import { DollarSign, Users, ShoppingCart, Clock } from "lucide-react";
 import { OrderList } from "@/components/order-list";
-import { useEffect, useState } from "react";
+import { Order, OrderStatus } from "@/types/common";
+import KpiCard from "@/components/kpi-card";
 
-const BEARER_TOKEN = process.env.API_TOKEN ?? "placeholder_value";
+const API_BASE_URL = "http://localhost:3000/api/v1/stats";
+const BEARER_TOKEN = process.env.NEXT_PUBLIC_API_TOKEN ?? "placeholder_value";
+const WEBSOCKET_URL = "ws://localhost:3000?token=your-secret-token";
 
 export default function StatisticsPage() {
 	const [revenue, setRevenue] = useState<{
@@ -30,33 +18,84 @@ export default function StatisticsPage() {
 		lastMonth: number;
 	} | null>(null);
 	const [monthlyOrders, setMonthlyOrders] = useState<{
-		lastMonth: number;
 		thisMonth: number;
+		lastMonth: number;
 	} | null>(null);
+	const [orders, setOrders] = useState<Order[]>([]);
+	const wsRef = useRef<WebSocket | null>(null);
 
+	// Fetch API Data
 	useEffect(() => {
-		(async () => {
-			const response = await fetch("http://localhost:3000/api/v1/stats/revenue", {
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${BEARER_TOKEN}`,
-				},
-			});
-			const data = await response.json();
-			setRevenue(data);
-		})();
+		const fetchData = async (endpoint: string, setter: Function) => {
+			try {
+				const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${BEARER_TOKEN}`,
+					},
+				});
+				const data = await response.json();
+				setter(data);
+			} catch (error) {
+				console.error(`Error fetching ${endpoint}:`, error);
+			}
+		};
 
-		(async () => {
-			const response = await fetch("http://localhost:3000/api/v1/stats/orders", {
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${BEARER_TOKEN}`,
-				},
-			});
-			const data = await response.json();
-			setMonthlyOrders(data);
-		})();
+		fetchData("revenue", setRevenue);
+		fetchData("orders", setMonthlyOrders);
 	}, []);
+
+	// WebSocket Connection
+	useEffect(() => {
+		wsRef.current = new WebSocket(WEBSOCKET_URL);
+
+		wsRef.current.onmessage = (event) => {
+			const { type, message } = JSON.parse(event.data);
+
+			if (type === "order") handleNewOrder(message.data);
+			else if (type === "status_update") handleStatusUpdate(message.data);
+		};
+
+		return () => wsRef.current?.close();
+	}, []);
+
+	const handleNewOrder = (newOrder: Order) => {
+		setRevenue((prev) => ({
+			lastMonth: prev?.lastMonth ?? 0,
+			thisMonth: (prev?.thisMonth ?? 0) + Number(newOrder?.price),
+		}));
+
+		setMonthlyOrders((prev) => ({
+			lastMonth: prev?.lastMonth ?? 0,
+			thisMonth: (prev?.thisMonth ?? 0) + 1,
+		}));
+
+		setOrders((prev) => [newOrder, ...prev]);
+	};
+
+	const handleStatusUpdate = ({
+		id,
+		newStatus,
+	}: {
+		id: number;
+		newStatus: OrderStatus;
+	}) => {
+		if (!Object.values(OrderStatus).includes(newStatus)) {
+			console.error("Invalid order status:", newStatus);
+			return;
+		}
+
+		if (newStatus === OrderStatus.PICKED_UP) {
+			setOrders((prev) => prev.filter((order) => order.id != id));
+			return;
+		}
+
+		setOrders((prev) =>
+			prev.map((order) =>
+				order.id === id ? { ...order, status: newStatus } : order
+			)
+		);
+	};
 
 	const getDescription = (prev: number, current: number) =>
 		`${(((current - prev) / prev) * 100).toFixed(2)}% ${
@@ -68,19 +107,15 @@ export default function StatisticsPage() {
 			<h1 className="text-3xl font-semibold text-gray-800 mb-6">Dashboard</h1>
 			<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 				<KpiCard
+					title="Total Revenue"
+					value={`€${revenue?.thisMonth?.toFixed(2) ?? "Loading..."}`}
 					description={getDescription(
 						revenue?.lastMonth ?? 0,
 						revenue?.thisMonth ?? 0
 					)}
-					title="Total Revenue"
-					value={`€${revenue?.thisMonth.toFixed(2)}`}
 					icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
 					trend={
-						revenue &&
-						revenue.lastMonth !== undefined &&
-						revenue.thisMonth > revenue.lastMonth
-							? "up"
-							: "down"
+						(revenue?.thisMonth ?? 0) > (revenue?.lastMonth ?? 0) ? "up" : "down"
 					}
 				/>
 				<KpiCard
@@ -92,16 +127,14 @@ export default function StatisticsPage() {
 				/>
 				<KpiCard
 					title="Total Transactions"
-					value={monthlyOrders?.thisMonth.toString() ?? "Loading..."}
+					value={monthlyOrders?.thisMonth?.toString() ?? "Loading..."}
 					description={getDescription(
 						monthlyOrders?.lastMonth ?? 0,
 						monthlyOrders?.thisMonth ?? 0
 					)}
 					icon={<ShoppingCart className="h-4 w-4 text-muted-foreground" />}
 					trend={
-						monthlyOrders &&
-						monthlyOrders.lastMonth !== undefined &&
-						monthlyOrders.thisMonth > monthlyOrders.lastMonth
+						(monthlyOrders?.thisMonth ?? 0) > (monthlyOrders?.lastMonth ?? 0)
 							? "up"
 							: "down"
 					}
@@ -121,105 +154,10 @@ export default function StatisticsPage() {
 						<CardTitle>Recent orders</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<OrderList />
+						<OrderList orders={orders} setOrders={setOrders} ws={wsRef.current} />
 					</CardContent>
 				</Card>
 			</div>
-
-			<Card className="mt-6">
-				<CardHeader>
-					<CardTitle>Recent Transactions</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead>Transaction ID</TableHead>
-								<TableHead>Date & Time</TableHead>
-								<TableHead>Amount</TableHead>
-								<TableHead>Status</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{recentTransactions.map((transaction) => (
-								<TableRow key={transaction.id}>
-									<TableCell>{transaction.id}</TableCell>
-									<TableCell>{transaction.dateTime}</TableCell>
-									<TableCell>${transaction.amount.toFixed(2)}</TableCell>
-									<TableCell>{transaction.status}</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</CardContent>
-			</Card>
 		</div>
 	);
 }
-
-function KpiCard({
-	title,
-	value,
-	description,
-	icon,
-	trend,
-}: {
-	title: string;
-	value: string;
-	description: string;
-	icon: React.ReactNode;
-	trend: "up" | "down";
-}) {
-	return (
-		<Card>
-			<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle className="text-sm font-medium">{title}</CardTitle>
-				{icon}
-			</CardHeader>
-			<CardContent>
-				<div className="text-2xl font-bold">{value}</div>
-				<p className="text-xs text-muted-foreground">
-					{trend === "up" ? (
-						<ArrowUpIcon className="mr-1 h-4 w-4 text-green-500 inline" />
-					) : (
-						<ArrowDownIcon className="mr-1 h-4 w-4 text-red-500 inline" />
-					)}
-					{description}
-				</p>
-			</CardContent>
-		</Card>
-	);
-}
-
-const recentTransactions = [
-	{
-		id: "TRX001",
-		dateTime: "2023-06-15 14:30",
-		amount: 25.99,
-		status: "Completed",
-	},
-	{
-		id: "TRX002",
-		dateTime: "2023-06-15 15:45",
-		amount: 12.5,
-		status: "Completed",
-	},
-	{
-		id: "TRX003",
-		dateTime: "2023-06-15 16:20",
-		amount: 8.75,
-		status: "Pending",
-	},
-	{
-		id: "TRX004",
-		dateTime: "2023-06-15 17:10",
-		amount: 35.0,
-		status: "Completed",
-	},
-	{
-		id: "TRX005",
-		dateTime: "2023-06-15 18:05",
-		amount: 15.25,
-		status: "Failed",
-	},
-];
