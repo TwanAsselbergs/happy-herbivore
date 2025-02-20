@@ -1,3 +1,4 @@
+import type { OrderStatus } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
 export enum Status {
@@ -10,7 +11,7 @@ export type Order = {
 	id: number;
 	createdAt: Date;
 	price: Decimal;
-	status: Status;
+	status: OrderStatus;
 	orderProducts: OrderProduct[];
 	pickupNumber: number;
 };
@@ -26,6 +27,7 @@ export type OrderWithoutStatus = {
 	pickupNumber: number;
 	createdAt: Date;
 	price: Decimal;
+	orderStatus: OrderStatus;
 	orderProducts: Omit<OrderProduct, "status">[];
 };
 

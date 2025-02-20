@@ -1,4 +1,7 @@
 import { type WebSocket } from "@fastify/websocket";
+import { db } from "@/db/prisma-client";
+import { OrderStatus } from "@prisma/client";
+import { updateOrderStatus } from "@/api/orders";
 
 const clients: Set<WebSocket> = new Set();
 
@@ -6,8 +9,16 @@ export async function websocketHandler(socket: WebSocket) {
 	clients.add(socket);
 	console.log("Client connected");
 
-	socket.on("message", (msg) => {
-		socket.send("hi from server, you sent: " + JSON.stringify(msg));
+	socket.on("message", async (msg) => {
+		const message = JSON.parse(msg.toString());
+
+		switch (message.type) {
+			case "complete_order":
+				await updateOrderStatus(
+					OrderStatus.READY_FOR_PICKUP,
+					Number(message.data.id)
+				);
+		}
 	});
 
 	socket.on("close", () => {

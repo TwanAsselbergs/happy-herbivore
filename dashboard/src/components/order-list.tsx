@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,39 +18,22 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
-import { Status, Order } from "@/types/common";
+import { Status, Order, OrderStatus } from "@/types/common";
 import { motion } from "framer-motion";
 import { formatOrderNumber } from "@/lib/utils";
 
 const WEBSOCKET_URL = "ws://localhost:3000?token=your-secret-token";
-const BEARER_TOKEN = process.env.API_TOKEN ?? "placeholder_value";
+const BEARER_TOKEN = process.env.NEXT_PUBLIC_API_TOKEN ?? "placeholder_value";
 
-export function OrderList() {
-	const [orders, setOrders] = useState<Order[]>([]);
-
-	useEffect(() => {
-		const ws = new WebSocket(WEBSOCKET_URL);
-
-		ws.onmessage = (event) => {
-			const data = JSON.parse(event.data);
-
-			if (data.type === "order") {
-				const newOrder = data.message.data;
-
-				setOrders((prev) => [
-					{
-						...data.message.data,
-						status: Status.PENDING,
-						createdAt: new Date(newOrder.createdAt),
-					},
-					...prev,
-				]);
-			}
-		};
-
-		return () => ws.close();
-	}, []);
-
+export function OrderList({
+	orders,
+	setOrders,
+	ws,
+}: Readonly<{
+	orders: Order[];
+	ws: WebSocket | null;
+	setOrders: React.Dispatch<SetStateAction<Order[]>>;
+}>) {
 	const updateProductStatus = (
 		orderId: number,
 		productId: number,
@@ -67,10 +50,15 @@ export function OrderList() {
 					const allCompleted = updatedProducts.every(
 						(product) => product.status === Status.COMPLETED
 					);
+
+					if (allCompleted) completeOrder(order.id);
+
 					return {
 						...order,
 						orderProducts: updatedProducts,
-						status: allCompleted ? Status.COMPLETED : Status.PREPARING,
+						status: allCompleted
+							? OrderStatus.READY_FOR_PICKUP
+							: OrderStatus.PREPARING,
 					};
 				}
 				return order;
@@ -81,6 +69,21 @@ export function OrderList() {
 	useEffect(() => {
 		fetchInitialOrders();
 	}, []);
+
+	function transformOrderStatus(status: OrderStatus) {
+		switch (status) {
+			case OrderStatus.PICKED_UP:
+				return "Picked up";
+			case OrderStatus.PLACED_AND_PAID:
+				return "Placed and Paid";
+			case OrderStatus.READY_FOR_PICKUP:
+				return "Ready for Pickup";
+			case OrderStatus.PREPARING:
+				return "Preparing...";
+			case OrderStatus.STARTED:
+				return "Started";
+		}
+	}
 
 	async function fetchInitialOrders() {
 		const res = await fetch("http://localhost:3000/api/v1/orders/today", {
@@ -102,19 +105,17 @@ export function OrderList() {
 	}
 
 	const completeOrder = (orderId: number) => {
-		setOrders((prevOrders) =>
-			prevOrders.map((order) =>
-				order.id === orderId
-					? {
-							...order,
-							status: Status.COMPLETED,
-							orderProducts: order.orderProducts.map((product) => ({
-								...product,
-								status: Status.COMPLETED,
-							})),
-					  }
-					: order
-			)
+		console.log("order completed!");
+
+		if (!ws) return;
+
+		ws.send(
+			JSON.stringify({
+				type: "complete_order",
+				data: {
+					id: orderId,
+				},
+			})
 		);
 	};
 
@@ -140,14 +141,14 @@ export function OrderList() {
 								</span>
 								<Badge
 									variant={
-										order.status === Status.COMPLETED
+										order.status === OrderStatus.READY_FOR_PICKUP
 											? "lime"
-											: order.status === Status.PENDING
+											: order.status === OrderStatus.PLACED_AND_PAID
 											? "secondary"
 											: "orange"
 									}
 								>
-									{order.status}
+									{transformOrderStatus(order.status)}
 								</Badge>
 							</CardTitle>
 						</CardHeader>

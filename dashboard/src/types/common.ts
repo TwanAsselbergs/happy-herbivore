@@ -8,7 +8,7 @@ export type Order = {
 	id: number;
 	createdAt: Date;
 	price: number;
-	status: Status;
+	status: OrderStatus;
 	orderProducts: OrderProduct[];
 	pickupNumber: number;
 };
@@ -65,4 +65,12 @@ export interface Image {
 export interface RevenueResponse {
 	lastMonth: number;
 	thisMonth: number;
+}
+
+export enum OrderStatus {
+	STARTED = "STARTED",
+	PLACED_AND_PAID = "PLACED_AND_PAID",
+	PREPARING = "PREPARING",
+	READY_FOR_PICKUP = "READY_FOR_PICKUP",
+	PICKED_UP = "PICKED_UP",
 }

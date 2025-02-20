@@ -20,9 +20,11 @@ import {
 	Clock,
 } from "lucide-react";
 import { OrderList } from "@/components/order-list";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Order, Status } from "@/types/common";
 
-const BEARER_TOKEN = process.env.API_TOKEN ?? "placeholder_value";
+const BEARER_TOKEN = process.env.NEXT_PUBLIC_API_TOKEN ?? "placeholder_value";
+const WEBSOCKET_URL = "ws://localhost:3000?token=your-secret-token";
 
 export default function StatisticsPage() {
 	const [revenue, setRevenue] = useState<{
@@ -33,6 +35,8 @@ export default function StatisticsPage() {
 		lastMonth: number;
 		thisMonth: number;
 	} | null>(null);
+	const [orders, setOrders] = useState<Order[]>([]);
+	const wsRef = useRef<WebSocket>(null);
 
 	useEffect(() => {
 		(async () => {
@@ -56,6 +60,43 @@ export default function StatisticsPage() {
 			const data = await response.json();
 			setMonthlyOrders(data);
 		})();
+
+		wsRef.current = new WebSocket(WEBSOCKET_URL);
+
+		wsRef.current.onmessage = (event) => {
+			console.log(event.data);
+
+			const data = JSON.parse(event.data);
+
+			if (data.type === "order") {
+				const newOrder = data.message.data;
+
+				setRevenue((prev) => {
+					return {
+						lastMonth: prev?.lastMonth ?? 0,
+						thisMonth: (prev?.thisMonth ?? 0) + Number(newOrder?.price),
+					};
+				});
+
+				setMonthlyOrders((prev) => {
+					return {
+						lastMonth: prev?.lastMonth ?? 0,
+						thisMonth: (prev?.thisMonth ?? 0) + 1,
+					};
+				});
+
+				setOrders((prev) => [
+					{
+						...data.message.data,
+						status: Status.PENDING,
+						createdAt: new Date(newOrder.createdAt),
+					},
+					...prev,
+				]);
+			}
+		};
+
+		return () => wsRef.current?.close();
 	}, []);
 
 	const getDescription = (prev: number, current: number) =>
@@ -73,7 +114,7 @@ export default function StatisticsPage() {
 						revenue?.thisMonth ?? 0
 					)}
 					title="Total Revenue"
-					value={`€${revenue?.thisMonth.toFixed(2)}`}
+					value={`€${revenue?.thisMonth?.toFixed(2) ?? "Loading...."}`}
 					icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
 					trend={
 						revenue &&
@@ -92,7 +133,7 @@ export default function StatisticsPage() {
 				/>
 				<KpiCard
 					title="Total Transactions"
-					value={monthlyOrders?.thisMonth.toString() ?? "Loading..."}
+					value={monthlyOrders?.thisMonth?.toString() ?? "Loading..."}
 					description={getDescription(
 						monthlyOrders?.lastMonth ?? 0,
 						monthlyOrders?.thisMonth ?? 0
@@ -121,7 +162,7 @@ export default function StatisticsPage() {
 						<CardTitle>Recent orders</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<OrderList />
+						<OrderList orders={orders} setOrders={setOrders} ws={wsRef.current} />
 					</CardContent>
 				</Card>
 			</div>
