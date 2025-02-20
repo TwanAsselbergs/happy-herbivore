@@ -93,6 +93,7 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 			},
 			select: {
 				id: true,
+				orderStatus: true,
 				createdAt: true,
 				price: true,
 				pickupNumber: true,
@@ -143,7 +144,7 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 		const fullOrder: Order = {
 			...placedOrder,
 			orderProducts: placedOrderProducts,
-			status: Status.PENDING,
+			status: placedOrder.orderStatus,
 		};
 
 		broadcastMessage("order", {
@@ -170,11 +171,15 @@ export async function fetchTodaysOrders() {
 			createdAt: {
 				gte: startOfDay,
 			},
+			NOT: {
+				orderStatus: OrderStatus.PICKED_UP,
+			},
 		},
 		select: {
 			id: true,
 			createdAt: true,
 			price: true,
+			orderStatus: true,
 			pickupNumber: true,
 			orderProducts: {
 				select: {
@@ -222,10 +227,26 @@ export async function fetchTodaysOrders() {
 function addStatusToOrder(order: OrderWithoutStatus): Order {
 	return {
 		...order,
-		status: Status.PENDING,
+		status: order.orderStatus,
 		orderProducts: order.orderProducts.map((orderProduct) => ({
 			...orderProduct,
 			status: Status.PENDING,
 		})),
 	};
+}
+
+export async function updateOrderStatus(
+	newStatus: OrderStatus,
+	orderId: number
+) {
+	if (!orderId || orderId == 0) return;
+
+	await db.order.update({
+		where: {
+			id: orderId,
+		},
+		data: {
+			orderStatus: newStatus,
+		},
+	});
 }

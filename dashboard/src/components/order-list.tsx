@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,39 +18,22 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
-import { Status, Order } from "@/types/common";
+import { Status, Order, OrderStatus, OrderProduct } from "@/types/common";
 import { motion } from "framer-motion";
 import { formatOrderNumber } from "@/lib/utils";
 
 const WEBSOCKET_URL = "ws://localhost:3000?token=your-secret-token";
-const BEARER_TOKEN = process.env.API_TOKEN ?? "placeholder_value";
+const BEARER_TOKEN = process.env.NEXT_PUBLIC_API_TOKEN ?? "placeholder_value";
 
-export function OrderList() {
-	const [orders, setOrders] = useState<Order[]>([]);
-
-	useEffect(() => {
-		const ws = new WebSocket(WEBSOCKET_URL);
-
-		ws.onmessage = (event) => {
-			const data = JSON.parse(event.data);
-
-			if (data.type === "order") {
-				const newOrder = data.message.data;
-
-				setOrders((prev) => [
-					{
-						...data.message.data,
-						status: Status.PENDING,
-						createdAt: new Date(newOrder.createdAt),
-					},
-					...prev,
-				]);
-			}
-		};
-
-		return () => ws.close();
-	}, []);
-
+export function OrderList({
+	orders,
+	setOrders,
+	ws,
+}: Readonly<{
+	orders: Order[];
+	ws: WebSocket | null;
+	setOrders: React.Dispatch<SetStateAction<Order[]>>;
+}>) {
 	const updateProductStatus = (
 		orderId: number,
 		productId: number,
@@ -58,29 +41,83 @@ export function OrderList() {
 	) => {
 		setOrders((prevOrders) =>
 			prevOrders.map((order) => {
-				if (order.id === orderId) {
-					const updatedProducts = order.orderProducts.map((orderProduct) => {
-						return orderProduct.product.id === productId
-							? { ...orderProduct, status: newStatus }
-							: orderProduct;
-					});
-					const allCompleted = updatedProducts.every(
-						(product) => product.status === Status.COMPLETED
-					);
-					return {
-						...order,
-						orderProducts: updatedProducts,
-						status: allCompleted ? Status.COMPLETED : Status.PREPARING,
-					};
-				}
-				return order;
+				if (order.id !== orderId) return order;
+
+				const updatedProducts = getUpdatedProducts(
+					order.orderProducts,
+					productId,
+					newStatus
+				);
+				const newOrderStatus = determineOrderStatus(order, updatedProducts);
+
+				if (newOrderStatus) updateOrderStatus(order.id, newOrderStatus);
+
+				return {
+					...order,
+					orderProducts: updatedProducts,
+				};
 			})
+		);
+	};
+
+	const determineOrderStatus = (
+		order: Order,
+		updatedProducts: OrderProduct[]
+	) => {
+		const allCompleted = updatedProducts.every(
+			(product) => product.status === Status.COMPLETED
+		);
+
+		if (allCompleted) return OrderStatus.READY_FOR_PICKUP;
+		if (order.status === OrderStatus.PLACED_AND_PAID)
+			return OrderStatus.PREPARING;
+
+		return null;
+	};
+
+	const getUpdatedProducts = (
+		orderProducts: OrderProduct[],
+		productId: number,
+		newStatus: Status
+	) => {
+		return orderProducts.map((orderProduct) =>
+			orderProduct.product.id === productId
+				? { ...orderProduct, status: newStatus }
+				: orderProduct
 		);
 	};
 
 	useEffect(() => {
 		fetchInitialOrders();
 	}, []);
+
+	function transformOrderStatus(status: OrderStatus) {
+		switch (status) {
+			case OrderStatus.PICKED_UP:
+				return "Picked up";
+			case OrderStatus.PLACED_AND_PAID:
+				return "Placed and Paid";
+			case OrderStatus.READY_FOR_PICKUP:
+				return "Ready for Pickup";
+			case OrderStatus.PREPARING:
+				return "Preparing...";
+			case OrderStatus.STARTED:
+				return "Started";
+		}
+	}
+
+	function getStatusColor(status: OrderStatus) {
+		switch (status) {
+			case OrderStatus.PLACED_AND_PAID:
+				return "secondary";
+			case OrderStatus.PREPARING:
+				return "orange";
+			case OrderStatus.READY_FOR_PICKUP:
+				return "lime";
+			default:
+				return "secondary";
+		}
+	}
 
 	async function fetchInitialOrders() {
 		const res = await fetch("http://localhost:3000/api/v1/orders/today", {
@@ -101,22 +138,29 @@ export function OrderList() {
 		}
 	}
 
-	const completeOrder = (orderId: number) => {
+	const updateOrderStatus = (orderId: number, newStatus: OrderStatus) => {
+		if (!ws) return;
+
 		setOrders((prevOrders) =>
 			prevOrders.map((order) =>
-				order.id === orderId
-					? {
-							...order,
-							status: Status.COMPLETED,
-							orderProducts: order.orderProducts.map((product) => ({
-								...product,
-								status: Status.COMPLETED,
-							})),
-					  }
-					: order
+				order.id === orderId ? { ...order, status: newStatus } : order
 			)
 		);
+
+		ws.send(
+			JSON.stringify({
+				type: "update_order_status",
+				data: {
+					id: orderId,
+					newStatus,
+				},
+			})
+		);
 	};
+
+	function removeOrder(orderId: number) {
+		updateOrderStatus(orderId, OrderStatus.PICKED_UP);
+	}
 
 	return (
 		<div className="space-y-4 w-full">
@@ -138,17 +182,18 @@ export function OrderList() {
 										- Placed at: {order.createdAt.toLocaleTimeString()}
 									</span>
 								</span>
-								<Badge
-									variant={
-										order.status === Status.COMPLETED
-											? "lime"
-											: order.status === Status.PENDING
-											? "secondary"
-											: "orange"
-									}
-								>
-									{order.status}
-								</Badge>
+								<div className="flex gap-2">
+									<Badge variant={getStatusColor(order.status)}>
+										{transformOrderStatus(order.status)}
+									</Badge>
+									{order.status == OrderStatus.READY_FOR_PICKUP && (
+										<Badge variant="destructive">
+											<button onClick={() => removeOrder(order.id)}>
+												Mark as picked up
+											</button>
+										</Badge>
+									)}
+								</div>
 							</CardTitle>
 						</CardHeader>
 						<CardContent>
