@@ -42,7 +42,7 @@ const Confirmation = ({
 					className="block bg-lime-600 opacity-30 h-full w-full absolute top-0 left-0"
 					initial={{ x: "-100%" }}
 					animate={{ x: 0 }}
-					transition={{ duration: 1000, type: "tween" }}
+					transition={{ duration: 10, type: "tween" }}
 				></motion.span>
 				<span className="z-10 relative">{t("back_to_homepage")}</span>
 			</button>
