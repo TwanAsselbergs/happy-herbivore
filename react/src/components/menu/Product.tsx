@@ -13,7 +13,7 @@ export default function Product({
 }>) {
 	return (
 		<article
-			className={`relative rounded-2xl bg-white-primary p-4 shadow-md ${
+			className={`relative rounded-2xl bg-white-primary p-4 shadow-md flex flex-col ${
 				cart ? "outline-lime outline-4" : ""
 			}`}
 		>
@@ -32,8 +32,10 @@ export default function Product({
 				<figcaption className="sr-only">{product.image?.description}</figcaption>
 			</figure>
 
-			<header className="mt-4">
-				<h3 className="font-bold truncate text-start">{product.name}</h3>
+			<header className="mt-4 grow flex flex-col justify-between">
+				<h3 className="font-bold text-start line-clamp-2 leading-7">
+					{product.name}
+				</h3>
 				<p>{formatCurrency(product.price)}</p>
 			</header>
 
