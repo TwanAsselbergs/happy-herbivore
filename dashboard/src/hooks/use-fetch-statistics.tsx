@@ -21,6 +21,8 @@ export function useFetchStatistics() {
 			const { revenue, orders, mostOrderedProducts } = await fetchKpis();
 			const todaysOrders = await fetchTodaysOrders();
 
+			console.log(todaysOrders);
+
 			setRevenue(revenue);
 			setMonthlyOrders(orders);
 			setMostOrderedProducts(mostOrderedProducts);

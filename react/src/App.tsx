@@ -9,7 +9,7 @@ import Menu from "./components/views/Menu";
 import Order from "./components/views/Order";
 import Confirmation from "./components/views/Confirmation";
 import TopBar from "./components/global/TopBar";
-import { Product, Category } from "./lib/types";
+import { Product, Category, PickupType } from "./lib/types";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
@@ -42,6 +42,7 @@ const App = () => {
 	const [products, setProducts] = useState<Product[]>([]);
 	const [categories, setCategories] = useState<Category[]>([]);
 	const [orderNumber, setOrderNumber] = useState<number | null>(null);
+	const [pickupType, setPickupType] = useState<PickupType | null>(null);
 
 	const language = useTranslation().i18n.language;
 
@@ -120,7 +121,10 @@ const App = () => {
 				)}
 
 				{currentView === View.Idle && (
-					<IdleScreen setCurrentView={setCurrentView} />
+					<IdleScreen
+						setCurrentView={setCurrentView}
+						setPickupType={setPickupType}
+					/>
 				)}
 
 				{currentView === View.Menu && (
@@ -136,6 +140,7 @@ const App = () => {
 						setCurrentView={setCurrentView}
 						products={products}
 						setOrderNumber={setOrderNumber}
+						pickupType={pickupType}
 					/>
 				)}
 

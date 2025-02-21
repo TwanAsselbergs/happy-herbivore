@@ -29,7 +29,8 @@ export default function StatisticsPage() {
 	const getDescription = (prev: number, current: number) =>
 		`${(((current - prev) / prev) * 100)
 			.toFixed(2)
-			.replace("Infinity", "\u221e")}% ${
+			.replace("Infinity", "\u221e")
+			.replace("NaN", "\u221e")}% ${
 			current > prev ? "increase" : "decrease"
 		} from last month`;
 

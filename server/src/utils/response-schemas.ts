@@ -1,3 +1,5 @@
+import { PickupType } from "@prisma/client";
+
 export const langQuery = {
 	querystring: {
 		type: "object",
@@ -126,6 +128,7 @@ export const ordersResponseSchema = {
 								id: { type: "number" },
 								createdAt: { type: "string", format: "date-time" },
 								price: { type: "string" },
+								pickupType: PickupType,
 								pickupNumber: { type: "number" },
 								orderProducts: {
 									type: "array",

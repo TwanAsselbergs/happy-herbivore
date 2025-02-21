@@ -20,3 +20,8 @@ export interface Image {
 	filename: string;
 	description?: string;
 }
+
+export enum PickupType {
+	TAKE_OUT = "TAKE_OUT",
+	DINE_IN = "DINE_IN",
+}

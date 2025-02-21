@@ -6,6 +6,7 @@ import { View } from "../../App";
 import LanguageSwitcher from "../LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import { IMAGES } from "./Images";
+import { PickupType } from "../../lib/types";
 
 const sliderVariants = {
 	incoming: (direction: number) => ({
@@ -28,12 +29,14 @@ const sliderTransition = {
 
 const IdleScreen = ({
 	setCurrentView,
+	setPickupType,
 }: {
 	setCurrentView: React.Dispatch<React.SetStateAction<View>>;
+	setPickupType: React.Dispatch<React.SetStateAction<PickupType | null>>;
 }) => {
 	const { t } = useTranslation();
 	const [[imageCount, direction], setImageCount] = useState([0, 0]);
-	const scrollInterval = useRef<number | null>(null);
+	const scrollInterval = useRef<NodeJS.Timeout | null>(null);
 	const activeImageIndex = wrap(0, IMAGES.length, imageCount);
 
 	const swipeToImage = (swipeDirection: number) => {
@@ -49,6 +52,11 @@ const IdleScreen = ({
 			}
 		};
 	}, []);
+
+	function handleSetPickupType(pickupType: PickupType) {
+		setPickupType(pickupType);
+		setCurrentView(View.Menu);
+	}
 
 	return (
 		<div className="row-span-full flex flex-col justify-between text-xl items-center w-full h-screen bg-dark-blue">
@@ -102,14 +110,14 @@ const IdleScreen = ({
 			<div className="grid grid-cols-2 gap-16 mb-32">
 				<button
 					className="font-bold bg-white-primary w-105 h-[200px] rounded-3xl uppercase flex items-center justify-center gap-4 p-24"
-					onClick={() => setCurrentView(View.Menu)}
+					onClick={() => handleSetPickupType(PickupType.TAKE_OUT)}
 				>
 					<ShoppingBag height={40} width={40} className="shrink-0" />
 					{t("takeaway")}
 				</button>
 				<button
 					className="font-bold bg-white-primary w-105 h-[200px] rounded-3xl uppercase flex items-center justify-center gap-4 p-24"
-					onClick={() => setCurrentView(View.Menu)}
+					onClick={() => handleSetPickupType(PickupType.DINE_IN)}
 				>
 					<ShoppingBag height={40} width={40} className="shrink-0" />
 					{t("eat_in")}

@@ -20,6 +20,11 @@ enum DietType {
   VEGAN
 }
 
+enum PickupType {
+  TAKE_OUT
+  DINE_IN
+}
+
 model Category {
   id       Int       @id @default(autoincrement())
   products Product[]
@@ -48,6 +53,7 @@ model Order {
   price         Decimal        @db.Decimal(10, 2)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+  pickupType    PickupType     @default(TAKE_OUT)
   orderProducts OrderProduct[]
 
   @@map("orders")

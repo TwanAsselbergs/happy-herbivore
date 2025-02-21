@@ -13,21 +13,20 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 
 // Route (POST): /api/v1/orders
 export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
-	const body = req.body as { order: OrderItem[] };
-
-	const order = body?.order;
+	const body = req.body as {
+		order: OrderItem[];
+		pickupType: "TAKE_OUT" | "DINE_IN";
+	};
 
 	try {
-		if (!order) {
-			throw new Error("Order is required.");
-		}
-
-		const parseRes = PlaceOrderSchema.safeParse(order);
+		const parseRes = PlaceOrderSchema.safeParse(body);
 
 		if (!parseRes.success) {
 			res.status(400).send(parseRes.error.flatten());
 			return;
 		}
+
+		const order = body.order;
 
 		// Get start of the day, to retrieve orders placed today
 		const startOfDay = new Date();
@@ -90,12 +89,14 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 					},
 				},
 				orderStatus: OrderStatus.PLACED_AND_PAID,
+				pickupType: body.pickupType,
 			},
 			select: {
 				id: true,
 				orderStatus: true,
 				createdAt: true,
 				price: true,
+				pickupType: true,
 				pickupNumber: true,
 				orderProducts: {
 					select: {
@@ -162,7 +163,9 @@ export async function placeOrder(req: FastifyRequest, res: FastifyReply) {
 }
 
 // Route (GET): /api/v1/orders/today
-export async function fetchTodaysOrders() {
+export async function fetchTodaysOrders(): Promise<{
+	orders: Order[];
+}> {
 	const startOfDay = new Date();
 	startOfDay.setHours(0, 0, 0, 0);
 
@@ -180,6 +183,7 @@ export async function fetchTodaysOrders() {
 			createdAt: true,
 			price: true,
 			orderStatus: true,
+			pickupType: true,
 			pickupNumber: true,
 			orderProducts: {
 				select: {
@@ -216,6 +220,7 @@ export async function fetchTodaysOrders() {
 				},
 			})),
 		});
+
 		return orderWithStatus;
 	});
 

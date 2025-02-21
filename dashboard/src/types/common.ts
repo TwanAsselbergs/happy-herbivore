@@ -11,7 +11,13 @@ export type Order = {
 	status: OrderStatus;
 	orderProducts: OrderProduct[];
 	pickupNumber: number;
+	pickupType: PickupType;
 };
+
+export enum PickupType {
+	TAKE_OUT = "TAKE_OUT",
+	DINE_IN = "DINE_IN",
+}
 
 export interface OrderItem {
 	id: number;

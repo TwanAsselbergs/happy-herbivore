@@ -12,9 +12,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<main className="flex-1 overflow-y-auto bg-background w-full">
-					{children}
-				</main>
+				<main className="flex-1 overflow-y-auto w-full">{children}</main>
 			</body>
 		</html>
 	);

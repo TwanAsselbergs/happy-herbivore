@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react";
-import { Product } from "../../lib/types";
+import { PickupType, Product } from "../../lib/types";
 import { formatCurrency } from "../../lib/utils";
 import React, {
 	SetStateAction,
@@ -18,15 +18,17 @@ const Order = ({
 	setCurrentView,
 	setOrderNumber,
 	products,
+	pickupType,
 }: {
 	setOrderNumber: React.Dispatch<SetStateAction<number | null>>;
 	setCurrentView: React.Dispatch<SetStateAction<View>>;
 	products: Product[];
+	pickupType: PickupType | null;
 }) => {
 	const { t } = useTranslation();
 	const { cart, setCart } = useContext(CartContext);
 	const [isPaying, setIsPaying] = useState(false);
-	const payingTimeout = useRef<number | null>(null);
+	const payingTimeout = useRef<NodeJS.Timeout | null>(null);
 
 	const cartItems = cart
 		.map((cartItem) => {
@@ -90,6 +92,7 @@ const Order = ({
 					id: item.id,
 					quantity: item.quantity,
 				})),
+				pickupType,
 			}),
 		});
 

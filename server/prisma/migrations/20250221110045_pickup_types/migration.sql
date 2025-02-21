@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `orders` ADD COLUMN `pickupType` ENUM('TAKE_OUT', 'DINE_IN') NOT NULL DEFAULT 'TAKE_OUT';

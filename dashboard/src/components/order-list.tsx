@@ -18,7 +18,13 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
-import { Status, Order, OrderStatus, OrderProduct } from "@/types/common";
+import {
+	Status,
+	Order,
+	OrderStatus,
+	OrderProduct,
+	PickupType,
+} from "@/types/common";
 import { motion } from "framer-motion";
 import { formatOrderNumber } from "@/lib/utils";
 
@@ -99,6 +105,15 @@ export function OrderList({
 		}
 	}
 
+	function transformPickupType(pickupType: PickupType) {
+		switch (pickupType) {
+			case "TAKE_OUT":
+				return "Take out";
+			case "DINE_IN":
+				return "Dine in";
+		}
+	}
+
 	function getStatusColor(status: OrderStatus) {
 		switch (status) {
 			case OrderStatus.PLACED_AND_PAID:
@@ -152,10 +167,11 @@ export function OrderList({
 					<Card className="w-full">
 						<CardHeader>
 							<CardTitle className="flex justify-between items-center">
-								<span>
+								<span className="flex items-center gap-2">
+									<Badge variant="lime">{transformPickupType(order.pickupType)}</Badge>
 									Order #{formatOrderNumber(order.pickupNumber)}{" "}
 									<span className="text-gray-400 font-medium" suppressHydrationWarning>
-										- Placed at: {order.createdAt.toLocaleTimeString()}
+										- Placed at: {order.createdAt.toLocaleTimeString()}{" "}
 									</span>
 								</span>
 								<div className="flex gap-2">
