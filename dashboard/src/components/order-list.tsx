@@ -22,8 +22,6 @@ import { Status, Order, OrderStatus, OrderProduct } from "@/types/common";
 import { motion } from "framer-motion";
 import { formatOrderNumber } from "@/lib/utils";
 
-const BEARER_TOKEN = process.env.NEXT_PUBLIC_API_TOKEN ?? "placeholder_value";
-
 export function OrderList({
 	orders,
 	setOrders,

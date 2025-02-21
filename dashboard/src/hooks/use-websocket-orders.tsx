@@ -18,92 +18,101 @@ export function useWebSocketOrders(
 	const wsRef = useRef<WebSocket | null>(null);
 	const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-	useEffect(() => {
-		function connectWs() {
-			if (wsRef.current) return;
+	const connectWs = () => {
+		if (wsRef.current) return;
 
-			wsRef.current = new WebSocket(WEBSOCKET_URL);
+		const ws = new WebSocket(WEBSOCKET_URL);
+		wsRef.current = ws;
 
-			wsRef.current.onopen = () => console.log("Connected to WebSocket server.");
+		ws.onopen = () => console.log("Connected to WebSocket server.");
+		ws.onmessage = handleMessage;
+		ws.onclose = handleDisconnect;
+		ws.onerror = () => wsRef.current?.close();
+	};
 
-			wsRef.current.onmessage = (event) => {
-				const { type, message } = JSON.parse(event.data);
-				if (type === "order") handleNewOrder(message.data);
-				else if (type === "status_update") handleStatusUpdate(message.data);
-			};
+	const handleMessage = (event: MessageEvent) => {
+		const { type, message } = JSON.parse(event.data);
+		const handlers: Record<string, (data: any) => void> = {
+			order: handleNewOrder,
+			status_update: handleStatusUpdate,
+		};
+		handlers[type]?.(message.data);
+	};
 
-			wsRef.current.onclose = () => {
-				console.warn("WebSocket disconnected, reconnecting...");
-				wsRef.current = null;
-				pollingIntervalRef.current = setTimeout(connectWs, 2000);
-			};
+	const handleDisconnect = () => {
+		console.warn("WebSocket disconnected, reconnecting...");
+		wsRef.current = null;
+		pollingIntervalRef.current = setTimeout(connectWs, 2000);
+	};
 
-			wsRef.current.onerror = () => wsRef.current?.close();
-		}
+	const handleNewOrder = (newOrder: Order) => {
+		setRevenue((prev) => ({
+			lastMonth: prev?.lastMonth ?? 0,
+			thisMonth: (prev?.thisMonth ?? 0) + Number(newOrder?.price),
+		}));
 
-		function handleNewOrder(newOrder: Order) {
-			setRevenue((prev) => ({
-				lastMonth: prev?.lastMonth ?? 0,
-				thisMonth: (prev?.thisMonth ?? 0) + Number(newOrder?.price),
-			}));
+		setMonthlyOrders((prev) => ({
+			lastMonth: prev?.lastMonth ?? 0,
+			thisMonth: (prev?.thisMonth ?? 0) + 1,
+		}));
 
-			setMonthlyOrders((prev) => ({
-				lastMonth: prev?.lastMonth ?? 0,
-				thisMonth: (prev?.thisMonth ?? 0) + 1,
-			}));
+		setMostOrderedProducts((prev) => updateMostOrderedProducts(prev, newOrder));
 
-			setMostOrderedProducts((prev) => {
-				let updatedProducts = [...prev];
+		setOrders((prev) => [
+			{ ...newOrder, createdAt: new Date(newOrder.createdAt) },
+			...prev,
+		]);
+	};
 
-				newOrder.orderProducts.forEach((orderedProduct) => {
-					const existingIndex = updatedProducts.findIndex(
-						(p) => orderedProduct.product.id === p.id
-					);
+	const updateMostOrderedProducts = (
+		prev: MostOrderedProductType[],
+		newOrder: Order
+	) => {
+		const updatedProducts = [...prev];
 
-					if (existingIndex !== -1) {
-						updatedProducts[existingIndex] = {
-							...updatedProducts[existingIndex],
-							quantity:
-								updatedProducts[existingIndex].quantity + orderedProduct.quantity,
-						};
-					} else {
-						updatedProducts.push({
-							...orderedProduct.product,
-							quantity: orderedProduct.quantity,
-						});
-					}
+		newOrder.orderProducts.forEach(({ product, quantity }) => {
+			const existingIndex = updatedProducts.findIndex((p) => product.id === p.id);
+
+			if (existingIndex !== -1) {
+				updatedProducts[existingIndex] = {
+					...updatedProducts[existingIndex],
+					quantity: updatedProducts[existingIndex].quantity + quantity,
+				};
+			} else {
+				updatedProducts.push({
+					name: product.name,
+					id: product.id,
+					description: null,
+					quantity,
 				});
-
-				return updatedProducts;
-			});
-
-			setOrders((prev) => [
-				{ ...newOrder, createdAt: new Date(newOrder.createdAt) },
-				...prev,
-			]);
-		}
-
-		function handleStatusUpdate({
-			id,
-			newStatus,
-		}: {
-			id: number;
-			newStatus: OrderStatus;
-		}) {
-			if (!Object.values(OrderStatus).includes(newStatus)) {
-				console.error("Invalid order status:", newStatus);
-				return;
 			}
+		});
 
-			setOrders((prev) =>
-				newStatus === OrderStatus.PICKED_UP
-					? prev.filter((order) => order.id !== id)
-					: prev.map((order) =>
-							order.id === id ? { ...order, status: newStatus } : order
-					  )
-			);
+		return updatedProducts;
+	};
+
+	const handleStatusUpdate = ({
+		id,
+		newStatus,
+	}: {
+		id: number;
+		newStatus: OrderStatus;
+	}) => {
+		if (!Object.values(OrderStatus).includes(newStatus)) {
+			console.error("Invalid order status:", newStatus);
+			return;
 		}
 
+		setOrders((prev) =>
+			newStatus === OrderStatus.PICKED_UP
+				? prev.filter((order) => order.id !== id)
+				: prev.map((order) =>
+						order.id === id ? { ...order, status: newStatus } : order
+				  )
+		);
+	};
+
+	useEffect(() => {
 		connectWs();
 
 		return () => {

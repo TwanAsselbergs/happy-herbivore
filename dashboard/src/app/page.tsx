@@ -1,6 +1,6 @@
 "use client";
 
-import { DollarSign, Users, ShoppingCart, Clock } from "lucide-react";
+import { DollarSign, ShoppingCart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import KpiCard from "@/components/kpi-card";
 import { OrderList } from "@/components/order-list";
@@ -33,6 +33,18 @@ export default function StatisticsPage() {
 			current > prev ? "increase" : "decrease"
 		} from last month`;
 
+	const calculateTrend = (
+		val: { thisMonth: number; lastMonth: number } | null
+	) => {
+		if (!val) return undefined;
+
+		if (val.thisMonth > val.lastMonth) {
+			return "up";
+		} else {
+			return "down";
+		}
+	};
+
 	return (
 		<div className="container mx-auto p-6">
 			<h1 className="text-3xl font-semibold text-gray-800 mb-6">
@@ -48,20 +60,7 @@ export default function StatisticsPage() {
 						revenue?.thisMonth ?? 0
 					)}
 					icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
-					trend={
-						revenue
-							? revenue?.thisMonth > revenue?.lastMonth
-								? "up"
-								: "down"
-							: undefined
-					}
-				/>
-				<KpiCard
-					title="Total Users"
-					value="1,234"
-					description="5% increase from last month"
-					icon={<Users className="h-4 w-4 text-muted-foreground" />}
-					trend="up"
+					trend={calculateTrend(revenue)}
 				/>
 				<KpiCard
 					title="Total Transactions"
@@ -71,20 +70,7 @@ export default function StatisticsPage() {
 						monthlyOrders?.thisMonth ?? 0
 					)}
 					icon={<ShoppingCart className="h-4 w-4 text-muted-foreground" />}
-					trend={
-						monthlyOrders
-							? monthlyOrders?.thisMonth > monthlyOrders?.lastMonth
-								? "up"
-								: "down"
-							: undefined
-					}
-				/>
-				<KpiCard
-					title="Avg. Transaction Time"
-					value="2m 15s"
-					description="10% faster than last month"
-					icon={<Clock className="h-4 w-4 text-muted-foreground" />}
-					trend="up"
+					trend={calculateTrend(monthlyOrders)}
 				/>
 			</div>
 
