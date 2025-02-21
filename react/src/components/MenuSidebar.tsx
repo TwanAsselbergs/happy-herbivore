@@ -54,7 +54,7 @@ export default function MenuSidebar({
 		if (selectedCategory !== null && categoryContainerRef.current) {
 			const selectedButton = categoryContainerRef.current?.querySelector(
 				`[data-category-id="${selectedCategory}"]`
-			) as HTMLButtonElement | null;
+			) as HTMLButtonElement;
 			if (selectedButton) {
 				const { height } = selectedButton.getBoundingClientRect();
 				setHighlightPos({ top: selectedButton.offsetTop, height });
