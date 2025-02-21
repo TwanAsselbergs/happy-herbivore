@@ -5,20 +5,11 @@ import { motion } from "framer-motion";
 import { ArcElement, Chart } from "chart.js";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { CartContext } from "../App";
 
 Chart.register(ArcElement);
-
-const sliderVariants = {
-	incoming: () => ({
-		y: "100%",
-	}),
-	active: { y: 0, opacity: 1 },
-	exit: () => ({
-		y: "100%",
-	}),
-};
 
 const overlayVariants = {
 	incoming: () => ({
@@ -28,11 +19,6 @@ const overlayVariants = {
 	exit: () => ({
 		opacity: 0,
 	}),
-};
-
-const sliderTransition = {
-	duration: 0.3,
-	ease: "easeInOut",
 };
 
 const overlayTransition = {
@@ -54,6 +40,14 @@ export default function ProductDetails({
 	const { t } = useTranslation();
 	const [productQuantity, setProductQuantity] = useState(1);
 
+	const { cart } = useContext(CartContext);
+
+	useEffect(() => {
+		const cartItem = cart.find((cartItem) => cartItem.id === product.id);
+
+		setProductQuantity(cartItem?.quantity ?? 1);
+	}, [cart]);
+
 	function handleAddToCart() {
 		setCart((prev) => {
 			const index = prev.findIndex((item) => item.id === product.id);
@@ -61,9 +55,7 @@ export default function ProductDetails({
 				return [...prev, { id: product.id, quantity: productQuantity }];
 			} else {
 				return prev.map((item) =>
-					item.id === product.id
-						? { ...item, quantity: item.quantity + productQuantity }
-						: item
+					item.id === product.id ? { ...item, quantity: productQuantity } : item
 				);
 			}
 		});
