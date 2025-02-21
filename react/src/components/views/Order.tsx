@@ -76,27 +76,40 @@ const Order = ({
 		const el = cartContainerRef.current;
 		if (!el) return;
 
-		const setClasses = () => {
-			const isScrollable = el.scrollHeight > el.clientHeight;
-			if (!isScrollable) {
-				setTopMaskSize(0);
-				setBottomMaskSize(0);
-				return;
-			}
-
-			const isScrolledToBottom =
-				el.scrollHeight <= el.clientHeight + el.scrollTop + 1;
-			const isScrolledToTop = isScrolledToBottom ? false : el.scrollTop === 0;
-
-			setTopMaskSize(isScrolledToTop ? 0 : 100);
-			setBottomMaskSize(isScrolledToBottom ? 0 : 300);
-		};
-
 		el.addEventListener("scroll", setClasses);
 		setClasses();
 
 		return () => el.removeEventListener("scroll", setClasses);
 	}, []);
+
+	useEffect(() => {
+		setClasses();
+	}, [cart]);
+
+	const setClasses = () => {
+		if (!cartContainerRef.current) return;
+
+		const isScrollable =
+			cartContainerRef.current.scrollHeight >
+			cartContainerRef.current.clientHeight;
+		if (!isScrollable) {
+			setTopMaskSize(0);
+			setBottomMaskSize(0);
+			return;
+		}
+
+		const isScrolledToBottom =
+			cartContainerRef.current.scrollHeight <=
+			cartContainerRef.current.clientHeight +
+				cartContainerRef.current.scrollTop +
+				1;
+		const isScrolledToTop = isScrolledToBottom
+			? false
+			: cartContainerRef.current.scrollTop === 0;
+
+		setTopMaskSize(isScrolledToTop ? 0 : 100);
+		setBottomMaskSize(isScrolledToBottom ? 0 : 300);
+	};
 
 	useEffect(() => {
 		if (isPaying) {
