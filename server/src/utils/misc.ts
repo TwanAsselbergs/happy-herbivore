@@ -64,3 +64,9 @@ export async function getLanguage(query: { lang?: string }): Promise<string> {
 
 	return lang;
 }
+
+// Helper function to check if given string is a valid date
+export function isDate(date: string): boolean {
+	const parsedDate = new Date(date);
+	return !isNaN(parsedDate.getTime());
+}

@@ -1,6 +1,7 @@
 import { db } from "@/db/prisma-client";
 import type { MostOrderedProductType, RevenueResponse } from "@/types/common";
-import { transformProduct } from "@/utils/misc";
+import { isDate, transformProduct } from "@/utils/misc";
+import type { FastifyRequest } from "fastify";
 
 // Route (GET): /api/v1/stats/revenue
 export async function calculateRevenue(): Promise<RevenueResponse> {
@@ -70,12 +71,35 @@ export async function getOrdersAmount(): Promise<RevenueResponse> {
 	};
 }
 
-export async function getMostOrderedProducts() {
-	const prevMonth = new Date();
-	prevMonth.setMonth(prevMonth.getMonth() - 1);
+export async function getMostOrderedProducts(req: FastifyRequest) {
+	const query = req.query as {
+		startDate: string | undefined;
+		endDate: string | undefined;
+	};
 
-	const twoMonthsAgo = new Date();
-	twoMonthsAgo.setMonth(new Date().getMonth() - 2);
+	const rawStartDate = query.startDate;
+	const rawEndDate = query.endDate;
+
+	const hasValidStartDate = isDate(rawStartDate ?? "");
+	const hasValidEndDate = isDate(rawEndDate ?? "");
+
+	const now = new Date();
+
+	const startDate: Date = hasValidStartDate ? new Date(rawStartDate ?? "") : now;
+	startDate.setHours(0, 0, 0, 0);
+
+	const endDate: Date | undefined = hasValidEndDate
+		? new Date(rawEndDate ?? "")
+		: undefined;
+	if (endDate) endDate.setHours(23, 59, 59);
+
+	if (hasValidStartDate && hasValidEndDate && endDate) {
+		if (startDate > endDate) {
+			return {
+				valid: false,
+			};
+		}
+	}
 
 	const mostOrderedProducts = await db.orderProduct.groupBy({
 		by: ["productId"],
@@ -85,6 +109,14 @@ export async function getMostOrderedProducts() {
 		orderBy: {
 			_sum: {
 				quantity: "desc",
+			},
+		},
+		where: {
+			order: {
+				createdAt: {
+					gte: startDate,
+					lte: endDate,
+				},
 			},
 		},
 	});

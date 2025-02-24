@@ -30,9 +30,6 @@ const Order = ({
 	const [isPaying, setIsPaying] = useState(false);
 	const payingTimeout = useRef<NodeJS.Timeout | null>(null);
 	const cartContainerRef = useRef<HTMLDivElement>(null);
-	const [maskSize, setMaskSize] = useState<string>(
-		"-webkit-gradient(linear, left 90%, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)))"
-	);
 	const [topMaskSize, setTopMaskSize] = useState(0);
 	const [bottomMaskSize, setBottomMaskSize] = useState(0);
 
