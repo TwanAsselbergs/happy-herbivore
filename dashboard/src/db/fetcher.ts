@@ -36,6 +36,20 @@ export async function fetchKpis() {
 	};
 }
 
+export async function fetchMostOrderedProducts({
+	startDate,
+	endDate,
+}: {
+	startDate?: Date;
+	endDate?: Date;
+}) {
+	const mostOrderedProducts = await fetchData(
+		`stats/products?startDate=${startDate}&endDate=${endDate}`
+	);
+
+	return mostOrderedProducts;
+}
+
 export async function fetchTodaysOrders(): Promise<Order[]> {
 	const {
 		orders,

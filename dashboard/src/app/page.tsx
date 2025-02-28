@@ -7,18 +7,32 @@ import { OrderList } from "@/components/order-list";
 import ProductsChart from "@/components/products-chart";
 import { useWebSocketOrders } from "@/hooks/use-websocket-orders";
 import { useFetchStatistics } from "@/hooks/use-fetch-statistics";
+import { DatePicker } from "@/components/date-picker";
+import { useEffect, useState } from "react";
+import { fetchMostOrderedProducts } from "@/db/fetcher";
+import { MostOrderedProductType } from "@/types/common";
 
 export default function StatisticsPage() {
 	const {
 		revenue,
 		monthlyOrders,
-		mostOrderedProducts,
 		orders,
 		setRevenue,
 		setMonthlyOrders,
-		setMostOrderedProducts,
 		setOrders,
 	} = useFetchStatistics();
+	const [startDate, setStartDate] = useState<Date | undefined>(
+		new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			new Date().getDate()
+		)
+	);
+	const [mostOrderedProducts, setMostOrderedProducts] = useState<
+		MostOrderedProductType[]
+	>([]);
+	const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+
 	const wsRef = useWebSocketOrders(
 		setOrders,
 		setRevenue,
@@ -45,6 +59,18 @@ export default function StatisticsPage() {
 			return "down";
 		}
 	};
+
+	useEffect(() => {
+		if (startDate && endDate && startDate > endDate) {
+			console.log("Starting date can't be greater than end date");
+			setStartDate(undefined);
+			return;
+		}
+
+		fetchMostOrderedProducts({ endDate, startDate }).then((data) =>
+			setMostOrderedProducts(data)
+		);
+	}, [startDate, endDate]);
 
 	return (
 		<div className="container mx-auto p-6">
@@ -85,14 +111,31 @@ export default function StatisticsPage() {
 			</Card>
 
 			<div className="mt-6 grid lg:grid-cols-2">
-				<Card>
-					<CardHeader>
-						<CardTitle>Most Ordered Products</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<ProductsChart products={mostOrderedProducts} />
-					</CardContent>
-				</Card>
+				<div className="flex flex-col gap-2">
+					<div className="grid-cols-2 grid gap-3">
+						<DatePicker
+							placeholder="From"
+							date={startDate}
+							setDate={setStartDate}
+							className="grow justify-start"
+						/>
+						<DatePicker
+							placeholder="To"
+							date={endDate}
+							setDate={setEndDate}
+							className="grow justify-start"
+						/>
+					</div>
+
+					<Card>
+						<CardHeader>
+							<CardTitle>Most Ordered Products</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<ProductsChart products={mostOrderedProducts} />
+						</CardContent>
+					</Card>
+				</div>
 			</div>
 		</div>
 	);

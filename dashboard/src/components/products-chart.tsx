@@ -31,9 +31,9 @@ export default function ProductsChart({
 				<ChartTooltip content={<ChartTooltipContent />} />
 				<Bar
 					dataKey="quantity"
-					fill="var(--color-desktop)"
+					fill="var(--color-orange-300)"
 					radius={4}
-					maxBarSize={50}
+					maxBarSize={30}
 				/>
 				<YAxis type="category" width={100} dataKey="name" />
 			</BarChart>

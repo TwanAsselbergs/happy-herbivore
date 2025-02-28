@@ -83,17 +83,17 @@ export async function getMostOrderedProducts(req: FastifyRequest) {
 	const hasValidStartDate = isDate(rawStartDate ?? "");
 	const hasValidEndDate = isDate(rawEndDate ?? "");
 
-	const now = new Date();
-
-	const startDate: Date = hasValidStartDate ? new Date(rawStartDate ?? "") : now;
-	startDate.setHours(0, 0, 0, 0);
+	const startDate: Date | undefined = hasValidStartDate
+		? new Date(rawStartDate ?? "")
+		: undefined;
+	if (startDate) startDate.setHours(0, 0, 0, 0);
 
 	const endDate: Date | undefined = hasValidEndDate
 		? new Date(rawEndDate ?? "")
 		: undefined;
 	if (endDate) endDate.setHours(23, 59, 59);
 
-	if (hasValidStartDate && hasValidEndDate && endDate) {
+	if (startDate && hasValidEndDate && endDate) {
 		if (startDate > endDate) {
 			return {
 				valid: false,
