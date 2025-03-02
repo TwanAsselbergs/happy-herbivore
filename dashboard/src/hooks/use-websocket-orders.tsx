@@ -1,7 +1,8 @@
 import { Order, OrderStatus, MostOrderedProductType } from "@/types/common";
 import React, { useRef, useEffect } from "react";
 
-const WEBSOCKET_URL = "ws://localhost:3000?token=your-secret-token";
+const WEBSOCKET_URL =
+	"ws://happyherbivore.noeycodes.com?token=your-secret-token";
 
 export function useWebSocketOrders(
 	setOrders: React.Dispatch<React.SetStateAction<Order[]>>,

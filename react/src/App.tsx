@@ -36,6 +36,9 @@ export const CartContext = createContext<CartContextType>({
 	setCart: () => {},
 });
 
+const API_ENDPOINT =
+	import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
+
 const App = () => {
 	const [currentView, setCurrentView] = useState<View>(View.Idle);
 	const [cart, setCart] = useState<CartType[]>([]);
@@ -64,12 +67,9 @@ const App = () => {
 			`Bearer ${import.meta.env.VITE_API_TOKEN ?? "placeholder_value"}`
 		);
 
-		const res = await fetch(
-			`http://localhost:3000/api/v1/products?lang=${language}`,
-			{
-				headers,
-			}
-		);
+		const res = await fetch(`${API_ENDPOINT}/api/v1/products?lang=${language}`, {
+			headers,
+		});
 
 		if (!res.ok) {
 			return;
@@ -89,7 +89,7 @@ const App = () => {
 		);
 
 		const res = await fetch(
-			`http://localhost:3000/api/v1/categories?lang=${language}`,
+			`${API_ENDPOINT}/api/v1/categories?lang=${language}`,
 			{
 				headers,
 			}

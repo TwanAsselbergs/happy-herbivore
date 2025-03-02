@@ -7,6 +7,7 @@ import LanguageSwitcher from "../LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import { IMAGES } from "./Images";
 import { PickupType } from "../../lib/types";
+import { transformImageUrl } from "../../lib/utils";
 
 const sliderVariants = {
 	incoming: (direction: number) => ({
@@ -62,7 +63,7 @@ const IdleScreen = ({
 		<div className="row-span-full flex flex-col justify-between text-xl items-center w-full h-screen bg-dark-blue">
 			<div className="pt-24 flex w-full relative">
 				<img
-					src="/img/logo_big_happy_herbivore_transparent.webp"
+					src="./img/logo_big_happy_herbivore_transparent.webp"
 					alt=""
 					className="w-full max-w-[250px] mx-auto"
 				/>
@@ -84,7 +85,7 @@ const IdleScreen = ({
 							className="w-full h-full absolute will-change-[transform,opacity] flex items-center justify-center"
 						>
 							<img
-								src={IMAGES[activeImageIndex].imageSrc}
+								src={transformImageUrl(IMAGES[activeImageIndex].imageSrc)}
 								alt=""
 								className="w-full h-full object-contain aspect-square drop-shadow-2xl"
 							/>

@@ -1,5 +1,5 @@
 import { Product } from "../lib/types";
-import { formatCurrency } from "../lib/utils";
+import { formatCurrency, transformImageUrl } from "../lib/utils";
 import { Pie } from "react-chartjs-2";
 import { motion } from "framer-motion";
 import { ArcElement, Chart } from "chart.js";
@@ -94,7 +94,7 @@ export default function ProductDetails({
 					</div>
 					<div className="grid grid-cols-[3fr_5fr] gap-12 py-12">
 						<img
-							src={product.image?.filename}
+							src={transformImageUrl(product.image?.filename ?? "")}
 							alt={product.image?.description}
 							className="rounded-2xl"
 						/>

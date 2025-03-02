@@ -4,11 +4,12 @@ import { Order } from "@/types/common";
 
 const BEARER_TOKEN = process.env.BEARER_TOKEN ?? "placeholder_value";
 const API_BASE_URL =
-	(process.env.NEXT_PUBLIC_API_BASE_URL ?? "localhost:3000") + "/api/v1";
+	(process.env.NEXT_PUBLIC_API_BASE_URL ??
+		"https://happyherbivore.noeycodes.com") + "/api/v1";
 
 const fetchData = async (endpoint: string) => {
 	try {
-		const response = await fetch(`http://${API_BASE_URL}/${endpoint}`, {
+		const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${BEARER_TOKEN}`,

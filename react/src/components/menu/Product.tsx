@@ -1,6 +1,6 @@
 import React from "react";
 import { Product as ProductType } from "../../lib/types";
-import { formatCurrency } from "../../lib/utils";
+import { formatCurrency, transformImageUrl } from "../../lib/utils";
 
 export default function Product({
 	cart,
@@ -25,7 +25,7 @@ export default function Product({
 
 			<figure className="overflow-hidden rounded-2xl">
 				<img
-					src={product.image?.filename}
+					src={transformImageUrl(product.image?.filename ?? "")}
 					alt={product.image?.description}
 					className="w-full"
 				/>

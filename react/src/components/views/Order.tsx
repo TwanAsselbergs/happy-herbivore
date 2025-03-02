@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { PickupType, Product } from "../../lib/types";
-import { formatCurrency } from "../../lib/utils";
+import { formatCurrency, transformImageUrl } from "../../lib/utils";
 import React, {
 	SetStateAction,
 	useEffect,
@@ -13,6 +13,9 @@ import { CartContext, View } from "../../App";
 import Popup from "../reusable/Popup";
 import { Pie } from "react-chartjs-2";
 import { useTranslation } from "react-i18next";
+
+const API_ENDPOINT =
+	import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
 
 const Order = ({
 	setCurrentView,
@@ -126,7 +129,7 @@ const Order = ({
 
 		headers.append("Content-Type", "application/json");
 
-		const res = await fetch("http://localhost:3000/api/v1/orders", {
+		const res = await fetch(`${API_ENDPOINT}/api/v1/orders`, {
 			method: "POST",
 			headers,
 			body: JSON.stringify({
@@ -207,7 +210,7 @@ const Order = ({
 												>
 													<div className="flex items-center">
 														<img
-															src={item.image?.filename}
+															src={transformImageUrl(item.image?.filename ?? "")}
 															alt={item.image?.description}
 															className="w-40 h-40 object-cover rounded-2xl"
 														/>

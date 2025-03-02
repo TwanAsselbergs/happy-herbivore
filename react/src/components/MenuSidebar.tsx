@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Category } from "../lib/types";
 import { ShoppingBag } from "lucide-react";
 import { View } from "../App";
-import { formatCurrency } from "../lib/utils";
+import { formatCurrency, transformImageUrl } from "../lib/utils";
 import { motion } from "framer-motion";
 
 export default function MenuSidebar({
@@ -93,7 +93,7 @@ export default function MenuSidebar({
 						data-category-id={category.id}
 					>
 						<img
-							src={category.image.filename}
+							src={transformImageUrl(category.image.filename)}
 							alt={category.image.description}
 							className="w-[80%] relative z-10"
 						/>

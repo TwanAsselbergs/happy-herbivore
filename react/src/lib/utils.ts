@@ -25,3 +25,7 @@ export function toggleFromArray(array: any[], value: any) {
 export function formatOrderNumber(number: number) {
 	return number.toString().padStart(2, "0");
 }
+
+export function transformImageUrl(url: string) {
+	return `.${url}`;
+}
