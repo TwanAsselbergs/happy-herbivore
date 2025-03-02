@@ -10,10 +10,6 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
-	app.setLoginItemSettings({
-		openAtLogin: true,
-	});
-
 	createWindow();
 });
 
