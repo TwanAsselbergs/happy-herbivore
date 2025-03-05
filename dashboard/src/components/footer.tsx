@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Github } from "lucide-react";
 
 export default function Footer() {
@@ -13,42 +12,42 @@ export default function Footer() {
 						</p>
 					</div>
 					<div className="flex space-x-6">
-						<Link
+						<a
 							href="https://github.com/TwanAsselbergs/happy-herbivore"
 							target="_blank"
 							className="text-muted-foreground hover:text-foreground"
 						>
 							<Github className="h-5 w-5" />
 							<span className="sr-only">GitHub</span>
-						</Link>
+						</a>
 					</div>
 				</div>
 				<div className="mt-8 flex flex-col items-center md:flex-row md:justify-between">
 					<nav className="flex flex-wrap justify-center space-x-4 md:justify-start">
-						<Link
+						<a
 							href="#"
 							className="text-sm text-muted-foreground hover:text-foreground"
 						>
 							About
-						</Link>
-						<Link
+						</a>
+						<a
 							href="#"
 							className="text-sm text-muted-foreground hover:text-foreground"
 						>
 							Privacy Policy
-						</Link>
-						<Link
+						</a>
+						<a
 							href="#"
 							className="text-sm text-muted-foreground hover:text-foreground"
 						>
 							Terms of Service
-						</Link>
-						<Link
+						</a>
+						<a
 							href="#"
 							className="text-sm text-muted-foreground hover:text-foreground"
 						>
 							Contact
-						</Link>
+						</a>
 					</nav>
 					<p className="mt-4 text-sm text-muted-foreground md:mt-0">
 						© {new Date().getFullYear()} Twan Asselbergs and Noah Kamphuisen. All

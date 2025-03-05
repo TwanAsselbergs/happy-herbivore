@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-	fetchKpis,
-	fetchTodaysOrders,
-	fetchMostOrderedProducts,
-} from "@/db/fetcher";
+import { fetchKpis, fetchTodaysOrders } from "@/db/fetcher";
 import type { MostOrderedProductType, Order } from "@/types/common";
 
 export function useFetchStatistics() {
