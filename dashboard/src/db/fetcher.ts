@@ -1,11 +1,9 @@
-"use server";
-
 import { Order } from "@/types/common";
 
-const BEARER_TOKEN = process.env.BEARER_TOKEN ?? "placeholder_value";
+const BEARER_TOKEN = import.meta.env.VITE_BEARER_TOKEN ?? "placeholder_value";
 const API_BASE_URL =
-	(process.env.NEXT_PUBLIC_API_BASE_URL ??
-		"https://happyherbivore.noeycodes.com") + "/api/v1";
+	(import.meta.env.VITE_API_BASE_URL ?? "https://happyherbivore.noeycodes.com") +
+	"/api/v1";
 
 const fetchData = async (endpoint: string) => {
 	try {

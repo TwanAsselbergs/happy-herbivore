@@ -27,7 +27,7 @@ export default function Product({
 				<img
 					src={transformImageUrl(product.image?.filename ?? "")}
 					alt={product.image?.description}
-					className="w-full"
+					className="w-full aspect-square object-cover"
 				/>
 				<figcaption className="sr-only">{product.image?.description}</figcaption>
 			</figure>

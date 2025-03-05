@@ -1,5 +1,3 @@
-"use client";
-
 import { DollarSign, ShoppingCart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import KpiCard from "@/components/kpi-card";
@@ -12,7 +10,7 @@ import { useEffect, useState } from "react";
 import { fetchMostOrderedProducts } from "@/db/fetcher";
 import { MostOrderedProductType } from "@/types/common";
 
-export default function StatisticsPage() {
+export default function App() {
 	const {
 		revenue,
 		monthlyOrders,
