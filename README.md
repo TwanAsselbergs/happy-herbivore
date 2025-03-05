@@ -1,5 +1,19 @@
 # Self-Service System Happy Herbivore
 
+## Table of contents
+
+- [Self-Service System Happy Herbivore](#self-service-system-happy-herbivore)
+  - [Table of contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Installation Guide](#installation-guide)
+    - [Prerequisites](#prerequisites)
+    - [Installation Steps](#installation-steps)
+  - [Building for production](#building-for-production)
+  - [Authors](#authors)
+  - [License](#license)
+
+## Overview
+
 This project is a self-service ordering system created as a school assignment for a fictional company, _Happy Herbivore_. The system is divided into three main parts:
 
 1. API (`/server`)
@@ -17,10 +31,9 @@ This project is a self-service ordering system created as a school assignment fo
    - A dashboard accessible only to employees.
    - Displays incoming orders and relevant statistics for order management.
 
-## Getting Started
+## Installation Guide
 
-These instructions will give you a copy of the project up and running on
-your local machine.
+Follow these steps to set up and run the _Happy Herbivore_ self-service system.
 
 ### Prerequisites
 
@@ -29,11 +42,7 @@ Requirements for running the website locally (in your browser)
 - [Bun](https://bun.sh/) (or a package manager combined with a TypeScript runtime of choice, this guide uses Bun because it's an all-in-one sollution.)
 - [MySQL](https://www.mysql.com/)
 
-### Installing
-
-# Installation Guide
-
-Follow these steps to set up and run the _Happy Herbivore_ self-service system.
+### Installation Steps
 
 1. Clone the repository
    Clone the repository and navigate to the project folder:
@@ -101,6 +110,10 @@ Follow these steps to set up and run the _Happy Herbivore_ self-service system.
    ```
 
 Now the system should be up and running! 🚀
+
+## Building for production
+
+_(View [STARTUP.md](STARTUP.md))_
 
 ## Authors
 

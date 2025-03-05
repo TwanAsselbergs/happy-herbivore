@@ -1,2 +1,2 @@
-cd ~/coding/happy-herbivore/react
+cd <path-to-root-directory>/react
 npm run start
