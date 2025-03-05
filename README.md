@@ -13,7 +13,7 @@ This project is a self-service ordering system created as a school assignment fo
    - A user-friendly application designed for customers to browse products and place orders.
    - Provides a seamless ordering experience on a touchscreen or kiosk.
 
-3. Back-end _(Not built yet)_
+3. Back-end (`/dashboard`)
    - A dashboard accessible only to employees.
    - Displays incoming orders and relevant statistics for order management.
 
@@ -47,7 +47,7 @@ Follow these steps to set up and run the _Happy Herbivore_ self-service system.
    Install dependencies for both the front-end and API:
 
    ```bash
-   cd react && bun i && cd ../server && bun i && cd ..
+   cd react && bun i && cd ../server && bun i && cd ../dashboard && bun i && cd ..
    ```
 
 3. Create a new database
