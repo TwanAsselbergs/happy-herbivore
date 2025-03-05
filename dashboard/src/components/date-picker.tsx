@@ -15,12 +15,14 @@ type DatePickerProps = {
 	placeholder?: string;
 	date?: Date;
 	setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+	valid?: boolean;
 } & React.ComponentProps<typeof Button>;
 
 export function DatePicker({
 	placeholder,
 	date,
 	setDate,
+	valid = true,
 	...props
 }: DatePickerProps) {
 	return (
@@ -28,11 +30,8 @@ export function DatePicker({
 			<PopoverTrigger asChild>
 				<Button
 					variant={"default"}
-					className={cn(
-						"w-[280px] justify-start text-left font-normal",
-						!date && "text-muted-foreground"
-					)}
 					{...props}
+					className={cn(valid ? "text-foreground" : "text-red-500", props.className)}
 				>
 					<CalendarIcon className="mr-2 h-4 w-4" />
 					{date ? format(date, "PPP") : <span>{placeholder ?? "Pick a date"}</span>}

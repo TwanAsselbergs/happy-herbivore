@@ -28,7 +28,7 @@ const Confirmation = ({
 			<img
 				src="img/logo_big_complete_transparent.webp"
 				alt="Logo"
-				className="w-full max-w-[500px]"
+				className="w-full max-w-[500px] aspect-square"
 			/>
 			<h1 className="font-bold text-4xl max-w-lg">{t("thank_you")}</h1>
 			<p className="text-2xl text-gray-400 mb-4">

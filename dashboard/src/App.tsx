@@ -30,6 +30,7 @@ export default function App() {
 		MostOrderedProductType[]
 	>([]);
 	const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+	const [hasValidStartDate, setHasValidStartDate] = useState<boolean>(true);
 
 	const wsRef = useWebSocketOrders(
 		setOrders,
@@ -59,11 +60,18 @@ export default function App() {
 	};
 
 	useEffect(() => {
-		if (startDate && endDate && startDate > endDate) {
+		const date = new Date();
+
+		if (
+			(startDate && endDate && startDate > endDate) ||
+			(startDate && startDate > date)
+		) {
 			console.log("Starting date can't be greater than end date");
-			setStartDate(undefined);
+			setHasValidStartDate(false);
 			return;
 		}
+
+		setHasValidStartDate(true);
 
 		fetchMostOrderedProducts({ endDate, startDate }).then((data) =>
 			setMostOrderedProducts(data)
@@ -116,6 +124,7 @@ export default function App() {
 							date={startDate}
 							setDate={setStartDate}
 							className="grow justify-start"
+							valid={hasValidStartDate}
 						/>
 						<DatePicker
 							placeholder="To"
