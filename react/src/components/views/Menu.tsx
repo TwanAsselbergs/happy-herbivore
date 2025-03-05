@@ -76,6 +76,8 @@ export default function Menu({
 					<h2 className="font-black text-center text-xl uppercase ml-2">
 						{categories.find((category) => category.id === selectedCategory)?.name}
 					</h2>
+
+					{/* Veggie/vegan toggles */}
 					<div className="flex gap-4">
 						<button
 							className={`px-4 py-2 flex rounded-full items-center gap-2 transition-colors ${
@@ -89,6 +91,7 @@ export default function Menu({
 								className={`rotate-0 transition-transform ${
 									dietType.includes("VEGGIE") ? "rotate-45" : ""
 								}`}
+								aria-label={dietType.includes("VEGGIE") ? "Cross" : "Plus"}
 							/>
 							Veggie
 						</button>
@@ -104,6 +107,7 @@ export default function Menu({
 								className={`rotate-0  transition-transform ${
 									dietType.includes("VEGAN") ? "rotate-45" : ""
 								}`}
+								aria-label={dietType.includes("VEGAN") ? "Cross" : "Plus"}
 							/>
 							Vegan
 						</button>

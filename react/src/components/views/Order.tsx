@@ -174,13 +174,18 @@ const Order = ({
 				<div className="bg-white-secondary w-full h-full flex justify-center items-center">
 					<div className="grid grid-cols-1 grid-rows-[min-content_1fr_auto] items-center bg-white-primary justify-between rounded-2xl w-11/12 h-[1600px] mx-auto px-16">
 						<div className="flex w-full justify-center bg-white-primary relative min-h-0 mt-14">
-							<ArrowLeft
-								height={50}
-								width={50}
-								strokeWidth={3}
-								className="bg-[#EDEFE9] p-2 text-gray-600 rounded-full absolute left-0 top-[50%] -translate-y-1/2"
+							<button
 								onClick={() => setCurrentView(View.Menu)}
-							/>
+								aria-label="Go back to menu"
+							>
+								<ArrowLeft
+									height={50}
+									width={50}
+									strokeWidth={3}
+									className="bg-[#EDEFE9] p-2 text-gray-600 rounded-full absolute left-0 top-[50%] -translate-y-1/2"
+									aria-label="Arrow pointing to the left"
+								/>
+							</button>
 							<h2 className="text-2xl font-bold flex items-center my-8">
 								{t("review_order")}
 							</h2>
@@ -197,7 +202,7 @@ const Order = ({
 								>
 									{cartItems.length === 0 ? (
 										<div className="flex flex-col items-center justify-center pb-96 h-full">
-											<h3 className="text-center text-2xl text-gray-300 font-semibold">
+											<h3 className="text-center text-2xl text-black/50">
 												{t("basket_empty")}
 											</h3>
 										</div>
@@ -211,7 +216,7 @@ const Order = ({
 													<div className="flex items-center">
 														<img
 															src={transformImageUrl(item.image?.filename ?? "")}
-															alt={item.image?.description}
+															alt={item.image?.description ?? `Cover photo of ${item.name}`}
 															className="w-40 h-40 object-cover rounded-2xl"
 														/>
 														<div className="ml-10">
@@ -220,7 +225,7 @@ const Order = ({
 															</h3>
 															<p className="text-[28px] font-bold mt-4">
 																{formatCurrency(item.price * item.quantity)}{" "}
-																<span className="text-gray-400 font-normal">
+																<span className="text-black/50 font-normal">
 																	({formatCurrency(item.price)} {t("per_piece")})
 																</span>
 															</p>
@@ -257,6 +262,7 @@ const Order = ({
 											<h3 className="font-semibold">{t("order_calories")}</h3>
 											<div className="w-[170px] relative">
 												<Pie
+													aria-label="Chart that compares the calories of the entire order to the recommended daily intake"
 													data={{
 														datasets: [
 															{
@@ -270,6 +276,9 @@ const Order = ({
 																],
 															},
 														],
+													}}
+													options={{
+														events: [],
 													}}
 												/>
 												<div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

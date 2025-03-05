@@ -37,7 +37,7 @@ export default function TopBar({
 						className="w-[350px] h-fit px-6 py-4.5 rounded-full bg-red-500 text-white-primary font-bold flex justify-center items-center gap-4 mr-4"
 						onClick={() => setIsShowingPopup(true)}
 					>
-						<Trash2 {...iconProps} />
+						<Trash2 {...iconProps} aria-label="Trash can" />
 						{t("cancel_order")}
 					</button>
 				)}

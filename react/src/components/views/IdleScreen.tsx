@@ -109,23 +109,39 @@ const IdleScreen = ({
 				<h3 className=" text-white-primary mt-4">{t("idle_p")}</h3>
 			</div>
 			<div className="grid grid-cols-2 gap-16 mb-32">
-				<button
-					className="font-bold bg-white-primary w-105 h-[200px] rounded-3xl uppercase flex items-center justify-center gap-4 p-24"
+				<IdleScreenButton
 					onClick={() => handleSetPickupType(PickupType.TAKE_OUT)}
-				>
-					<ShoppingBag height={40} width={40} className="shrink-0" />
-					{t("takeaway")}
-				</button>
-				<button
-					className="font-bold bg-white-primary w-105 h-[200px] rounded-3xl uppercase flex items-center justify-center gap-4 p-24"
+					text={t("takeaway")}
+				/>
+				<IdleScreenButton
 					onClick={() => handleSetPickupType(PickupType.DINE_IN)}
-				>
-					<ShoppingBag height={40} width={40} className="shrink-0" />
-					{t("eat_in")}
-				</button>
+					text={t("eat_in")}
+				/>
 			</div>
 		</div>
 	);
 };
+
+interface IdleScreenButtonProps
+	extends React.HTMLAttributes<HTMLButtonElement> {
+	text: string;
+}
+
+function IdleScreenButton({ text, ...props }: Readonly<IdleScreenButtonProps>) {
+	return (
+		<button
+			className="font-bold bg-white-primary w-105 h-[200px] rounded-3xl uppercase flex items-center justify-center gap-4 p-24"
+			{...props}
+		>
+			<ShoppingBag
+				height={40}
+				width={40}
+				className="shrink-0"
+				aria-label="Shopping Bag"
+			/>
+			{text}
+		</button>
+	);
+}
 
 export default IdleScreen;

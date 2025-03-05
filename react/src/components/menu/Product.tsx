@@ -26,20 +26,21 @@ export default function Product({
 			<figure className="overflow-hidden rounded-2xl">
 				<img
 					src={transformImageUrl(product.image?.filename ?? "")}
-					alt={product.image?.description}
+					alt={product.image?.description ?? `Cover photo of ${product.name}`}
 					className="w-full aspect-square object-cover"
 				/>
 				<figcaption className="sr-only">{product.image?.description}</figcaption>
 			</figure>
 
 			<header className="mt-4 grow flex flex-col justify-between">
-				<h3 className="font-bold text-start line-clamp-2 leading-7">
+				{/* 1.75rem (line height) * 2 (two lines) = 3.5rem, preventing layout shift */}
+				<h3 className="font-bold text-start line-clamp-2 leading-7 min-h-[3.5rem]">
 					{product.name}
 				</h3>
 				<p>{formatCurrency(product.price)}</p>
 			</header>
 
-			<dl className="text-black/40">
+			<dl className="text-black/50">
 				<dt className="sr-only">Calories</dt>
 				<dd>{product.kcal} kcal</dd>
 			</dl>

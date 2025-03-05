@@ -24,6 +24,7 @@ export default function MenuSidebar({
 	const [topMaskSize, setTopMaskSize] = useState(0);
 	const [bottomMaskSize, setBottomMaskSize] = useState(0);
 
+	// Apply scroll masking (white masks at top/bottom) when not scrolling all the way up/down
 	useEffect(() => {
 		const el = categoryContainerRef.current;
 		if (!el) return;
@@ -50,6 +51,7 @@ export default function MenuSidebar({
 		return () => el.removeEventListener("scroll", setClasses);
 	}, []);
 
+	// Move orange box to selected category
 	useEffect(() => {
 		if (selectedCategory !== null && categoryContainerRef.current) {
 			const selectedButton = categoryContainerRef.current?.querySelector(
@@ -64,7 +66,7 @@ export default function MenuSidebar({
 
 	return (
 		<div className="basis-[230px] shrink-0 flex flex-col justify-between h-full bg-white-primary overflow-x-hidden">
-			<div className="w-full shadow-4xl h-0"></div>
+			{/* Categories */}
 			<div
 				className="relative overflow-y-auto hide-scrollbar transition-all duration-100"
 				ref={categoryContainerRef}
@@ -73,6 +75,7 @@ export default function MenuSidebar({
 					maskImage: `linear-gradient(to bottom, transparent 0, black ${topMaskSize}px, black calc(100% - ${bottomMaskSize}px), transparent 100%)`,
 				}}
 			>
+				{/* Orange box that slides to selected category */}
 				<motion.div
 					layoutId="category-highlight"
 					className="absolute inset-0 bg-orange-300 z-0"
@@ -83,10 +86,11 @@ export default function MenuSidebar({
 					}}
 					transition={{ type: "spring", stiffness: 200, damping: 20 }}
 				/>
+
 				{categories.map((category) => (
 					<button
 						key={category.name}
-						className="relative flex flex-col items-center p-8 min-h-[300px] justify-center overflow-hidden"
+						className="relative flex flex-col items-center p-8 min-h-[300px] justify-center overflow-hidden w-full"
 						onClick={() => {
 							setSelectedCategory(category.id);
 						}}
@@ -94,8 +98,8 @@ export default function MenuSidebar({
 					>
 						<img
 							src={transformImageUrl(category.image.filename)}
-							alt={category.image.description}
-							className="w-[80%] relative z-10"
+							alt={category.image.description ?? `Photo of ${category.name}`}
+							className="w-[80%] relative z-10 aspect-square"
 						/>
 						<h2 className="font-bold text-center uppercase relative z-10">
 							{category.name}
@@ -103,12 +107,14 @@ export default function MenuSidebar({
 					</button>
 				))}
 			</div>
+
+			{/* Add to cart button */}
 			<motion.button
 				className="flex flex-col bg-lime text-white-primary aspect-square z-10 justify-center items-center gap-6 font-bold transition-shadow duration-600"
 				onClick={() => setCurrentView(View.Order)}
 				whileTap={{ scale: 0.95 }}
 			>
-				<ShoppingBag size={65} strokeWidth={1.5} />
+				<ShoppingBag size={65} strokeWidth={1.5} aria-label="Shopping Bag" />
 				{formatCurrency(total)}
 			</motion.button>
 		</div>

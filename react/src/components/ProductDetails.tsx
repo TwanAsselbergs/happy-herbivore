@@ -37,11 +37,11 @@ export default function ProductDetails({
 	>;
 	setShowingDetailsId: React.Dispatch<React.SetStateAction<number | null>>;
 }>) {
-	const { t } = useTranslation();
 	const [productQuantity, setProductQuantity] = useState(1);
-
+	const { t } = useTranslation();
 	const { cart } = useContext(CartContext);
 
+	// Set initial quantity to current quantity if already in cart, else set to 1
 	useEffect(() => {
 		const cartItem = cart.find((cartItem) => cartItem.id === product.id);
 
@@ -51,6 +51,8 @@ export default function ProductDetails({
 	function handleAddToCart() {
 		setCart((prev) => {
 			const index = prev.findIndex((item) => item.id === product.id);
+
+			// Add new item to cart if not present already, else adjust quantity
 			if (index === -1) {
 				return [...prev, { id: product.id, quantity: productQuantity }];
 			} else {
@@ -62,11 +64,13 @@ export default function ProductDetails({
 
 		toast.success(t("basket_confirmation"));
 
+		// Hide popup after adding to cart
 		setShowingDetailsId(null);
 	}
 
 	return (
-		<div className="fixed top-0 left-0 w-full h-full flex items-center justify-center  z-20">
+		<div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-20">
+			{/* Black overlay */}
 			<motion.div
 				className="bg-black/30 absolute w-full h-full"
 				onClick={() => setShowingDetailsId(null)}
@@ -76,6 +80,8 @@ export default function ProductDetails({
 				exit="exit"
 				transition={overlayTransition}
 			></motion.div>
+
+			{/* Popup */}
 			<motion.div
 				initial={{ y: "100%" }}
 				exit={{ y: "100%" }}
@@ -88,14 +94,21 @@ export default function ProductDetails({
 						<button
 							onClick={() => setShowingDetailsId(null)}
 							className="bg-[#EDEFE9] rounded-full p-2"
+							aria-label="Close popup"
 						>
-							<X height={30} width={30} strokeWidth={4} className="text-gray-500" />
+							<X
+								height={30}
+								width={30}
+								strokeWidth={4}
+								className="text-gray-500"
+								aria-label="Cross"
+							/>
 						</button>
 					</div>
 					<div className="grid grid-cols-[3fr_5fr] gap-12 py-12">
 						<img
 							src={transformImageUrl(product.image?.filename ?? "")}
-							alt={product.image?.description}
+							alt={product.image?.description ?? `Cover photo of ${product.name}`}
 							className="rounded-2xl"
 						/>
 						<div className="flex gap-2 flex-col justify-between">
@@ -106,6 +119,8 @@ export default function ProductDetails({
 							<div className="flex items-end">
 								<div className="w-[200px] relative">
 									<Pie
+										aria-label="Chart that compares the calories of the product to the recommended daily intake"
+										onClick={undefined}
 										data={{
 											datasets: [
 												{
@@ -113,6 +128,9 @@ export default function ProductDetails({
 													backgroundColor: ["#8CD003", "#D9D9D9"],
 												},
 											],
+										}}
+										options={{
+											events: [],
 										}}
 									/>
 									<div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
