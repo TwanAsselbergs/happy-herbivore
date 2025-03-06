@@ -34,7 +34,7 @@ export function OrderList({
 	wsRef,
 }: Readonly<{
 	orders: Order[];
-	wsRef: React.MutableRefObject<WebSocket | null>;
+	wsRef: React.RefObject<WebSocket | null>;
 	setOrders: React.Dispatch<SetStateAction<Order[]>>;
 }>) {
 	const updateProductStatus = (
