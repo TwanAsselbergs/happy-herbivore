@@ -31,10 +31,10 @@ import { formatOrderNumber } from "@/lib/utils";
 export function OrderList({
 	orders,
 	setOrders,
-	ws,
+	wsRef,
 }: Readonly<{
 	orders: Order[];
-	ws: WebSocket | null;
+	wsRef: React.MutableRefObject<WebSocket | null>;
 	setOrders: React.Dispatch<SetStateAction<Order[]>>;
 }>) {
 	const updateProductStatus = (
@@ -128,7 +128,7 @@ export function OrderList({
 	}
 
 	const updateOrderStatus = (orderId: number, newStatus: OrderStatus) => {
-		if (!ws) return;
+		if (!wsRef.current) return;
 
 		setOrders((prevOrders) =>
 			prevOrders.map((order) =>
@@ -136,7 +136,7 @@ export function OrderList({
 			)
 		);
 
-		ws.send(
+		wsRef.current.send(
 			JSON.stringify({
 				type: "update_order_status",
 				data: {

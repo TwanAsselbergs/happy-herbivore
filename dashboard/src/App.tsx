@@ -112,7 +112,7 @@ export default function App() {
 					<CardTitle>Recent Orders</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<OrderList orders={orders} setOrders={setOrders} ws={wsRef.current} />
+					<OrderList orders={orders} setOrders={setOrders} wsRef={wsRef} />
 				</CardContent>
 			</Card>
 

@@ -2,7 +2,7 @@ import { Order, OrderStatus, MostOrderedProductType } from "@/types/common";
 import React, { useRef, useEffect, useCallback } from "react";
 
 const WEBSOCKET_URL =
-	"ws://happyherbivore.noeycodes.com?token=your-secret-token";
+	"wss://happyherbivore.noeycodes.com?token=your-secret-token";
 
 interface OrderMessage {
 	type: "order";
@@ -32,7 +32,12 @@ export function useWebSocketOrders(
 	const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
 	const connectWs = useCallback(() => {
-		if (wsRef.current) return;
+		if (wsRef.current && wsRef.current.readyState !== WebSocket.CLOSED) return;
+
+		if (wsRef.current?.readyState === WebSocket.CLOSING) {
+			setTimeout(connectWs, 2000);
+			return;
+		}
 
 		const ws = new WebSocket(WEBSOCKET_URL);
 		wsRef.current = ws;
