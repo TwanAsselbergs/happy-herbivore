@@ -60,6 +60,8 @@
 body {
 	background-color: var(--color-white-secondary);
 	font-size: var(--text-md);
+	touch-action: manipulation;
+	user-select: none;
 }
 
 .hide-scrollbar::-webkit-scrollbar {
