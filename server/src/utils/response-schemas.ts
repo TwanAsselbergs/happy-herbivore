@@ -1,4 +1,5 @@
 import { PickupType } from "@prisma/client";
+import type { FastifySchema } from "fastify";
 
 export const langQuery = {
 	querystring: {
@@ -30,6 +31,72 @@ export const categoriesResponseSchema = {
 						},
 						name: { type: "string" },
 					},
+				},
+			},
+		},
+	},
+};
+
+export const revenueResponseSchema: FastifySchema = {
+	description: "Get the revenue from the past month",
+	tags: ["Stats"],
+	response: {
+		200: {
+			type: "object",
+			properties: {
+				thisMonth: { type: "number", example: 56.8 },
+				lastMonth: { type: "number", example: 30 },
+			},
+		},
+	},
+};
+
+export const orderAmountResponseSchema: FastifySchema = {
+	description: "Get the amount of orders from the past month",
+	tags: ["Stats"],
+	response: {
+		200: {
+			type: "object",
+			properties: {
+				thisMonth: { type: "number", example: 3 },
+				lastMonth: { type: "number", example: 4 },
+			},
+		},
+	},
+};
+
+export const mostOrderedProductsResponseSchema: FastifySchema = {
+	description: "Get the most ordered products within a certain period",
+	tags: ["Stats"],
+	querystring: {
+		type: "object",
+		properties: {
+			startDate: {
+				type: "string",
+				description:
+					"The starting date of the measurements. Preferred format: YYYY-MM-DD",
+			},
+			endDate: {
+				type: "string",
+				description:
+					"The ending date of the measurements. Preferred format: YYYY-MM-DD",
+			},
+		},
+	},
+	response: {
+		200: {
+			type: "array",
+			items: {
+				type: "object",
+				properties: {
+					id: { type: "number" },
+					name: { type: "string", example: "Peanut Button Power Toast" },
+					description: {
+						type: "string",
+						example:
+							"Whole-grain toast with natural peanut butter and banana slices.",
+					},
+					quantity: { type: "number" },
 				},
 			},
 		},

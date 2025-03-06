@@ -15,6 +15,9 @@ import {
 	productSchema,
 	productsSchema,
 	ordersRequestSchema,
+	revenueResponseSchema,
+	mostOrderedProductsResponseSchema,
+	orderAmountResponseSchema,
 } from "@/utils/response-schemas";
 import {
 	calculateRevenue,
@@ -73,10 +76,27 @@ app.register(
 
 		api.get("/orders/today", ordersResponseSchema, fetchTodaysOrders);
 
-		api.get("/stats/revenue", calculateRevenue);
-		api.get("/stats/orders", getOrdersAmount);
-
-		api.get("/stats/products", getMostOrderedProducts);
+		api.get(
+			"/stats/revenue",
+			{
+				schema: revenueResponseSchema,
+			},
+			calculateRevenue
+		);
+		api.get(
+			"/stats/orders",
+			{
+				schema: orderAmountResponseSchema,
+			},
+			getOrdersAmount
+		);
+		api.get(
+			"/stats/products",
+			{
+				schema: mostOrderedProductsResponseSchema,
+			},
+			getMostOrderedProducts
+		);
 
 		done();
 	},
