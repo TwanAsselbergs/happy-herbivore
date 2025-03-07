@@ -19,22 +19,27 @@ export default function ProductsChart({
 }: Readonly<{
 	products: MostOrderedProductType[];
 }>) {
+	const tickFormatter = (value: string) => {
+		const limit = 10; // put your maximum character
+		if (value.length < limit) return value;
+		return `${value.substring(0, limit)}...`;
+	};
+
 	return (
-		<ChartContainer
-			config={chartConfig}
-			className="min-h-[200px] max-h-[500px] w-full"
-		>
+		<ChartContainer config={chartConfig} className="min-h-fit w-full">
 			<BarChart accessibilityLayer data={products} layout="vertical">
 				<CartesianGrid horizontal={false} />
 				<XAxis type="number" />
 				<ChartTooltip content={<ChartTooltipContent />} />
-				<Bar
-					dataKey="quantity"
-					fill="var(--color-orange-300)"
-					radius={4}
-					maxBarSize={30}
+				<Bar dataKey="quantity" fill="var(--color-orange-300)" />
+				<YAxis
+					type="category"
+					width={120}
+					dataKey="name"
+					interval={0}
+					tickFormatter={tickFormatter}
+					className="text-nowrap break"
 				/>
-				<YAxis type="category" width={100} dataKey="name" />
 			</BarChart>
 		</ChartContainer>
 	);

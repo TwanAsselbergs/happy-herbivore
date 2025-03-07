@@ -28,8 +28,14 @@ This project is a self-service ordering system created as a school assignment fo
    - Provides a seamless ordering experience on a touchscreen or kiosk.
 
 3. Back-end (`/dashboard`)
+
    - A dashboard accessible only to employees.
    - Displays incoming orders and relevant statistics for order management.
+
+4. Documents (`/docs`)
+   - The video, receipt and questions from the field research (`/docs/field-research`)
+   - Test documents (compatibility- functional- and performance test) (`/docs/tests`)
+   - Database ERD, functional design and UI design.
 
 ## Installation Guide
 
