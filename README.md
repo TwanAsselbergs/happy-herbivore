@@ -1,6 +1,6 @@
 # Self-Service System Happy Herbivore
 
-## Table of contents
+## Table of Contents
 
 - [Self-Service System Happy Herbivore](#self-service-system-happy-herbivore)
   - [Table of contents](#table-of-contents)
